@@ -307,7 +307,7 @@ def generate_readme_index_page(template):
         return False
 
     # Parse README.md
-    front_matter, html_content, _ = parse_markdown_file(SOURCE_DIR / README_FILE)
+    front_matter, html_content = parse_markdown_file(SOURCE_DIR / README_FILE)
 
     # Process links in the HTML content to make them work in the static site
     # Convert relative links like [title](posts/2024/file.md) to [title](/posts/2024/file.html)
