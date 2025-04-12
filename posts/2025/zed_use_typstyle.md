@@ -2,7 +2,7 @@
 title: 在 zed 上配置 typstyle
 date: 2025-03-21
 tags: [zed, Typst]
-category: [计算机技术]
+category: [计算机]
 ---
 
 # 在 zed 上配置 typstyle

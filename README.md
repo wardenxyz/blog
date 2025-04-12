@@ -1,6 +1,6 @@
 # 随便写写
 
-Welcome to my GitHub-based blog! This is a minimalist blog that uses pure markdown files and GitHub's native features.
+欢迎来到我基于 GitHub 的博客！这是一个极简的博客，使用纯 Markdown 文件和 GitHub 的原生功能。
 
 > [分类](categories.md) - 按主题浏览文章
 >
