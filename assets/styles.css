@@ -179,6 +179,7 @@ h1 {
   font-size: 2em;
   border-bottom: 1px solid #eaecef;
   padding-bottom: 0.3em;
+  margin-top: -0.1em;
 }
 
 h2 {
@@ -213,11 +214,44 @@ pre {
   border-radius: 3px;
   padding: 16px;
   overflow: auto;
+  position: relative;
 }
 
 pre code {
   background-color: transparent;
   padding: 0;
+}
+
+.code-container {
+  position: relative;
+}
+
+.copy-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 3px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0;
+}
+
+.copy-button:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+pre:hover .copy-button {
+  opacity: 1;
+}
+
+.copy-button.copied {
+  background-color: #58a6ff;
+  color: white;
+  border-color: #58a6ff;
 }
 
 blockquote {
