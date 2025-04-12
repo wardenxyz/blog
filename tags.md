@@ -104,9 +104,14 @@
 
 ## python
 
+- 2025-04-12 [使用 Python 生成静态网页](<posts/2025/use_python_gen_site.md>)
 - 2025-03-15 [conda 使用笔记](<posts/2025/conda_note.md>)
 - 2024-10-06 [python 学习笔记](<posts/2024/python_note.md>)
 - 2024-08-01 [用 you-get 下载B站视频](<posts/2024/you-get_note.md>)
+
+## site
+
+- 2025-04-12 [使用 Python 生成静态网页](<posts/2025/use_python_gen_site.md>)
 
 ## vim
 

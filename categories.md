@@ -10,6 +10,7 @@
 
 ## 计算机
 
+- 2025-04-12 [使用 Python 生成静态网页](<posts/2025/use_python_gen_site.md>)
 - 2025-04-10 [安装 WSL2 并迁移到 D 盘](<posts/2025/install_wsl2_and_to_d_disk.md>)
 - 2025-03-16 [在 Windows 上配置 Rust 环境](<posts/2025/Rust_Windows_Config.md>)
 - 2025-03-15 [conda 使用笔记](<posts/2025/conda_note.md>)

@@ -11,6 +11,7 @@ Welcome to my GitHub-based blog! This is a minimalist blog that uses pure markdo
 
 ### 4 月
 
+- 2025-04-12 [使用 Python 生成静态网页](<posts/2025/use_python_gen_site.md>)
 - 2025-04-10 [安装 WSL2 并迁移到 D 盘](<posts/2025/install_wsl2_and_to_d_disk.md>)
 
 ### 3 月
