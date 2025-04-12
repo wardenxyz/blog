@@ -12,6 +12,7 @@
 
 - 2025-04-12 [使用 Python 生成静态网页](<posts/2025/use_python_gen_site.md>)
 - 2025-04-10 [安装 WSL2 并迁移到 D 盘](<posts/2025/install_wsl2_and_to_d_disk.md>)
+- 2025-03-21 [在 zed 上配置 typstyle](<posts/2025/zed_use_typstyle.md>)
 - 2025-03-16 [在 Windows 上配置 Rust 环境](<posts/2025/Rust_Windows_Config.md>)
 - 2025-03-15 [conda 使用笔记](<posts/2025/conda_note.md>)
 - 2025-03-14 [在 Zed Editor 中配置 OpenAI API 兼容的模型](<posts/2025/Zed_set_OpenAI_API_Compatible_model.md>)
@@ -49,10 +50,6 @@
 - 2024-04-08 [浏览器UA值](<posts/2024/browser_UA_value.md>)
 - 2024-04-08 [git 分支操作](<posts/2024/git_branch.md>)
 - 2024-04-08 [ffmpeg 自用命令](<posts/2024/ffmpeg_note.md>)
-
-## 计算机技术
-
-- 2025-03-21 [在 zed 上配置 typstyle](<posts/2025/zed_use_typstyle.md>)
 
 ## 软件
 
