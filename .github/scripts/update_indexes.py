@@ -28,12 +28,12 @@ def update_readme(posts):
         date_str = post.metadata['date'].strftime('%Y-%m-%d')
         year_str = post.metadata['date'].strftime('%Y')
         month_int = int(post.metadata['date'].strftime('%m'))  # Get month as integer
-        
+
         # 检查 'title' 键是否存在
         if 'title' not in post.metadata:
             print(f"Warning: 'title' key not found in post metadata. Skipping post.")
             continue
-        
+
         title = post.metadata['title']
         path = post.metadata['path'].replace('\\', '/')
 
@@ -83,7 +83,7 @@ def update_tags(posts):
         if 'date' not in post.metadata:
             print(f"Warning: Skipping post without date in tags: {post.metadata.get('path', 'unknown path')}")
             continue
-            
+
         for tag in post.metadata.get('tags', []):
             tags[tag].append(post)
 
@@ -114,7 +114,7 @@ def update_categories(posts):
         if 'date' not in post.metadata:
             print(f"Warning: Skipping post without date in categories: {post.metadata.get('path', 'unknown path')}")
             continue
-            
+
         category_value = post.metadata.get('category', 'Uncategorized')
         if not isinstance(category_value, list):
             category_value = [category_value]

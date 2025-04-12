@@ -2,7 +2,6 @@
 
 Welcome to my GitHub-based blog! This is a minimalist blog that uses pure markdown files and GitHub's native features.
 
-> [!NOTE]
 > [分类](categories.md) - 按主题浏览文章
 >
 > [标签](tags.md) - 按标签浏览文章
