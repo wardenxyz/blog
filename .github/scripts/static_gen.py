@@ -44,57 +44,12 @@ def extract_front_matter(content):
 
     return front_matter, content_text
 
-def extract_outline(content_text):
-    """Extract headings from markdown content and create an outline/TOC."""
-    # Find all headings (# Heading 1, ## Heading 2, etc.)
-    heading_pattern = re.compile(r'^(#{1,6})\s+(.*?)(?:\s+#{1,6})?$', re.MULTILINE)
-    headings = heading_pattern.findall(content_text)
-    
-    if not headings:
-        return ""
-    
-    outline = '<div class="toc-container"><h3>目录</h3><ul class="toc-list">'
-    
-    prev_level = 0
-    for heading in headings:
-        level = len(heading[0])  # Number of # symbols
-        title = heading[1].strip()
-        
-        # Create an ID from the title
-        heading_id = re.sub(r'[^a-zA-Z0-9\s]', '', title).lower().replace(' ', '-')
-        
-        # Close previous lists if we're moving up
-        if level < prev_level:
-            outline += '</li>' + '</ul></li>' * (prev_level - level)
-        elif level > prev_level:
-            # Open new lists if we're moving down
-            if prev_level > 0:
-                outline = outline.rstrip('</li>') + '<ul>'
-            else:
-                outline += '<ul>'
-        elif prev_level > 0:
-            outline += '</li>'
-        
-        # Add the current heading
-        outline += f'<li><a href="#{heading_id}">{title}</a>'
-        prev_level = level
-    
-    # Close any remaining open lists
-    if prev_level > 0:
-        outline += '</li>' + '</ul></li>' * ((prev_level - 1) // 1) + '</ul>'
-    
-    outline += '</ul></div>'
-    return outline
-
 def parse_markdown_file(file_path):
     """Parse a markdown file and return its front matter and HTML content."""
     with open(file_path, 'r', encoding='utf-8') as file:
         content = file.read()
 
     front_matter, content_text = extract_front_matter(content)
-    
-    # Extract outline before converting to HTML
-    outline = extract_outline(content_text)
 
     # Convert markdown to HTML
     html_content = markdown.markdown(
@@ -108,11 +63,11 @@ def parse_markdown_file(file_path):
         ]
     )
 
-    return front_matter, html_content, outline
+    return front_matter, html_content
 
 def generate_post_page(post_path, output_path, template):
     """Generate a HTML page for a post."""
-    front_matter, html_content, outline = parse_markdown_file(post_path)
+    front_matter, html_content = parse_markdown_file(post_path)
 
     # Get metadata
     title = front_matter.get('title', os.path.basename(post_path).replace('.md', ''))
@@ -128,7 +83,6 @@ def generate_post_page(post_path, output_path, template):
     html_output = template.replace('{{title}}', title)
     html_output = html_output.replace('{{date}}', str(date))
     html_output = html_output.replace('{{content}}', html_content)
-    html_output = html_output.replace('{{outline}}', outline)
 
     # Generate tags HTML
     tags_html = ''
@@ -203,7 +157,6 @@ def generate_index_page(posts_data, template):
     html_output = html_output.replace('{{date}}', '')
     html_output = html_output.replace('{{tags}}', '')
     html_output = html_output.replace('{{category}}', '')
-    html_output = html_output.replace('{{outline}}', '')
 
     # Write HTML to file
     with open(OUTPUT_DIR / 'index.html', 'w', encoding='utf-8') as file:
@@ -256,7 +209,6 @@ def generate_tag_page(posts_data, template):
     html_output = html_output.replace('{{date}}', '')
     html_output = html_output.replace('{{tags}}', '')
     html_output = html_output.replace('{{category}}', '')
-    html_output = html_output.replace('{{outline}}', '')
 
     # Write HTML to file
     with open(OUTPUT_DIR / 'tags.html', 'w', encoding='utf-8') as file:
@@ -316,7 +268,6 @@ def generate_category_page(posts_data, template):
     html_output = html_output.replace('{{date}}', '')
     html_output = html_output.replace('{{tags}}', '')
     html_output = html_output.replace('{{category}}', '')
-    html_output = html_output.replace('{{outline}}', '')
 
     # Write HTML to file
     with open(OUTPUT_DIR / 'categories.html', 'w', encoding='utf-8') as file:
@@ -381,7 +332,6 @@ def generate_readme_index_page(template):
     html_output = html_output.replace('{{date}}', '')
     html_output = html_output.replace('{{tags}}', '')
     html_output = html_output.replace('{{category}}', '')
-    html_output = html_output.replace('{{outline}}', '')  # No outline for README page
 
     # Write HTML to file
     with open(OUTPUT_DIR / 'index.html', 'w', encoding='utf-8') as file:
