@@ -39,7 +39,7 @@ jobs:
         run: python .github/scripts/static_gen.py
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v2
         with:
           path: ./site
 
