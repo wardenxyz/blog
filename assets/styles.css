@@ -412,14 +412,14 @@ table tr:nth-child(2n) {
 }
 
 /* Permalink style for heading anchors */
-.permalink {
+/* .permalink {
   visibility: hidden;
   font-size: 0.85em;
   margin-left: 8px;
   color: var(--primary-color);
   transition: all 0.2s ease;
   opacity: 0.6;
-}
+} */
 
 /* h1:hover .permalink,
 h2:hover .permalink,
