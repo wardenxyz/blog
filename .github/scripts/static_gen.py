@@ -364,7 +364,7 @@ def main():
             for post_file in year_dir.glob('*.md'):
                 if post_file.is_file():
                     # Parse markdown file
-                    front_matter, _, _ = parse_markdown_file(post_file)
+                    front_matter, html_content = parse_markdown_file(post_file)
 
                     # Get metadata
                     title = front_matter.get('title', post_file.stem)
