@@ -421,19 +421,19 @@ table tr:nth-child(2n) {
   opacity: 0.6;
 }
 
-h1:hover .permalink,
+/* h1:hover .permalink,
 h2:hover .permalink,
 h3:hover .permalink,
 h4:hover .permalink,
 h5:hover .permalink,
 h6:hover .permalink {
   visibility: visible;
-}
+} */
 
-.permalink:hover {
+/* .permalink:hover {
   opacity: 1;
   transform: scale(1.1);
-}
+} */
 
 /* Animation effects */
 @keyframes fadeIn {
