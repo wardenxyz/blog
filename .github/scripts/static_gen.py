@@ -8,6 +8,7 @@ import os
 import re
 import shutil
 import yaml
+import json
 import markdown
 import datetime
 from pathlib import Path
@@ -109,6 +110,9 @@ def generate_post_page(post_path, output_path, template):
     # Write HTML to file
     with open(output_path, 'w', encoding='utf-8') as file:
         file.write(html_output)
+
+    # Return the HTML content for search index
+    return html_content
 
 def generate_index_page(posts_data, template):
     """Generate the main index page."""
@@ -273,6 +277,62 @@ def generate_category_page(posts_data, template):
     with open(OUTPUT_DIR / 'categories.html', 'w', encoding='utf-8') as file:
         file.write(html_output)
 
+def generate_search_page(template):
+    """Generate the search page."""
+    # Generate HTML content
+    content = '''
+    <h1>搜索</h1>
+    <div class="search-container">
+        <input type="text" id="search-input" class="search-input" placeholder="请输入搜索内容..." aria-label="搜索">
+        <div id="loading-indicator" style="display: none; text-align: center; margin: 20px 0;">正在加载搜索数据...</div>
+    </div>
+    <div id="search-results" class="search-results"></div>
+    <script src="/assets/search.js"></script>
+    '''
+
+    # Replace placeholders in the template
+    html_output = template.replace('{{title}}', '搜索 - ' + SITE_TITLE)
+    html_output = html_output.replace('{{content}}', content)
+    html_output = html_output.replace('{{date}}', '')
+    html_output = html_output.replace('{{tags}}', '')
+    html_output = html_output.replace('{{category}}', '')
+
+    # Write HTML to file
+    with open(OUTPUT_DIR / 'search.html', 'w', encoding='utf-8') as file:
+        file.write(html_output)
+
+def generate_search_index(posts_data):
+    """Generate a JSON search index file containing all posts' data."""
+    search_index = []
+
+    for post in posts_data:
+        # Extract the plain content from the HTML content
+        if 'content_html' in post:
+            # Create a simplified version of the content for search purposes
+            # Strip HTML tags but keep the text content
+            plain_content = re.sub(r'<[^>]+>', ' ', post['content_html'])
+            # Normalize whitespace
+            plain_content = re.sub(r'\s+', ' ', plain_content).strip()
+
+            # Format date if it's a date object to make it JSON serializable
+            date = post['date']
+            if isinstance(date, datetime.date):
+                date = date.strftime('%Y-%m-%d')
+
+            search_item = {
+                'title': post['title'],
+                'url': post['url'],
+                'content': plain_content[:10000],  # Limit content length to avoid very large JSON
+                'date': date,
+                'tags': post.get('tags', []),
+                'category': post.get('category', [])
+            }
+            search_index.append(search_item)
+
+    # Write search index to JSON file
+    with open(OUTPUT_DIR / 'search-index.json', 'w', encoding='utf-8') as file:
+        json.dump(search_index, file, ensure_ascii=False, indent=2)
+
 def copy_assets():
     """Copy assets to the output directory."""
     assets_src = SOURCE_DIR / ASSETS_DIR
@@ -380,7 +440,7 @@ def main():
                     output_path = OUTPUT_DIR / rel_path.with_suffix('.html')
 
                     # Generate HTML
-                    generate_post_page(post_file, output_path, template)
+                    post_html_content = generate_post_page(post_file, output_path, template)
 
                     # Add to posts data
                     posts_data.append({
@@ -388,7 +448,8 @@ def main():
                         'date': date,
                         'tags': tags,
                         'category': category,
-                        'url': url
+                        'url': url,
+                        'content_html': post_html_content  # Store HTML content for search index
                     })
 
     # Generate index page from README.md
@@ -403,6 +464,12 @@ def main():
 
     # Generate categories page
     generate_category_page(posts_data, template)
+
+    # Generate search page
+    generate_search_page(template)
+
+    # Generate search index
+    generate_search_index(posts_data)
 
 if __name__ == '__main__':
     main()
