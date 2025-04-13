@@ -1,6 +1,6 @@
 {
 	"new posts": {
-		"body": "---\ntitle: $1\ndate: ${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}\ntags: [$2]\ncategory: [$3]\n---\n$0",
+		"body": "---\ntitle: $1\ndate: ${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}\ntags: [$2]\ncategory: [$3]\n---\n\n# $1$0",
 		"description": "new posts",
 		"prefix": "posts",
 		"scope": "markdown"

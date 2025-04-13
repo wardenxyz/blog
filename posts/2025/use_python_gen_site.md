@@ -7,58 +7,86 @@ category: [计算机]
 
 # 使用 Python 生成静态网页
 
-一个简单的静态网站生成器，专门为我的博客设计，支持将 Markdown 文件转换为 HTML 静态网站。
+环境：
 
-## 特点
+```bash
+PS D:\workspace\blog> python --version
 
-- 支持 Markdown 语法
-- 代码块语法高亮
-- 表格渲染
-- 有序和无序列表支持
-- 窄页面设计（非全宽页面）
-- 通过 GitHub Actions 自动构建和部署到 GitHub Pages
-- 使用 Python 3.12 构建
+Python 3.12.0
+```
 
-## 安装
+步骤：
+
+第一步，创建虚拟环境
+
+```bash
+python -m venv venv
+```
+
+```bash
+.\venv\Scripts\activate
+```
+
+第二步，下载依赖
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 使用方法
+第三步，生成索引
 
-1. 将你的 Markdown 文章放在 `posts/YYYY/` 目录中，其中 `YYYY` 是年份（例如 `2024`）
-2. 确保每篇文章都有正确的 frontmatter 格式：
+```bash
+python .github\scripts\update_indexes.py
+```
+
+第四步，生成静态网页
+
+```bash
+python .github\scripts\static_gen.py
+```
+
+第五步，预览
+
+```bash
+python -m http.server -d site
+```
+
+在浏览器中访问 http://localhost:8000
+
+## 创建新的文章
+
+在 posts 文件夹下按照年份创建文件，格式为
 
 ```markdown
 ---
-title: 文章标题
-date: YYYY-MM-DD
-tags: [标签1, 标签2]
-category: [分类]
+title: 标题
+date: 2025-04-13
+tags: [tag1, tag2]
+category: [category]
 ---
 
-# 文章内容开始
+# 标题
 ```
 
-3. 运行静态网站生成器：
+写完之后生成索引
 
 ```bash
-python static_gen.py
+python .github\scripts\update_indexes.py
 ```
 
-4. 生成的网站将位于 `site` 目录中
-
-## 本地预览
-
-生成网站后，您可以使用 Python 内置的 HTTP 服务器进行本地预览：
+生成静态网页
 
 ```bash
-cd site
-python -m http.server
+python .github\scripts\static_gen.py
 ```
 
-然后在浏览器中访问 `http://localhost:8000` 查看网站。
+本地预览
+
+```bash
+python -m http.server -d site
+```
+
+在浏览器中访问 http://localhost:8000
 
 ## 部署
 
