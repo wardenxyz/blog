@@ -59,6 +59,25 @@ def parse_markdown_file(file_path):
         content_text
     )
 
+    # Protect math expressions before markdown conversion
+    # Store all math expressions temporarily and replace with placeholders
+    inline_math = []
+    display_math = []
+
+    # Capture inline math expressions ($...$)
+    def inline_math_replace(match):
+        inline_math.append(match.group(1))
+        return f"INLINE_MATH_PLACEHOLDER_{len(inline_math) - 1}_"
+
+    content_text = re.sub(r'\$([^\$]+?)\$', inline_math_replace, content_text)
+
+    # Capture display math expressions ($$...$$)
+    def display_math_replace(match):
+        display_math.append(match.group(1))
+        return f"DISPLAY_MATH_PLACEHOLDER_{len(display_math) - 1}_"
+
+    content_text = re.sub(r'\$\$([^\$]+?)\$\$', display_math_replace, content_text)
+
     # Convert markdown to HTML
     html_content = markdown.markdown(
         content_text,
@@ -70,6 +89,20 @@ def parse_markdown_file(file_path):
             'sane_lists'
         ]
     )
+
+    # Restore inline math expressions
+    for i, math in enumerate(inline_math):
+        html_content = html_content.replace(
+            f"INLINE_MATH_PLACEHOLDER_{i}_",
+            f"${math}$"
+        )
+
+    # Restore display math expressions
+    for i, math in enumerate(display_math):
+        html_content = html_content.replace(
+            f"DISPLAY_MATH_PLACEHOLDER_{i}_",
+            f"$${math}$$"
+        )
 
     return front_matter, html_content
 

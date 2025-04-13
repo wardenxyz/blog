@@ -13,6 +13,8 @@
 			rel="stylesheet"
 		/>
 		<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+		<!-- MathJax for mathematical formula support -->
+		<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 		<meta
 			name="description"
 			content="A minimalist blog that uses pure markdown files"
@@ -48,13 +50,43 @@
 
 		<script>
 			// Initialize Mermaid diagrams
-			document.addEventListener("DOMContentLoaded", function() {
+			document.addEventListener("DOMContentLoaded", function () {
 				mermaid.initialize({
 					startOnLoad: true,
-					theme: window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default',
-					flowchart: { curve: 'basis' },
-					securityLevel: 'loose'
+					theme:
+						window.matchMedia &&
+						window.matchMedia("(prefers-color-scheme: dark)")
+							.matches
+							? "dark"
+							: "default",
+					flowchart: { curve: "basis" },
+					securityLevel: "loose",
 				});
+
+				// Configure MathJax
+				window.MathJax = {
+					tex: {
+						inlineMath: [
+							["$", "$"],
+							["\\(", "\\)"],
+						],
+						displayMath: [
+							["$$", "$$"],
+							["\\[", "\\]"],
+						],
+						processEscapes: true,
+						processEnvironments: true,
+					},
+					options: {
+						skipHtmlTags: [
+							"script",
+							"noscript",
+							"style",
+							"textarea",
+							"pre",
+						],
+					},
+				};
 			});
 
 			// Add copy buttons to code blocks
