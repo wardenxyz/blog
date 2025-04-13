@@ -52,6 +52,13 @@ def parse_markdown_file(file_path):
 
     front_matter, content_text = extract_front_matter(content)
 
+    # Process Mermaid diagrams - replace ```mermaid blocks with <div class="mermaid">
+    content_text = re.sub(
+        r'```mermaid\s*([\s\S]*?)```',
+        r'<div class="mermaid">\1</div>',
+        content_text
+    )
+
     # Convert markdown to HTML
     html_content = markdown.markdown(
         content_text,

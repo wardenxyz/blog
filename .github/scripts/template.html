@@ -12,6 +12,7 @@
 			href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
 			rel="stylesheet"
 		/>
+		<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
 		<meta
 			name="description"
 			content="A minimalist blog that uses pure markdown files"
@@ -46,6 +47,16 @@
 		</footer>
 
 		<script>
+			// Initialize Mermaid diagrams
+			document.addEventListener("DOMContentLoaded", function() {
+				mermaid.initialize({
+					startOnLoad: true,
+					theme: window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default',
+					flowchart: { curve: 'basis' },
+					securityLevel: 'loose'
+				});
+			});
+
 			// Add copy buttons to code blocks
 			document.addEventListener("DOMContentLoaded", function () {
 				const codeBlocks = document.querySelectorAll("pre");
