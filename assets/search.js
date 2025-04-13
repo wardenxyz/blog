@@ -10,6 +10,10 @@ const searchInput = document.getElementById("search-input");
 const searchResultsContainer = document.getElementById("search-results");
 const loadingIndicator = document.getElementById("loading-indicator");
 
+// Keyboard navigation variables
+let selectedResultIndex = -1;
+let searchResults = [];
+
 /**
  * Initialize the search functionality
  */
@@ -19,6 +23,9 @@ function initSearch() {
 
 	// Add event listener for the search input
 	searchInput.addEventListener("input", debounce(performSearch, 300));
+
+	// Add keyboard navigation event listeners
+	document.addEventListener("keydown", handleKeyboardNavigation);
 }
 
 /**
@@ -58,10 +65,12 @@ function performSearch() {
 
 	if (query.length < 2) {
 		searchResultsContainer.innerHTML = "";
+		selectedResultIndex = -1;
+		searchResults = [];
 		return;
 	}
 
-	const results = searchIndex.filter((post) => {
+	searchResults = searchIndex.filter((post) => {
 		// Search in title, content, tags, category
 		return (
 			post.title.toLowerCase().includes(query) ||
@@ -76,7 +85,9 @@ function performSearch() {
 		);
 	});
 
-	displayResults(results, query);
+	displayResults(searchResults, query);
+	// Reset selected item when search results change
+	selectedResultIndex = -1;
 }
 
 /**
@@ -94,7 +105,7 @@ function displayResults(results, query) {
 
 	let html = "";
 
-	results.forEach((post) => {
+	results.forEach((post, index) => {
 		// Create snippet by finding context around the matched term
 		let snippet = createSnippet(post.content, query);
 
@@ -129,7 +140,7 @@ function displayResults(results, query) {
 		}
 
 		html += `
-            <div class="search-result-item">
+            <div class="search-result-item" data-index="${index}" tabindex="-1">
                 <div class="search-result-title">
                     <a href="${post.url}">${highlightedTitle}</a>
                 </div>
@@ -144,6 +155,36 @@ function displayResults(results, query) {
 	});
 
 	searchResultsContainer.innerHTML = html;
+
+	// Add click event listeners to the search results
+	addResultClickHandlers();
+}
+
+/**
+ * Add click event handlers to search result items
+ */
+function addResultClickHandlers() {
+	const resultItems = document.querySelectorAll(".search-result-item");
+
+	resultItems.forEach((item) => {
+		// Add click handler to select an item
+		item.addEventListener("mouseover", () => {
+			clearSelectedResult();
+			selectedResultIndex = parseInt(item.getAttribute("data-index"));
+			highlightSelectedResult();
+		});
+
+		// Add click handler to navigate to the result
+		item.addEventListener("click", (e) => {
+			// Don't navigate if they clicked on a link inside the item (like tag links)
+			if (e.target.tagName.toLowerCase() !== "a") {
+				const index = parseInt(item.getAttribute("data-index"));
+				if (index >= 0 && index < searchResults.length) {
+					window.location.href = searchResults[index].url;
+				}
+			}
+		});
+	});
 }
 
 /**
@@ -276,19 +317,159 @@ function focusSearchInput() {
 	}
 }
 
+/**
+ * Handle keyboard navigation for search results
+ */
+function handleKeyboardNavigation(event) {
+	// Only process keyboard navigation when there are search results
+	if (searchResults.length === 0) return;
+
+	// Handle arrow keys regardless of focus
+	switch (event.key) {
+		case "ArrowDown":
+			event.preventDefault();
+			// If no result is currently selected, select the first one
+			if (selectedResultIndex === -1) {
+				selectedResultIndex = 0;
+				highlightSelectedResult();
+				if (document.activeElement === searchInput) {
+					searchInput.blur();
+				}
+			} else {
+				selectNextResult();
+			}
+			break;
+		case "ArrowUp":
+			event.preventDefault();
+			// If no result is currently selected, select the last one
+			if (selectedResultIndex === -1) {
+				selectedResultIndex = searchResults.length - 1;
+				highlightSelectedResult();
+				if (document.activeElement === searchInput) {
+					searchInput.blur();
+				}
+			} else {
+				selectPreviousResult();
+			}
+			break;
+		case "Enter":
+			// Only prevent default and navigate if a result is selected and we're not focused on the search input
+			// or the search input is empty
+			if (
+				selectedResultIndex >= 0 &&
+				(document.activeElement !== searchInput ||
+					searchInput.value.trim() === "")
+			) {
+				event.preventDefault();
+				navigateToSelectedResult();
+			}
+			break;
+		case "Escape":
+			// Clear selection and return focus to search input
+			clearSelectedResult();
+			selectedResultIndex = -1;
+			focusSearchInput();
+			break;
+	}
+}
+
+/**
+ * Select the next search result
+ */
+function selectNextResult() {
+	if (searchResults.length === 0) return;
+
+	// Clear current selection
+	clearSelectedResult();
+
+	// Move to next result or back to first if at end
+	selectedResultIndex = (selectedResultIndex + 1) % searchResults.length;
+
+	// Apply selected styling
+	highlightSelectedResult();
+
+	// Blur search input if it's focused to improve keyboard navigation
+	if (document.activeElement === searchInput) {
+		searchInput.blur();
+	}
+}
+
+/**
+ * Select the previous search result
+ */
+function selectPreviousResult() {
+	if (searchResults.length === 0) return;
+
+	// Clear current selection
+	clearSelectedResult();
+
+	// Move to previous result or to last if at beginning
+	selectedResultIndex =
+		selectedResultIndex <= 0
+			? searchResults.length - 1
+			: selectedResultIndex - 1;
+
+	// Apply selected styling
+	highlightSelectedResult();
+
+	// Blur search input if it's focused to improve keyboard navigation
+	if (document.activeElement === searchInput) {
+		searchInput.blur();
+	}
+}
+
+/**
+ * Navigate to the currently selected search result
+ */
+function navigateToSelectedResult() {
+	if (selectedResultIndex >= 0 && selectedResultIndex < searchResults.length) {
+		const url = searchResults[selectedResultIndex].url;
+		if (url) {
+			window.location.href = url;
+		}
+	}
+}
+
+/**
+ * Clear styling from the current selected result
+ */
+function clearSelectedResult() {
+	const selectedItems = document.querySelectorAll(
+		".search-result-item-selected",
+	);
+	selectedItems.forEach((item) => {
+		item.classList.remove("search-result-item-selected");
+	});
+}
+
+/**
+ * Highlight the currently selected result
+ */
+function highlightSelectedResult() {
+	if (selectedResultIndex >= 0) {
+		const selectedItem = document.querySelector(
+			`.search-result-item[data-index="${selectedResultIndex}"]`,
+		);
+		if (selectedItem) {
+			selectedItem.classList.add("search-result-item-selected");
+			selectedItem.scrollIntoView({ behavior: "smooth", block: "nearest" });
+		}
+	}
+}
+
 // Initialize search when DOM is loaded
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
 	initSearch();
-	
+
 	// If we're on the search page and came from a click on the search nav link,
 	// focus the search input automatically
 	if (document.referrer && document.referrer.includes(window.location.origin)) {
 		focusSearchInput();
 	}
-	
+
 	// Check for URL parameter that indicates we should focus
 	const urlParams = new URLSearchParams(window.location.search);
-	if (urlParams.has('focus') && urlParams.get('focus') === 'true') {
+	if (urlParams.has("focus") && urlParams.get("focus") === "true") {
 		focusSearchInput();
 	}
 });

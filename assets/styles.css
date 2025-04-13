@@ -569,6 +569,35 @@ h6:hover .permalink {
 	font-style: italic;
 }
 
+/* Selected search result for keyboard navigation */
+.search-result-item-selected {
+	outline: 2px solid var(--primary-color);
+	background-color: rgba(30, 136, 229, 0.05);
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+	transform: translateY(-3px);
+}
+
+/* Keyboard navigation help */
+.search-keyboard-help {
+	margin-top: 10px;
+	color: var(--text-light);
+	text-align: center;
+}
+
+kbd {
+	display: inline-block;
+	padding: 3px 5px;
+	font-size: 11px;
+	line-height: 10px;
+	color: var(--text-color);
+	vertical-align: middle;
+	background-color: var(--code-bg);
+	border: 1px solid var(--border-color);
+	border-radius: 3px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+	margin: 0 2px;
+}
+
 /* Animation effects */
 @keyframes fadeIn {
 	from {

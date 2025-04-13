@@ -325,6 +325,9 @@ def generate_search_page(template):
     <div class="search-container">
         <input type="text" id="search-input" class="search-input" placeholder="请输入搜索内容..." aria-label="搜索">
         <div id="loading-indicator" style="display: none; text-align: center; margin: 20px 0;">正在加载搜索数据...</div>
+        <div class="search-keyboard-help">
+            <small>键盘导航: 使用 <kbd>↑</kbd> <kbd>↓</kbd> 键选择结果, <kbd>Enter</kbd> 打开选中结果, <kbd>Esc</kbd> 返回搜索框</small>
+        </div>
     </div>
     <div id="search-results" class="search-results"></div>
     <script src="/assets/search.js"></script>
