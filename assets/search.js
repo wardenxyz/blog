@@ -269,5 +269,26 @@ function debounce(func, wait) {
 	};
 }
 
+// Function to focus the search input
+function focusSearchInput() {
+	if (searchInput) {
+		searchInput.focus();
+	}
+}
+
 // Initialize search when DOM is loaded
-document.addEventListener("DOMContentLoaded", initSearch);
+document.addEventListener("DOMContentLoaded", function() {
+	initSearch();
+	
+	// If we're on the search page and came from a click on the search nav link,
+	// focus the search input automatically
+	if (document.referrer && document.referrer.includes(window.location.origin)) {
+		focusSearchInput();
+	}
+	
+	// Check for URL parameter that indicates we should focus
+	const urlParams = new URLSearchParams(window.location.search);
+	if (urlParams.has('focus') && urlParams.get('focus') === 'true') {
+		focusSearchInput();
+	}
+});
