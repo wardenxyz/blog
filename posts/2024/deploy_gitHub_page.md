@@ -15,7 +15,7 @@ ssh-keygen -t ed25519 -C "your_email@example.com" -f ./id_rsa
 
 其中 `id_rsa` 是私钥，`id_rsa.pub` 是公钥
 
-## 私钥放在 SSG 配置所在仓库
+## 私钥放在 markdown 帖子所在仓库
 
 settings ——> Secrets and variables ——> Actions ——> New repository secret 添加 SSH 私钥，名称是：
 
