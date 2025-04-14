@@ -68,6 +68,7 @@
 
 ## git
 
+- 2025-04-14 [回滚提交](<posts/2025/Rollback-commit.md>)
 - 2024-12-01 [Pull Request 的步骤](<posts/2024/pull_request_steps.md>)
 - 2024-10-16 [git 重置当前分支](<posts/2024/git_reset.md>)
 - 2024-10-01 [git-sizer 学习笔记](<posts/2024/git-izer_note.md>)

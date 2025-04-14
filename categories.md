@@ -10,6 +10,7 @@
 
 ## 计算机
 
+- 2025-04-14 [回滚提交](<posts/2025/Rollback-commit.md>)
 - 2025-04-12 [使用 Python 生成静态网页](<posts/2025/use_python_gen_site.md>)
 - 2025-04-10 [安装 WSL2 并迁移到 D 盘](<posts/2025/install_wsl2_and_to_d_disk.md>)
 - 2025-03-21 [在 zed 上配置 typstyle](<posts/2025/zed_use_typstyle.md>)
