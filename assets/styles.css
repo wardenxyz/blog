@@ -11,6 +11,8 @@
 	--nav-bg: #2c3e50;
 	--nav-text: #ffffff;
 	--code-bg: #f6f8fa;
+	--highlight-bg: #fff176;
+	/* --highlight-shadow: rgba(255, 214, 0, 0.5); */
 }
 
 /* Basic styling */
@@ -362,7 +364,7 @@ pre code {
 	color: var(--text-color);
 }
 
-.copy-button:hover {
+copy-button:hover {
 	background-color: var(--primary-color);
 	color: white;
 }
@@ -669,6 +671,8 @@ kbd {
 		--border-color: #333333;
 		--nav-bg: #1a2633;
 		--code-bg: #2d2d2d;
+		--highlight-bg: #fdd835;
+		--highlight-shadow: rgba(255, 214, 0, 0.3);
 	}
 
 	pre {
@@ -700,4 +704,62 @@ kbd {
 	mjx-container {
 		color: #e0e0e0;
 	}
+}
+
+/* Search highlight styles for post pages */
+mark.search-highlight {
+    background-color: var(--highlight-bg);
+    padding: 2px 3px;
+    border-radius: 3px;
+    box-shadow: 0 0 8px var(--highlight-shadow);
+}
+
+/* Animation for the first search highlight */
+@keyframes highlightFlash {
+    0% { background-color: var(--highlight-bg); box-shadow: 0 0 15px var(--highlight-shadow); }
+    50% { background-color: #ffd600; box-shadow: 0 0 25px var(--highlight-shadow); }
+    100% { background-color: var(--highlight-bg); box-shadow: 0 0 15px var(--highlight-shadow); }
+}
+
+mark.search-highlight.highlight-flash {
+    animation: highlightFlash 1.5s ease-in-out 2;
+}
+
+/* Back to search button */
+#back-to-search {
+    position: fixed;
+    bottom: 70px;
+    left: 100px;
+    padding: 10px 15px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+#back-to-search:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+#back-to-search svg {
+    width: 16px;
+    height: 16px;
+}
+
+@media (max-width: 768px) {
+    #back-to-search {
+        bottom: 20px;
+        padding: 8px 12px;
+        font-size: 12px;
+    }
 }

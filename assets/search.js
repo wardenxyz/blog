@@ -139,10 +139,13 @@ function displayResults(results, query) {
 			}
 		}
 
+		// Add search query parameter to post URL
+		const postUrl = post.url + (post.url.includes('?') ? '&' : '?') + 'highlight=' + encodeURIComponent(query);
+
 		html += `
             <div class="search-result-item" data-index="${index}" tabindex="-1">
                 <div class="search-result-title">
-                    <a href="${post.url}">${highlightedTitle}</a>
+                    <a href="${postUrl}">${highlightedTitle}</a>
                 </div>
                 <div class="search-result-meta">
                     ${dateHtml}
@@ -180,7 +183,10 @@ function addResultClickHandlers() {
 			if (e.target.tagName.toLowerCase() !== "a") {
 				const index = parseInt(item.getAttribute("data-index"));
 				if (index >= 0 && index < searchResults.length) {
-					window.location.href = searchResults[index].url;
+					// Add search query parameter to URL
+					const query = searchInput.value.trim().toLowerCase();
+					const url = searchResults[index].url;
+					window.location.href = url + (url.includes('?') ? '&' : '?') + 'highlight=' + encodeURIComponent(query);
 				}
 			}
 		});
@@ -425,7 +431,9 @@ function navigateToSelectedResult() {
 	if (selectedResultIndex >= 0 && selectedResultIndex < searchResults.length) {
 		const url = searchResults[selectedResultIndex].url;
 		if (url) {
-			window.location.href = url;
+			// Add search query parameter to URL
+			const query = searchInput.value.trim().toLowerCase();
+			window.location.href = url + (url.includes('?') ? '&' : '?') + 'highlight=' + encodeURIComponent(query);
 		}
 	}
 }
