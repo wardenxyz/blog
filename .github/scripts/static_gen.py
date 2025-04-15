@@ -59,8 +59,20 @@ def parse_markdown_file(file_path):
         content_text
     )
 
-    # Protect inline code blocks before math expressions
-    # Store all inline code blocks temporarily and replace with placeholders
+    # 1. 先保护大代码块（三个反引号包裹的代码）
+    code_blocks = []
+    
+    # Capture code blocks (```...```)
+    def code_block_replace(match):
+        lang = match.group(1).strip() if match.group(1) else ''
+        code_content = match.group(2)
+        code_blocks.append((lang, code_content))
+        return f"CODE_BLOCK_PLACEHOLDER_{len(code_blocks) - 1}_"
+    
+    # 使用非贪婪匹配来避免匹配过多内容
+    content_text = re.sub(r'```([^\n]*)\n([\s\S]*?)```', code_block_replace, content_text)
+
+    # 2. 然后处理行内代码（单个反引号）
     inline_code = []
     
     # Capture inline code expressions (`...`)
@@ -71,7 +83,7 @@ def parse_markdown_file(file_path):
     # 使用负向前视和负向后视断言确保不会匹配位于代码块内的反引号
     content_text = re.sub(r'(?<!`)`([^`]+?)`(?!`)', inline_code_replace, content_text)
 
-    # Protect math expressions before markdown conversion
+    # 3. 最后保护数学表达式
     # Store all math expressions temporarily and replace with placeholders
     inline_math = []
     display_math = []
@@ -102,13 +114,22 @@ def parse_markdown_file(file_path):
         ]
     )
 
-    # 先恢复行内代码
+    # 1. 首先恢复代码块
+    for i, (lang, code) in enumerate(code_blocks):
+        code_html = f'<pre><code class="language-{lang}">{code}</code></pre>' if lang else f'<pre><code>{code}</code></pre>'
+        html_content = html_content.replace(
+            f"CODE_BLOCK_PLACEHOLDER_{i}_",
+            code_html
+        )
+
+    # 2. 再恢复行内代码
     for i, code in enumerate(inline_code):
         html_content = html_content.replace(
             f"INLINE_CODE_PLACEHOLDER_{i}_",
             f"<code>{code}</code>"
         )
 
+    # 3. 最后恢复数学表达式
     # Restore inline math expressions
     for i, math in enumerate(inline_math):
         html_content = html_content.replace(
