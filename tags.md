@@ -144,10 +144,6 @@
 
 - 2024-04-08 [手机QQ文件存储路径](<posts/2024/android_QQ_file_storage_path.md>)
 
-## 正则表达式
-
-- 2024-04-08 [正则表达式教程](<posts/2024/regex_note.md>)
-
 ## 浏览器
 
 - 2024-04-08 [浏览器UA值](<posts/2024/browser_UA_value.md>)

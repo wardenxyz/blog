@@ -78,7 +78,6 @@
 - 2024-04-08 [vim 学习笔记](<posts/2024/vim_note.md>)
 - 2024-04-08 [git 命令手册](<posts/2024/git_Cli.md>)
 - 2024-04-08 [GPG 在通信中的简单理解](<posts/2024/gpg_communication.md>)
-- 2024-04-08 [正则表达式教程](<posts/2024/regex_note.md>)
 - 2024-04-08 [手机QQ文件存储路径](<posts/2024/android_QQ_file_storage_path.md>)
 - 2024-04-08 [现代加密学](<posts/2024/modern_cryptography.md>)
 - 2024-04-08 [彻底从 git 提交中移除文件](<posts/2024/remove_file_from_git_history.md>)
