@@ -59,6 +59,18 @@ def parse_markdown_file(file_path):
         content_text
     )
 
+    # Protect inline code blocks before math expressions
+    # Store all inline code blocks temporarily and replace with placeholders
+    inline_code = []
+    
+    # Capture inline code expressions (`...`)
+    def inline_code_replace(match):
+        inline_code.append(match.group(1))
+        return f"INLINE_CODE_PLACEHOLDER_{len(inline_code) - 1}_"
+    
+    # 使用负向前视和负向后视断言确保不会匹配位于代码块内的反引号
+    content_text = re.sub(r'(?<!`)`([^`]+?)`(?!`)', inline_code_replace, content_text)
+
     # Protect math expressions before markdown conversion
     # Store all math expressions temporarily and replace with placeholders
     inline_math = []
@@ -89,6 +101,13 @@ def parse_markdown_file(file_path):
             'sane_lists'
         ]
     )
+
+    # 先恢复行内代码
+    for i, code in enumerate(inline_code):
+        html_content = html_content.replace(
+            f"INLINE_CODE_PLACEHOLDER_{i}_",
+            f"<code>{code}</code>"
+        )
 
     # Restore inline math expressions
     for i, math in enumerate(inline_math):
