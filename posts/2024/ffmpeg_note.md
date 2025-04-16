@@ -324,34 +324,44 @@ ffmpeg -i "your_video" -i "your_audio" -c:a aac -strict experimental "your_video
 在使用 `ffmpeg` 进行视频处理时，有时需要降低视频的画质以减小文件大小或适应特定的网络传输需求。以下是一些常用的 `ffmpeg` 命令来降低视频画质：
 
 1. **调整视频比特率（Bitrate）**：
-   ```bash
-   ffmpeg -i input.mp4 -b:v 1000k output.mp4
-   ```
-   这条命令将视频的比特率设置为 1000 kbps，从而降低视频的画质。比特率越低，画质越差。
+
+```bash
+ffmpeg -i input.mp4 -b:v 1000k output.mp4
+```
+
+这条命令将视频的比特率设置为 1000 kbps，从而降低视频的画质。比特率越低，画质越差。
 
 2. **使用 CRF（Constant Rate Factor）**：
-   ```bash
-   ffmpeg -i input.mp4 -c:v libx264 -crf 28 output.mp4
-   ```
-   CRF 是 x264 和 x265 编码器的一个参数，用于控制输出视频的质量。CRF 值越大，视频质量越低。默认值通常是 23，范围是 0-51。
+
+```bash
+ffmpeg -i input.mp4 -c:v libx264 -crf 28 output.mp4
+```
+
+CRF 是 x264 和 x265 编码器的一个参数，用于控制输出视频的质量。CRF 值越大，视频质量越低。默认值通常是 23，范围是 0-51。
 
 3. **调整分辨率**：
-   ```bash
-   ffmpeg -i input.mp4 -vf "scale=1280:720" output.mp4
-   ```
-   这条命令将视频的分辨率调整为 1280x720，从而降低画质。分辨率越低，画质越差。
+
+```bash
+ffmpeg -i input.mp4 -vf "scale=1280:720" output.mp4
+```
+
+这条命令将视频的分辨率调整为 1280x720，从而降低画质。分辨率越低，画质越差。
 
 4. **同时调整比特率和分辨率**：
-   ```bash
-   ffmpeg -i input.mp4 -b:v 800k -vf "scale=640:360" output.mp4
-   ```
-   这条命令同时降低了视频的比特率和分辨率，进一步降低了画质。
+
+```bash
+ffmpeg -i input.mp4 -b:v 800k -vf "scale=640:360" output.mp4
+```
+
+这条命令同时降低了视频的比特率和分辨率，进一步降低了画质。
 
 5. **使用预设（Preset）**：
-   ```bash
-   ffmpeg -i input.mp4 -c:v libx264 -preset veryslow -crf 28 output.mp4
-   ```
-   预设参数控制编码速度和输出质量之间的平衡。`veryslow` 预设会花费更多时间进行编码，但通常能产生更好的压缩效果和更低的文件大小。其他预设有 `ultrafast`, `superfast`, `fast`, `medium`, `slow`, `slower` 等。
+
+```bash
+ffmpeg -i input.mp4 -c:v libx264 -preset veryslow -crf 28 output.mp4
+```
+
+预设参数控制编码速度和输出质量之间的平衡。`veryslow` 预设会花费更多时间进行编码，但通常能产生更好的压缩效果和更低的文件大小。其他预设有 `ultrafast`, `superfast`, `fast`, `medium`, `slow`, `slower` 等。
 
 ## 查看视频清晰度
 

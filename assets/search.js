@@ -140,7 +140,11 @@ function displayResults(results, query) {
 		}
 
 		// Add search query parameter to post URL
-		const postUrl = post.url + (post.url.includes('?') ? '&' : '?') + 'highlight=' + encodeURIComponent(query);
+		const postUrl =
+			post.url +
+			(post.url.includes("?") ? "&" : "?") +
+			"highlight=" +
+			encodeURIComponent(query);
 
 		html += `
             <div class="search-result-item" data-index="${index}" tabindex="-1">
@@ -186,7 +190,11 @@ function addResultClickHandlers() {
 					// Add search query parameter to URL
 					const query = searchInput.value.trim().toLowerCase();
 					const url = searchResults[index].url;
-					window.location.href = url + (url.includes('?') ? '&' : '?') + 'highlight=' + encodeURIComponent(query);
+					window.location.href =
+						url +
+						(url.includes("?") ? "&" : "?") +
+						"highlight=" +
+						encodeURIComponent(query);
 				}
 			}
 		});
@@ -433,7 +441,11 @@ function navigateToSelectedResult() {
 		if (url) {
 			// Add search query parameter to URL
 			const query = searchInput.value.trim().toLowerCase();
-			window.location.href = url + (url.includes('?') ? '&' : '?') + 'highlight=' + encodeURIComponent(query);
+			window.location.href =
+				url +
+				(url.includes("?") ? "&" : "?") +
+				"highlight=" +
+				encodeURIComponent(query);
 		}
 	}
 }
