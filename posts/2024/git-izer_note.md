@@ -156,32 +156,43 @@ Processing references: 2
 ## 具体优化建议：
 
 1. 使用 Git LFS:
-   - 对于大文件（如 PDF、图像、视频等），可以使用 Git LFS 来存储它们。这样可以减少仓库的大小，提高性能。
-   - 安装 Git LFS 并跟踪大文件：
-     ```bash
-     git lfs install
-     git lfs track "*.pdf"
-     git add .gitattributes
-     git commit -m "Track PDF files with Git LFS"
-     ```
+
+- 对于大文件（如 PDF、图像、视频等），可以使用 Git LFS 来存储它们。这样可以减少仓库的大小，提高性能。
+
+- 安装 Git LFS 并跟踪大文件：
+
+```bash
+git lfs install
+git lfs track "*.pdf"
+git add .gitattributes
+git commit -m "Track PDF files with Git LFS"
+```
 
 2. 移除不必要的文件:
-   - 检查仓库中的大文件和不必要的文件，考虑将它们移到外部存储或删除。
-   - 使用以下命令查找大文件：
-     ```bash
-     git rev-list --objects --all | sort -k 2 > allfileshas.txt
-     git gc && git verify-pack -v .git/objects/pack/pack-*.idx | sort -k 3 -n | tail -40
-     ```
+
+- 检查仓库中的大文件和不必要的文件，考虑将它们移到外部存储或删除。
+
+- 使用以下命令查找大文件：
+
+```bash
+git rev-list --objects --all | sort -k 2 > allfileshas.txt
+git gc && git verify-pack -v .git/objects/pack/pack-*.idx | sort -k 3 -n | tail -40
+```
 
 3. 简化提交历史:
-   - 使用 `git rebase` 或 `git filter-branch` 来简化提交历史，减少不必要的提交。
-   - 例如，使用 `git rebase` 合并提交：
-     ```bash
-     git rebase -i HEAD~n  ## n 是你想要合并的提交数量
-     ```
+
+- 使用 `git rebase` 或 `git filter-branch` 来简化提交历史，减少不必要的提交。
+
+- 例如，使用 `git rebase` 合并提交：
+
+```bash
+git rebase -i HEAD~n  ## n 是你想要合并的提交数量
+```
 
 4. 优化目录结构:
-   - 检查目录结构，看看是否可以简化或减少文件数量。
-   - 例如，将相关文件合并到一个目录中，减少目录层级。
+
+- 检查目录结构，看看是否可以简化或减少文件数量。
+
+- 例如，将相关文件合并到一个目录中，减少目录层级。
 
 通过这些优化措施，你可以减少仓库的大小，提高操作性能。

@@ -321,15 +321,15 @@ ps aux | grep example
 
 1. 首先，你需要知道你想要停止的进程的 PID。你可以使用 `ps` 命令来查看所有正在运行的进程和它们的 PID。例如，如果你想查看所有名为 `example` 的进程，你可以输入以下命令：
 
-   ```bash
-   ps aux | grep example
-   ```
+```bash
+ps aux | grep example
+```
 
 2. 然后，你可以使用 `kill` 命令来停止进程。例如，如果你想停止 PID 为 1234 的进程，你可以输入以下命令：
 
-   ```bash
-   kill 1234
-   ```
+```bash
+kill 1234
+```
 
 请注意，你需要替换 1234 为你想要停止的进程的 PID。你可能需要输入你的密码，因为 `kill` 命令可能需要管理员权限。
 
@@ -347,21 +347,21 @@ kill -9 1234
 
 1. 立即关机：
 
-   ```bash
-   sudo shutdown now
-   ```
+```bash
+sudo shutdown now
+```
 
 2. 在特定的时间关机，例如在 10 分钟后：
 
-   ```bash
-   sudo shutdown +10
-   ```
+```bash
+sudo shutdown +10
+```
 
 3. 在特定的时刻关机，例如在今天的 23:00：
 
-   ```bash
-   sudo shutdown 23:00
-   ```
+```bash
+sudo shutdown 23:00
+```
 
 请注意，`shutdown` 命令需要管理员权限，所以你需要使用 `sudo` 命令。
 
@@ -379,21 +379,21 @@ sudo poweroff
 
 1. 立即重启：
 
-   ```bash
-   sudo reboot
-   ```
+```bash
+sudo reboot
+```
 
 2. 在特定的时间重启，例如在 10 分钟后：
 
-   ```bash
-   sudo reboot +10
-   ```
+```bash
+sudo reboot +10
+```
 
 3. 在特定的时刻重启，例如在今天的 23:00：
 
-   ```bash
-   sudo reboot 23:00
-   ```
+```bash
+sudo reboot 23:00
+```
 
 请注意，`reboot` 命令需要管理员权限，所以你需要使用 `sudo` 命令。
 
@@ -404,21 +404,21 @@ sudo poweroff
 
 1. 立即显示当前时间：
 
-   ```bash
-   date
-   ```
+```bash
+date
+```
 
 2. 设置系统时间为当前时间加 1 小时：
 
-   ```bash
-   date -s "1 hour ago"
-   ```
+```bash
+date -s "1 hour ago"
+```
 
 3. 设置系统时间为指定的时间，例如 2022-01-01 00:00:00：
 
-   ```bash
-   date -s "2022-01-01 00:00:00"
-   ```
+```bash
+date -s "2022-01-01 00:00:00"
+```
 
 请注意，`date` 命令需要管理员权限，所以你需要使用 `sudo` 命令。
 
@@ -428,21 +428,21 @@ sudo poweroff
 
 1. 立即显示 `top` 命令的输出：
 
-   ```bash
-   top
-   ```
+```bash
+top
+```
 
 2. 每秒更新一次 `top` 命令的输出：
 
-   ```bash
-   top -d 1
-   ```
+```bash
+top -d 1
+```
 
 3. 显示每个进程的详细信息：
 
-   ```bash
-   top -o %MEM
-   ```
+```bash
+top -o %MEM
+```
 
 请注意，`top` 命令会持续显示系统资源的使用情况，直到你按下 `q` 键退出。
 
@@ -450,19 +450,19 @@ sudo poweroff
 
 1. 压缩一个文件夹：
 
-    ```bash
-    tar -czf archive.tar.gz /path/to/your/directory
-    ```
+```bash
+tar -czf archive.tar.gz /path/to/your/directory
+```
 
-    这个命令会将 `/path/to/your/directory` 文件夹压缩成一个 `archive.tar.gz` 文件。
+ 这个命令会将 `/path/to/your/directory` 文件夹压缩成一个 `archive.tar.gz` 文件。
 
 2. 压缩多个文件：
 
-    ```bash
-    tar -czf archive.tar.gz /path/to/file1 /path/to/file2
-    ```
+```bash
+tar -czf archive.tar.gz /path/to/file1 /path/to/file2
+```
 
-    这个命令会将 `/path/to/file1` 和 `/path/to/file2` 压缩成一个 `archive.tar.gz` 文件。
+ 这个命令会将 `/path/to/file1` 和 `/path/to/file2` 压缩成一个 `archive.tar.gz` 文件。
 
 在这些命令中，`-czf` 是 `tar` 命令的选项：
 
@@ -476,31 +476,31 @@ sudo poweroff
 
 1. **gzip**：这是一个常用的压缩工具，它使用GZIP算法。你可以使用`gzip filename`来压缩一个文件，使用`gunzip filename.gz`来解压缩一个文件。
 
-   ```bash
-   gzip filename
-   gunzip filename.gz
-   ```
+```bash
+gzip filename
+gunzip filename.gz
+```
 
 2. **bzip2**：这是另一个压缩工具，它使用BZIP2算法，通常可以提供比GZIP更好的压缩率。你可以使用`bzip2 filename`来压缩一个文件，使用`bunzip2 filename.bz2`来解压缩一个文件。
 
-   ```bash
-   bzip2 filename
-   bunzip2 filename.bz2
-   ```
+```bash
+bzip2 filename
+bunzip2 filename.bz2
+```
 
 3. **zip/unzip**：这是一对用来创建和解压缩ZIP文件的命令。你可以使用`zip archive.zip filename`来创建一个ZIP文件，使用`unzip archive.zip`来解压缩一个ZIP文件。
 
-   ```bash
-   zip archive.zip filename
-   unzip archive.zip
-   ```
+```bash
+zip archive.zip filename
+unzip archive.zip
+```
 
 4. **tar**：这是一个用来创建和解压缩tar文件的命令。虽然tar本身不提供压缩功能，但是它可以与gzip或bzip2等压缩工具一起使用。你可以使用`tar czf archive.tar.gz filename`来创建一个GZIP压缩的tar文件，使用`tar xzf archive.tar.gz`来解压缩一个tar文件。
 
-   ```bash
-   tar czf archive.tar.gz filename
-   tar xzf archive.tar.gz
-   ```
+```bash
+tar czf archive.tar.gz filename
+tar xzf archive.tar.gz
+```
 
 这些只是一些基本的压缩命令，实际上每个命令都有许多选项和参数可以用来调整它的行为。你可以使用`man`命令来查看每个命令的详细信息，例如`man gzip`。
 
@@ -532,9 +532,9 @@ dpkg -l | grep vim
 
 2. 然后，你可以使用 `apt remove` 命令来卸载软件。例如，如果你想卸载一个名为 `example` 的软件包，你可以输入以下命令：
 
-   ```bash
-   sudo apt remove example
-   ```
+```bash
+sudo apt remove example
+```
 
 请注意，你需要替换 `example` 为你想要卸载的软件包的名称。你可能需要输入你的密码，因为 `sudo` 命令需要管理员权限。
 
@@ -552,27 +552,27 @@ sudo apt purge example
 
 - 在使用 `apt` 的系统（如 Ubuntu、Debian）中，你可以使用以下命令：
 
-    ```bash
-    dpkg --get-selections
-    ```
+```bash
+dpkg --get-selections
+```
 
 - 在使用 `yum` 的系统（如 CentOS、RHEL）中，你可以使用以下命令：
 
-    ```bash
-    yum list installed
-    ```
+```bash
+yum list installed
+```
 
 - 在使用 `dnf` 的系统（如 Fedora）中，你可以使用以下命令：
 
-    ```bash
-    dnf list installed
-    ```
+```bash
+dnf list installed
+```
 
 - 在使用 `pacman` 的系统（如 Arch Linux）中，你可以使用以下命令：
 
-    ```bash
-    pacman -Q
-    ```
+```bash
+pacman -Q
+```
 
 这些命令会列出你的系统中已安装的所有软件包。如果你只想查找特定的软件包，你可以将这些命令的输出通过 `grep` 命令进行过滤。例如，以下命令会查找所有包含 `python` 的软件包：
 
@@ -669,29 +669,44 @@ Change: 2024-02-14 11:22:43.321543138 +0800
 
 ## 文件命令
 1. **查看文件内容**:
-   - `cat file.txt`: 显示整个文件的内容。
-   - `less file.txt` 或 `more file.txt`: 分页查看文件内容，`less`允许向前向后翻页，而`more`只能向前翻页。
-   - `head -n 5 file.txt`: 显示文件的前5行。
-   - `tail -n 5 file.txt`: 显示文件的最后5行。
-   - `grep 'pattern' file.txt`: 在文件中搜索包含特定模式（pattern）的行。
+
+- `cat file.txt`: 显示整个文件的内容。
+
+- `less file.txt` 或 `more file.txt`: 分页查看文件内容，`less`允许向前向后翻页，而`more`只能向前翻页。
+
+- `head -n 5 file.txt`: 显示文件的前5行。
+
+- `tail -n 5 file.txt`: 显示文件的最后5行。
+
+- `grep 'pattern' file.txt`: 在文件中搜索包含特定模式（pattern）的行。
 
 2. **编辑文件**:
-   - `vim file.txt` 或 `vi file.txt`: 使用Vim文本编辑器打开文件进行编辑。Vim是一个功能强大的编辑器，提供多种模式进行文本编辑。
-   - `nano file.txt`: 使用Nano编辑器，它是一个较为简单直观的文本编辑器，适合初学者。
+
+- `vim file.txt` 或 `vi file.txt`: 使用Vim文本编辑器打开文件进行编辑。Vim是一个功能强大的编辑器，提供多种模式进行文本编辑。
+
+- `nano file.txt`: 使用Nano编辑器，它是一个较为简单直观的文本编辑器，适合初学者。
 
 3. **文件内容处理**:
-   - `sed`: 流编辑器，可以对文本文件进行查找、替换等操作。例如，`sed 's/old/new/g' file.txt` 将文件中所有`old`替换为`new`。
-   - `awk`: 强大的文本分析工具，可以用来格式化文本、提取字段等。例如，`awk '{print $1}' file.txt` 打印每行的第一个字段。
+
+- `sed`: 流编辑器，可以对文本文件进行查找、替换等操作。例如，`sed 's/old/new/g' file.txt` 将文件中所有`old`替换为`new`。
+
+- `awk`: 强大的文本分析工具，可以用来格式化文本、提取字段等。例如，`awk '{print $1}' file.txt` 打印每行的第一个字段。
 
 4. **文件状态和操作**:
-   - `wc file.txt`: 统计文件的行数、单词数和字节数。
-   - `mv old.txt new.txt`: 重命名或移动文件。
-   - `cp file.txt destination`: 复制文件到指定位置。
-   - `rm file.txt`: 删除文件。
+
+- `wc file.txt`: 统计文件的行数、单词数和字节数。
+
+- `mv old.txt new.txt`: 重命名或移动文件。
+
+- `cp file.txt destination`: 复制文件到指定位置。
+
+- `rm file.txt`: 删除文件。
 
 5. **文件权限与所有权管理**:
-   - `chmod`: 修改文件权限，如 `chmod 755 file.txt` 设置文件可执行权限。
-   - `chown`: 改变文件的所有者，如 `chown user:group file.txt`。
+
+- `chmod`: 修改文件权限，如 `chmod 755 file.txt` 设置文件可执行权限。
+
+- `chown`: 改变文件的所有者，如 `chown user:group file.txt`。
 
 ## 重置服务器密码
 
@@ -704,7 +719,9 @@ sudo passwd username
 在这个命令中：
 
 - `sudo`是一个命令，用于以超级用户的权限运行命令。更改用户的密码通常需要超级用户的权限。
+
 - `passwd`是一个命令，用于更改用户的密码。
+
 - `username`是你要更改密码的用户的用户名。你应该将它替换为实际的用户名。
 
 运行这个命令后，你会被提示输入新的密码。你应该输入一个强密码，然后确认。
