@@ -169,7 +169,7 @@ def generate_post_page(post_path, output_path, template):
     tags_html = ''
     if tags:
         tags_html = '<div class="tags">标签: '
-        tags_html += ', '.join(f'<a href="/tags.html#{tag}">{tag}</a>' for tag in tags)
+        tags_html += ', '.join(f'<a href="/tags/#{tag}">{tag}</a>' for tag in tags)
         tags_html += '</div>'
     html_output = html_output.replace('{{tags}}', tags_html)
 
@@ -178,10 +178,10 @@ def generate_post_page(post_path, output_path, template):
     if category:
         if isinstance(category, list):
             category_html = '<div class="category">分类: '
-            category_html += ', '.join(f'<a href="/categories.html#{cat}">{cat}</a>' for cat in category)
+            category_html += ', '.join(f'<a href="/categories/#{cat}">{cat}</a>' for cat in category)
             category_html += '</div>'
         else:
-            category_html = f'<div class="category">分类: <a href="/categories.html#{category}">{category}</a></div>'
+            category_html = f'<div class="category">分类: <a href="/categories/#{category}">{category}</a></div>'
     html_output = html_output.replace('{{category}}', category_html)
 
     # Ensure output directory exists
@@ -294,8 +294,10 @@ def generate_tag_page(posts_data, template):
     html_output = html_output.replace('{{tags}}', '')
     html_output = html_output.replace('{{category}}', '')
 
-    # Write HTML to file
-    with open(OUTPUT_DIR / 'tags.html', 'w', encoding='utf-8') as file:
+    # Write HTML to directory index.html
+    output_dir = OUTPUT_DIR / 'tags'
+    os.makedirs(output_dir, exist_ok=True)
+    with open(output_dir / 'index.html', 'w', encoding='utf-8') as file:
         file.write(html_output)
 
 def generate_category_page(posts_data, template):
@@ -353,8 +355,10 @@ def generate_category_page(posts_data, template):
     html_output = html_output.replace('{{tags}}', '')
     html_output = html_output.replace('{{category}}', '')
 
-    # Write HTML to file
-    with open(OUTPUT_DIR / 'categories.html', 'w', encoding='utf-8') as file:
+    # Write HTML to directory index.html
+    output_dir = OUTPUT_DIR / 'categories'
+    os.makedirs(output_dir, exist_ok=True)
+    with open(output_dir / 'index.html', 'w', encoding='utf-8') as file:
         file.write(html_output)
 
 def generate_search_page(template):
@@ -380,8 +384,10 @@ def generate_search_page(template):
     html_output = html_output.replace('{{tags}}', '')
     html_output = html_output.replace('{{category}}', '')
 
-    # Write HTML to file
-    with open(OUTPUT_DIR / 'search.html', 'w', encoding='utf-8') as file:
+    # Write HTML to directory index.html
+    output_dir = OUTPUT_DIR / 'search'
+    os.makedirs(output_dir, exist_ok=True)
+    with open(output_dir / 'index.html', 'w', encoding='utf-8') as file:
         file.write(html_output)
 
 def generate_search_index(posts_data):
@@ -456,18 +462,18 @@ def generate_readme_index_page(template):
     # Convert relative links like [title](posts/2024/file.md) to [title](/posts/2024/file.html)
     html_content = re.sub(
         r'href="posts/(\d{4})/([^"]+)\.md"',
-        r'href="/posts/\1/\2.html"',
+        r'href="/posts/\1/\2"',
         html_content
     )
     html_content = re.sub(
         r'href=\'posts/(\d{4})/([^\']+)\.md\'',
-        r'href="/posts/\1/\2.html"',
+        r'href="/posts/\1/\2"',
         html_content
     )
 
     # Fix category and tags links
-    html_content = re.sub(r'href="categories\.md"', r'href="/categories.html"', html_content)
-    html_content = re.sub(r'href="tags\.md"', r'href="/tags.html"', html_content)
+    html_content = re.sub(r'href="categories\.md"', r'href="/categories"', html_content)
+    html_content = re.sub(r'href="tags\.md"', r'href="/tags"', html_content)
 
     # Replace placeholders in the template
     html_output = template.replace('{{title}}', SITE_TITLE)
@@ -515,14 +521,17 @@ def main():
                     tags = front_matter.get('tags', [])
                     category = front_matter.get('category', [])
 
-                    # Compute relative URL
+                    # Compute slug and clean URL
                     rel_path = post_file.relative_to(SOURCE_DIR)
-                    url = f"/{rel_path.with_suffix('.html')}"
+                    slug = post_file.stem
+                    parent = rel_path.parent
+                    url = f"/{parent}/{slug}"
 
-                    # Compute output path
-                    output_path = OUTPUT_DIR / rel_path.with_suffix('.html')
+                    # Compute output path as <output>/<parent>/<slug>/index.html
+                    output_dir = OUTPUT_DIR / parent / slug
+                    output_path = output_dir / 'index.html'
 
-                    # Generate HTML
+                    # Generate HTML (内部会创建目录)
                     post_html_content = generate_post_page(post_file, output_path, template)
 
                     # Add to posts data
