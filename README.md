@@ -82,7 +82,7 @@
 - 2024-04-08 [手机QQ文件存储路径](<posts/2024/android_QQ_file_storage_path.md>)
 - 2024-04-08 [现代加密学](<posts/2024/modern_cryptography.md>)
 - 2024-04-08 [彻底从 git 提交中移除文件](<posts/2024/remove_file_from_git_history.md>)
-- 2024-04-08 [vscode](<posts/2024/vscode_note.md>)
+- 2024-04-08 [VSCode 高效使用指南](<posts/2024/vscode_note.md>)
 - 2024-04-08 [LaTeX 与希腊字母对照表](<posts/2024/LaTeX_note.md>)
 - 2024-04-08 [神秘博士复活时间表](<posts/2024/former_doctor_who.md>)
 - 2024-04-08 [浏览器UA值](<posts/2024/browser_UA_value.md>)

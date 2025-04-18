@@ -126,7 +126,7 @@
 ## vscode
 
 - 2024-05-01 [vscode snippets 预置变量](<posts/2024/vscode_snippets_variable.md>)
-- 2024-04-08 [vscode](<posts/2024/vscode_note.md>)
+- 2024-04-08 [VSCode 高效使用指南](<posts/2024/vscode_note.md>)
 
 ## zed
 
