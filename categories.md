@@ -41,7 +41,7 @@
 - 2024-06-01 [git commit message 规范](<posts/2024/git_commit_message_standard.md>)
 - 2024-06-01 [README 文档结构](<posts/2024/README_outline.md>)
 - 2024-05-01 [vscode snippets 预置变量](<posts/2024/vscode_snippets_variable.md>)
-- 2024-04-08 [vim 学习笔记](<posts/2024/vim_note.md>)
+- 2024-04-08 [Vim 高效速查笔记](<posts/2024/vim_note.md>)
 - 2024-04-08 [git 命令手册](<posts/2024/git_Cli.md>)
 - 2024-04-08 [GPG 在通信中的简单理解](<posts/2024/gpg_communication.md>)
 - 2024-04-08 [手机QQ文件存储路径](<posts/2024/android_QQ_file_storage_path.md>)

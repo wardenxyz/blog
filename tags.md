@@ -117,7 +117,7 @@
 ## vim
 
 - 2024-10-04 [lazy.nvim 学习笔记](<posts/2024/lazy.nvim_note.md>)
-- 2024-04-08 [vim 学习笔记](<posts/2024/vim_note.md>)
+- 2024-04-08 [Vim 高效速查笔记](<posts/2024/vim_note.md>)
 
 ## vitepress
 
