@@ -26,7 +26,7 @@
 - 2024-10-12 [vitepress 学习笔记](<posts/2024/vitepress_note.md>)
 - 2024-10-09 [GitHub page 搭建学习笔记](<posts/2024/deploy_gitHub_page.md>)
 - 2024-10-07 [Linux 学习笔记](<posts/2024/Linux_note.md>)
-- 2024-10-06 [OpenSSL 加解密学习笔记](<posts/2024/OpenSSL_encrypt_note.md>)
+- 2024-10-06 [OpenSSL 加解密速查笔记](<posts/2024/OpenSSL_encrypt_note.md>)
 - 2024-10-06 [python 学习笔记](<posts/2024/python_note.md>)
 - 2024-10-04 [lazy.nvim 学习笔记](<posts/2024/lazy.nvim_note.md>)
 - 2024-10-01 [git-sizer 学习笔记](<posts/2024/git-izer_note.md>)
