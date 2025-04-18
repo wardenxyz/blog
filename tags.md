@@ -39,7 +39,7 @@
 
 ## OpenSSL
 
-- 2024-10-06 [OpenSSL 加解密学习笔记](<posts/2024/OpenSSL_encrypt_note.md>)
+- 2024-10-06 [OpenSSL 加解密速查笔记](<posts/2024/OpenSSL_encrypt_note.md>)
 
 ## Rust
 
@@ -136,7 +136,7 @@
 
 ## 加密
 
-- 2024-10-06 [OpenSSL 加解密学习笔记](<posts/2024/OpenSSL_encrypt_note.md>)
+- 2024-10-06 [OpenSSL 加解密速查笔记](<posts/2024/OpenSSL_encrypt_note.md>)
 - 2024-04-08 [GPG 在通信中的简单理解](<posts/2024/gpg_communication.md>)
 - 2024-04-08 [现代加密学](<posts/2024/modern_cryptography.md>)
 
