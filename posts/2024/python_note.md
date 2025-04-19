@@ -40,6 +40,7 @@ deactivate
 ## python 换源
 
 清华源：
+
 ```bash
 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 ```
@@ -66,6 +67,23 @@ pip config unset global.index-url
 
 ```bash
 C:\Users\admin\AppData\Roaming\pip\pip.ini
+```
+
+## 修改 pip install 位置
+
+在 `C:\Users\admin\AppData\Roaming\pip\pip.ini` 中写入
+
+```txt
+[global]
+target = D:\Python\Python312\Lib\site-packages
+```
+
+## pip.ini 配置
+
+```txt
+[global]
+target = D:\Python\Python312\Lib\site-packages
+index-url = https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 
 ## 查看第三方库的位置
