@@ -11,28 +11,50 @@ category: [计算机]
 
 ## 导出命令
 
-- 默认导出为 pdf
+**Typst 导出格式总结**
+
+Typst 支持多种导出格式，适用于不同场景`{p}` 参数为导出文件命名以下是主要格式及其特点：
+
+## 1. PDF（默认格式）
 
 ```bash
-typst c main.typ 
+typst c input.typ
 ```
 
-- 导出第四页到 output-4.pdf
-
 ```bash
-typst c main.typ output-4.pdf -f pdf --pages 4 
+typst c --pages 1-3 input.typ  # 仅导出第1-3页
 ```
 
-- 导出第四页到 output-4.png
+## 2. PNG
 
 ```bash
-typst c main.typ output-4.png -f png --pages 4 
+typst c input.typ output.png
 ```
 
-- 导出第四页到 output-4.svg
+- 多页时必须使用 `{p}` 参数为导出文件命名
+
+- 可通过 `--ppi` 调整分辨率（默认 144 PPI）`{p}` 参数为导出文件命名
 
 ```bash
-typst c main.typ output-4.svg -f svg --pages 4 
+typst c --ppi 300 input.typ "png-{0p}.png"  # 300 DPI，补零页码
+```
+
+## 3. SVG
+
+```bash
+typst c input.typ output.svg
+```
+
+- 多页时必须使用 `{p}` 参数为导出文件命名
+
+```bash
+typst c --pages 2,4-6 input.typ "svg-{0p}.svg"  # 导出第 2、4、5、6 页
+```
+
+## 4. HTML（实验性功能）
+
+```bash
+typst c --features html input.typ output.html
 ```
 
 ## 标题
@@ -139,7 +161,7 @@ _斜体_
 #link("https://baidu.com")[百度]
 ```
 
-## 字间距&行间距
+## 字间距 & 行间距
 
 ```typst
 #set par(leading: 18pt) //行间距
@@ -194,7 +216,7 @@ _斜体_
 #outline()
 ```
 
-## 空白页
+## 手动分页
 
 ```typst
 #pagebreak()
@@ -206,30 +228,9 @@ _斜体_
 #image("4.jpeg")
 ```
 
-## 页眉
-
 ```typst
-#set page(header: [
-  页眉
-  #h(1fr)
-  页眉
-  #v(-8pt) // 页眉内容与线的距离
-  #line(length: 100%, stroke: (thickness: 1pt, dash: "solid"))
-])
-```
-
-## 页脚
-
-```typst
-#set page(footer: context [
-  #v(8pt) //页脚与边距的距离
-  #line(length: 100%, stroke: (thickness: 1pt, dash: "solid"))
-  #v(-8pt) // 页脚内容与线的距离
-  页脚
-  #h(1fr)
-  #counter(page).display(
-    "1/1",
-    both: true,
-  )
-])
+#figure(
+	image("图片路径", width: 10pt),
+	caption: "说明"
+)
 ```
