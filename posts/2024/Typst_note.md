@@ -11,11 +11,7 @@ category: [计算机]
 
 ## 导出命令
 
-**Typst 导出格式总结**
-
-Typst 支持多种导出格式，适用于不同场景`{p}` 参数为导出文件命名以下是主要格式及其特点：
-
-## 1. PDF（默认格式）
+### PDF（默认格式）
 
 ```bash
 typst c input.typ
@@ -25,7 +21,7 @@ typst c input.typ
 typst c --pages 1-3 input.typ  # 仅导出第1-3页
 ```
 
-## 2. PNG
+### PNG
 
 ```bash
 typst c input.typ output.png
@@ -39,7 +35,7 @@ typst c input.typ output.png
 typst c --ppi 300 input.typ "png-{0p}.png"  # 300 DPI，补零页码
 ```
 
-## 3. SVG
+### SVG
 
 ```bash
 typst c input.typ output.svg
@@ -51,45 +47,47 @@ typst c input.typ output.svg
 typst c --pages 2,4-6 input.typ "svg-{0p}.svg"  # 导出第 2、4、5、6 页
 ```
 
-## 4. HTML（实验性功能）
+### HTML（实验性功能）
 
 ```bash
 typst c --features html input.typ output.html
 ```
 
-## 标题
+## 部分语法
+
+### 标题
 
 ```typst
 = 第一级大标题
 == 第二级大标题
 ```
 
-## 无序列表
+### 无序列表
 
 ```typst
 - 无序列表
 ```
 
-## 有序列表
+### 有序列表
 
 ```typst
 1. 有序列表
 + 有序列表
 ```
 
-## 加重字体
+### 加重字体
 
 ```typst
 *加重字体*
 ```
 
-## 斜体
+### 斜体
 
 ```typst
 _斜体_
 ```
 
-## 字体
+### 字体
 
 全局：
 
@@ -104,7 +102,7 @@ _斜体_
 #text(font: "kaiti", fill: red, size: 12pt)[大小为12磅，字体为楷体的红色内容]
 ```
 
-## 位置
+### 位置
 
 全局：
 
@@ -119,56 +117,56 @@ _斜体_
 #align(left)[居左]
 ```
 
-## 下划线
+### 下划线
 
 ```typst
 #underline[此处有下划线]
 ```
 
-## 上划线
+### 上划线
 
 ```typst
 #overline[此处有上划线]
 ```
 
-## 上标
+### 上标
 
 ```typst
 #super[这里是上标内容]
 ```
 
-## 下标
+### 下标
 
 ```typst
 #sub[这里是下标内容]
 ```
 
-## 删除线
+### 删除线
 
 ```typst
 #strike[被删除的内容]
 ```
 
-## 高亮
+### 高亮
 
 ```typst
 #highlight[高亮内容]
 ```
 
-## 链接
+### 链接
 
 ```typst
 #link("https://baidu.com")[百度]
 ```
 
-## 字间距 & 行间距
+### 字间距 & 行间距
 
 ```typst
 #set par(leading: 18pt) //行间距
 #set text(tracking: 0.1pt) //字间距
 ```
 
-## 文档属性
+### 文档属性
 
 ```typst
 #set document(
@@ -179,7 +177,7 @@ _斜体_
 )
 ```
 
-## 页边距
+### 页边距
 
 ```typst
   #set page(margin: (
@@ -190,7 +188,7 @@ _斜体_
   ))
 ```
 
-## 水印
+### 水印
 
 ```typst
 #set page(background: rotate(45deg,
@@ -200,7 +198,7 @@ _斜体_
 ))
 ```
 
-## 引用
+### 引用
 
 ```typst
 #set quote(block: true) //开启引用块
@@ -210,19 +208,19 @@ _斜体_
 ]
 ```
 
-## 大纲
+### 大纲
 
 ```typst
 #outline()
 ```
 
-## 手动分页
+### 手动分页
 
 ```typst
 #pagebreak()
 ```
 
-## 插入图片
+### 插入图片
 
 ```typst
 #image("4.jpeg")
