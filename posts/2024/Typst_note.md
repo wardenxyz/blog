@@ -18,7 +18,7 @@ typst c input.typ
 ```
 
 ```bash
-typst c --pages 1-3 input.typ  # 仅导出第1-3页
+typst c input.typ --pages 1-3  # 仅导出第1-3页
 ```
 
 ### PNG
@@ -27,12 +27,20 @@ typst c --pages 1-3 input.typ  # 仅导出第1-3页
 typst c input.typ output.png
 ```
 
-- 多页时必须使用 `{p}` 参数为导出文件命名
+- 多页时必须加上 `"png-{0p}.png"` 参数，这个参数为导出的文件命令
 
-- 可通过 `--ppi` 调整分辨率（默认 144 PPI）`{p}` 参数为导出文件命名
+- `{0p}` 会补零，`{p}` 不会补零，推荐使用 `{0p}`，在文件管理器中，补零格式（01, 02...）的排序永远比自然数字（1, 2...）更可靠
+
+- 可通过 `--ppi` 调整分辨率（默认 144 PPI）
 
 ```bash
-typst c --ppi 300 input.typ "png-{0p}.png"  # 300 DPI，补零页码
+typst c input.typ "png-{0p}.png" --ppi 300  # 300 DPI，补零页码
+```
+
+- `{t}` 参数是总页数
+
+```bash
+typst c main.typ "page-{0p}-of-{t}.png"
 ```
 
 ### SVG
@@ -41,10 +49,18 @@ typst c --ppi 300 input.typ "png-{0p}.png"  # 300 DPI，补零页码
 typst c input.typ output.svg
 ```
 
-- 多页时必须使用 `{p}` 参数为导出文件命名
+- 多页时必须加上 `"png-{0p}.png"` 参数，这个参数为导出的文件命令
+
+- `{0p}` 会补零，`{p}` 不会补零，推荐使用 `{0p}`，在文件管理器中，补零格式（01, 02...）的排序永远比自然数字（1, 2...）更可靠
 
 ```bash
-typst c --pages 2,4-6 input.typ "svg-{0p}.svg"  # 导出第 2、4、5、6 页
+typst c input.typ "svg-{0p}.svg" --pages 2,4-6  # 导出第 2、4、5、6 页
+```
+
+- `{t}` 参数是总页数
+
+```bash
+typst c main.typ "page-{0p}-of-{t}.svg"
 ```
 
 ### HTML（实验性功能）
