@@ -11,8 +11,8 @@
 
 ## B站
 
-- 2024-08-01 [用 you-get 下载B站视频](posts/2024/you-get_note.md)
 - 2024-08-01 [B站嵌入代码](posts/2024/bilibili_embedding_code.md)
+- 2024-08-01 [用 you-get 下载B站视频](posts/2024/you-get_note.md)
 
 ## DeepSeek
 
@@ -25,6 +25,7 @@
 
 ## GitHub
 
+- 2025-04-26 [GitHub 头像](posts/2025/github-avatar.md)
 - 2024-10-09 [GitHub page 搭建学习笔记](posts/2024/deploy_gitHub_page.md)
 - 2024-06-01 [README 文档结构](posts/2024/README_outline.md)
 
@@ -77,9 +78,9 @@
 - 2024-07-08 [git-crypt 官方文档](posts/2024/git-crypt_official_doc.md)
 - 2024-07-01 [git-crypt 官方文档中文翻译](posts/2024/git-crypt_official_doc_zh.md)
 - 2024-06-01 [git commit message 规范](posts/2024/git_commit_message_standard.md)
-- 2024-04-08 [git 命令手册](posts/2024/git_Cli.md)
 - 2024-04-08 [彻底从 git 提交中移除文件](posts/2024/remove_file_from_git_history.md)
 - 2024-04-08 [git 分支操作](posts/2024/git_branch.md)
+- 2024-04-08 [git 命令手册](posts/2024/git_Cli.md)
 
 ## git-crypt
 
