@@ -13,6 +13,9 @@ category: [计算机]
 ## 创建虚拟环境
 python -m venv venv
 
+## 使用 uv
+uv venv
+
 ## 激活虚拟环境
 .\venv\Scripts\activate  ## Windows
 ## 或者
@@ -21,17 +24,32 @@ source venv/bin/activate  ## macOS 和 Linux
 ## 安装第三方库
 pip install requests
 
+## 使用 uv
+uv pip install requests
+
 ## 卸载第三方库
 pip uninstall requests
+
+## 使用 uv
+uv pip uninstall requests
 
 ## 生成依赖文件
 pip freeze > requirements.txt
 
+## 使用 uv
+uv pip freeze > requirements.txt
+
 ## 根据依赖文件下载第三方库
 pip install -r requirements.txt
 
+## 使用 uv
+uv pip install -r requirements.txt
+
 ## 根据依赖文件卸载第三方库
 pip uninstall -r requirements.txt -y
+
+## 使用 uv
+uv pip uninstall -r requirements.txt -y
 
 ## 停用虚拟环境
 deactivate
