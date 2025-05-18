@@ -110,10 +110,18 @@ index-url = https://pypi.tuna.tsinghua.edu.cn/simple
 python -m site
 ```
 
+```bash
+uv python -m site
+```
+
 ## 查看指定库的详细信息
 
 ```bash
 pip show requests
+```
+
+```bash
+uv pip show requests
 ```
 
 ```bash
@@ -135,8 +143,16 @@ Required-by:
 pip list
 ```
 
+```bash
+uv pip list
+```
+
 ## python 列出依赖库
 
 ```bash
 pip freeze > requirements.txt
+```
+
+```bash
+uv pip freeze > requirements.txt
 ```

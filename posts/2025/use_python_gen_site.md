@@ -20,7 +20,7 @@ Python 3.12.0
 第一步，创建虚拟环境
 
 ```bash
-python -m venv venv
+uv venv
 ```
 
 ```bash
@@ -30,10 +30,10 @@ python -m venv venv
 第二步，下载依赖
 
 ```bash
-pip install -r requirements.txt
+uv pip install -r requirements.txt
 ```
 
-第三步，生成索引
+第三步，生成索引（本地跳过这一步）
 
 ```bash
 python .github\scripts\update_indexes.py
