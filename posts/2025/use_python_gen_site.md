@@ -24,7 +24,7 @@ uv venv
 ```
 
 ```bash
-.\venv\Scripts\activate
+.venv\Scripts\activate
 ```
 
 第二步，下载依赖
@@ -36,13 +36,13 @@ uv pip install -r requirements.txt
 第三步，生成索引（本地跳过这一步）
 
 ```bash
-python .github\scripts\update_indexes.py
+uv run .github\scripts\update_indexes.py
 ```
 
 第四步，生成静态网页
 
 ```bash
-python .github\scripts\static_gen.py
+uv run .github\scripts\static_gen.py
 ```
 
 第五步，预览
@@ -71,13 +71,13 @@ category: [category]
 写完之后生成索引
 
 ```bash
-python .github\scripts\update_indexes.py
+uv run .github\scripts\update_indexes.py
 ```
 
 生成静态网页
 
 ```bash
-python .github\scripts\static_gen.py
+uv run .github\scripts\static_gen.py
 ```
 
 本地预览

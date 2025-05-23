@@ -196,5 +196,17 @@
 				});
 			});
 		</script>
+		<script>
+			// Add Ctrl+P shortcut for search
+			document.addEventListener("keydown", function(event) {
+				if (event.ctrlKey && event.key === "p") {
+					event.preventDefault(); // Prevent default browser action (like printing)
+					const searchLink = document.getElementById("search-nav-link");
+					if (searchLink) {
+						searchLink.click(); // Simulate a click on the search link
+					}
+				}
+			});
+		</script>
 	</body>
 </html>
