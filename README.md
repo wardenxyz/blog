@@ -9,6 +9,10 @@
 <!-- BLOG-POST-LIST:START -->
 ## 2025 年
 
+### 6 月
+
+- 2025-06-03 [关闭 WPS 后台运行](posts/2025/shut-wps-background-runing.md)
+
 ### 5 月
 
 - 2025-05-18 [个人字体](posts/2025/font.md)

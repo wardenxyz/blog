@@ -51,6 +51,10 @@
 - 2025-03-21 [在 zed 上配置 typstyle](posts/2025/zed_use_typstyle.md)
 - 2024-11-27 [Typst 笔记](posts/2024/Typst_note.md)
 
+## WPS
+
+- 2025-06-03 [关闭 WPS 后台运行](posts/2025/shut-wps-background-runing.md)
+
 ## WSL2
 
 - 2025-04-10 [安装 WSL2 并迁移到 D 盘](posts/2025/install_wsl2_and_to_d_disk.md)
