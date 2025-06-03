@@ -7,7 +7,7 @@ category: [计算机]
 
 # git-crypt 官方文档
 
-> 原文档: https://github.com/AGWA/git-crypt/blob/master/README.md
+> 原文档: [https://github.com/AGWA/git-crypt/blob/master/README.md](https://github.com/AGWA/git-crypt/blob/master/README.md)
 
 ## git -crypt - transparent file encryption in git
 
