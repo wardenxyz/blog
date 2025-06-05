@@ -50,3 +50,13 @@ wpsrenderer.exe
 打开 “控制面板”，打开 “Windows 工具”，打开 “服务”
 
 在 “服务” 界面中找到一个名为 “WPS Office Cloud Service” 的选项，右键点击属性，把里面 “常规” 项下的 “启动类型” 改为禁用，确定退出
+
+# 关闭 WPS 增量备份
+
+来源：[https://www.bilibili.com/video/BV1QYEkzvEWQ](https://www.bilibili.com/video/BV1QYEkzvEWQ)
+
+在 WPS 主页的右上角找到 “全局设置”，打开下面的 “设置”
+
+在 “设置” 界面找到 “打开备份中心”
+
+在 “备份中心” 界面中找到 “本地备份设置”，点击 “关闭备份” 按钮，关闭增量备份功能
