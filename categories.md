@@ -1,5 +1,9 @@
 # Categories
 
+## AI
+
+- 2025-06-07 [Typst 语法简单介绍](posts/2025/typst-grammar-simple-introduction.md)
+
 ## GitHub
 
 - 2025-04-26 [GitHub 头像](posts/2025/github-avatar.md)
@@ -18,6 +22,7 @@
 
 ## 计算机
 
+- 2025-06-07 [Typst 语法简单介绍](posts/2025/typst-grammar-simple-introduction.md)
 - 2025-06-03 [关闭 WPS 后台运行](posts/2025/shut-wps-background-runing.md)
 - 2025-04-15 [正则表达式简明指南](posts/2025/regex-note.md)
 - 2025-04-14 [回滚提交](posts/2025/Rollback-commit.md)
