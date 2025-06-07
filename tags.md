@@ -48,7 +48,7 @@
 
 ## Typst
 
-- 2025-06-07 [Typst 语法简单介绍](posts/2025/typst-grammar-simple-introduction.md)
+- 2025-06-07 [Typst 语法简单介绍](posts/2025/typst-syntax-simple-introduction.md)
 - 2025-03-21 [在 zed 上配置 typstyle](posts/2025/zed_use_typstyle.md)
 - 2024-11-27 [Typst 笔记](posts/2024/Typst_note.md)
 
