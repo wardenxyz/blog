@@ -15,7 +15,7 @@ GitHub Copilot: Typst 中的 `let` 和 `show` 是两个核心概念，用于变�
 
 `let` 用于创建变量或函数绑定：
 
-````typst
+```typst
 // 绑定简单值
 #let name = "张三"
 #let age = 25
@@ -26,7 +26,7 @@ GitHub Copilot: Typst 中的 `let` 和 `show` 是两个核心概念，用于变�
 // 使用变量
 #name 今年 #age 岁
 #greet("李四")
-````
+```
 
 `let` 的特点：
 - 创建不可变绑定
@@ -37,7 +37,7 @@ GitHub Copilot: Typst 中的 `let` 和 `show` 是两个核心概念，用于变�
 
 `show` 用于定义元素的显示样式：
 
-````typst
+```typst
 // 为特定元素类型设置样式
 #show heading: it => [
   #set text(fill: blue)
@@ -55,7 +55,7 @@ GitHub Copilot: Typst 中的 `let` 和 `show` 是两个核心概念，用于变�
 
 = 标题一
 这是*重要*内容。
-````
+```
 
 `show` 的用法：
 - `show selector: transformation` - 基本语法
@@ -64,12 +64,12 @@ GitHub Copilot: Typst 中的 `let` 和 `show` 是两个核心概念，用于变�
 
 ## 组合使用
 
-````typst
+```typst
 #let emphasis-color = red
 #show strong: it => text(fill: emphasis-color, it)
 
 这是*强调*文本。
-````
+```
 
 这两个功能让 Typst 具有强大的自定义能力，`let` 管理数据和逻辑，`show` 控制视觉呈现。
 
@@ -81,7 +81,7 @@ GitHub Copilot: 在 Typst 中，函数是可重用的代码块，用于封装逻
 
 使用 `let` 定义函数：
 
-````typst
+```typst
 // 简单函数
 #let greet(name) = [Hello, #name!]
 
@@ -94,7 +94,7 @@ GitHub Copilot: 在 Typst 中，函数是可重用的代码块，用于封装逻
 #let highlight(content, color: red) = [
   #text(fill: color, weight: "bold")[#content]
 ]
-````
+```
 
 ## 函数特点
 
@@ -105,7 +105,7 @@ GitHub Copilot: 在 Typst 中，函数是可重用的代码块，用于封装逻
 
 ## 高阶函数
 
-````typst
+```typst
 // 接受函数作为参数
 #let apply-style(content, styler) = styler(content)
 
@@ -114,11 +114,11 @@ GitHub Copilot: 在 Typst 中，函数是可重用的代码块，用于封装逻
 
 #apply-style("重要文本", make-bold)
 #apply-style("强调文本", make-italic)
-````
+```
 
 ## 实际应用
 
-````typst
+```typst
 // 创建卡片组件
 #let card(title, content, color: gray) = [
   #rect(
@@ -134,7 +134,7 @@ GitHub Copilot: 在 Typst 中，函数是可重用的代码块，用于封装逻
 ]
 
 #card("提示", [这是一个提示信息], color: blue)
-````
+```
 
 函数让 Typst 代码更模块化和可重用，是构建复杂文档的重要工具。
 
@@ -148,7 +148,7 @@ GitHub Copilot: `show` 后面跟着的是**选择器**和**变换函数**，用�
 
 ### 选择器类型
 
-````typst
+```typst
 // 1. 元素类型选择器
 #show heading: it => [...]
 #show strong: it => [...]
@@ -167,11 +167,11 @@ GitHub Copilot: `show` 后面跟着的是**选择器**和**变换函数**，用�
 
 // 5. 函数选择器
 #show raw.where(lang: "python"): it => [...]
-````
+```
 
 ### 变换函numeric
 
-````typst
+```typst
 // 1. 简单替换
 #show "重要": strong
 
@@ -188,14 +188,14 @@ GitHub Copilot: `show` 后面跟着的是**选择器**和**变换函数**，用�
     #align(center)[#emph(it.caption)]
   ]
 ]
-````
+```
 
 ## 与 `let` 的区别
 
 - **`let`**：定义变量和函数，用于数据存储和逻辑封装
 - **`show`**：定义样式规则，用于控制内容的视觉呈现
 
-````typst
+```typst
 // let: 定义数据和逻辑
 #let my-color = blue
 #let format-title(content) = strong(content)
@@ -203,7 +203,7 @@ GitHub Copilot: `show` 后面跟着的是**选择器**和**变换函数**，用�
 // show: 定义样式规则
 #show heading: it => format-title(it.body)
 #show strong: text(fill: my-color)
-````
+```
 
 `show` 本质上是声明式的样式系统，告诉 Typst "当遇到某种内容时，如何显示它"。
 
@@ -215,7 +215,7 @@ GitHub Copilot: 除了 `let` 和 `show`，Typst 还有以下重要语法点：
 
 用于设置元素的默认样式：
 
-````typst
+```typst
 // ...existing code...
 
 // 设置全局文本样式
@@ -231,11 +231,11 @@ GitHub Copilot: 除了 `let` 和 `show`，Typst 还有以下重要语法点：
 #set text(fill: red)
 这段文字是红色的
 #set text(fill: black) // 恢复默认
-````
+```
 
 ## `#import` 和 `#include` - 模块系统
 
-````typst
+```typst
 // 导入其他文件的函数
 #import "utils.typ": helper-function, my-card
 
@@ -244,11 +244,11 @@ GitHub Copilot: 除了 `let` 和 `show`，Typst 还有以下重要语法点：
 
 // 导入包
 #import "@preview/cetz:0.1.0": canvas, draw
-````
+```
 
 ## 内容块和代码模式
 
-````typst
+```typst
 // 内容模式（默认）
 这是普通文本
 
@@ -261,11 +261,11 @@ GitHub Copilot: 除了 `let` 和 `show`，Typst 还有以下重要语法点：
   这是一个内容块
   可以包含 *格式化* 文本
 ]
-````
+```
 
 ## 条件语句和循环
 
-````typst
+```typst
 // 条件语句
 #let score = 85
 #if score >= 90 {
@@ -286,11 +286,11 @@ GitHub Copilot: 除了 `let` 和 `show`，Typst 还有以下重要语法点：
 #for item in items {
   [- #item]
 }
-````
+```
 
 ## 内置函数和方法
 
-````typst
+```typst
 // 数学函数
 #calc.pow(2, 3) // 8
 #calc.sin(calc.pi / 2) // 1
@@ -302,11 +302,11 @@ GitHub Copilot: 除了 `let` 和 `show`，Typst 还有以下重要语法点：
 // 数组操作
 #(1, 2, 3).len() // 3
 #(1, 2, 3).at(1) // 2
-````
+```
 
 ## `#context` - 上下文访问
 
-````typst
+```typst
 // 访问页面信息
 #context {
   let page-num = here().page()
@@ -317,7 +317,7 @@ GitHub Copilot: 除了 `let` 和 `show`，Typst 还有以下重要语法点：
 #context {
   [当前标题编号：#counter(heading).display()]
 }
-````
+```
 
 这些语法点配合使用，让 Typst 具备了完整的编程和排版能力。
 
@@ -327,7 +327,7 @@ GitHub copilot: `polygon` 是 Typst 中用于绘制多边形的函数，主要�
 
 ## 基本用法
 
-````typst
+```typst
 // 绘制三角形
 #polygon(
   (0pt, 0pt),
@@ -351,13 +351,13 @@ GitHub copilot: `polygon` 是 Typst 中用于绘制多边形的函数，主要�
   (30pt, 0pt),
   (15pt, 25pt)
 )
-````
+```
 
 ## 实际应用场景
 
 ### 1. 创建箭头和指示符
 
-````typst
+```typst
 // 右箭头
 #let right-arrow = polygon(
   fill: black,
@@ -371,11 +371,11 @@ GitHub copilot: `polygon` 是 Typst 中用于绘制多边形的函数，主要�
 )
 
 流程：开始 #right-arrow 处理 #right-arrow 结束
-````
+```
 
 ### 2. 装饰性元素
 
-````typst
+```typst
 // 星形装饰
 #let star = polygon(
   fill: aqua,
@@ -394,11 +394,11 @@ GitHub copilot: `polygon` 是 Typst 中用于绘制多边形的函数，主要�
 #align(center)[
   #star 重要提示 #star
 ]
-````
+```
 
 ### 3. 图表和示意图
 
-````typst
+```typst
 // 创建简单的流程图节点
 #let diamond(content) = box(
   polygon(
@@ -412,11 +412,11 @@ GitHub copilot: `polygon` 是 Typst 中用于绘制多边形的函数，主要�
 )
 
 #diamond[]
-````
+```
 
 ### 4. 与其他元素结合
 
-````typst
+```typst
 // 带边框的提示框
 #let warning-box(content) = [
   #polygon(
@@ -431,7 +431,7 @@ GitHub copilot: `polygon` 是 Typst 中用于绘制多边形的函数，主要�
 ]
 
 #warning-box([这是警告信息])
-````
+```
 
 ## 参数说明
 
@@ -452,7 +452,7 @@ Typst 使用**左上角为原点 (0, 0)** 的坐标系：
 - **x 轴**：向右为正
 - **y 轴**：向下为正
 
-````typst
+```typst
 // 可视化坐标点
 #let show-points(points) = {
   for (i, point) in points.enumerate() {
@@ -472,13 +472,13 @@ Typst 使用**左上角为原点 (0, 0)** 的坐标系：
 
 #polygon(..triangle-points, fill: yellow.lighten(80%), stroke: black)
 #show-points(triangle-points)
-````
+```
 
 ## 调试技巧
 
 ### 1. 逐步添加点
 
-````typst
+```typst
 // 先画两个点
 #polygon((0pt, 0pt), (30pt, 0pt))
 
@@ -486,11 +486,11 @@ Typst 使用**左上角为原点 (0, 0)** 的坐标系：
 #polygon((0pt, 0pt), (30pt, 0pt), (15pt, 25pt))
 
 // 继续添加...
-````
+```
 
 ### 2. 使用网格背景
 
-````typst
+```typst
 // 创建网格帮助定位
 #let grid(width: 100pt, height: 100pt) = {
   for x in range(0, int(width / 10pt) + 1) {
@@ -503,11 +503,11 @@ Typst 使用**左上角为原点 (0, 0)** 的坐标系：
 
 #grid()
 #polygon((10pt, 10pt), (40pt, 20pt), (30pt, 50pt), fill: blue.lighten(70%))
-````
+```
 
 ### 3. 标注坐标
 
-````typst
+```typst
 #let labeled-polygon(..points) = {
   polygon(..points, fill: yellow.lighten(80%))
   for (i, point) in points.pos().enumerate() {
@@ -525,11 +525,11 @@ Typst 使用**左上角为原点 (0, 0)** 的坐标系：
   (25pt, 40pt),
   (5pt, 35pt)
 )
-````
+```
 
 ## 常用形状的点序
 
-````typst
+```typst
 // 正方形（顺时针）
 #polygon(
   (0pt, 0pt),    // 左上
@@ -548,7 +548,7 @@ Typst 使用**左上角为原点 (0, 0)** 的坐标系：
   (20pt, 20pt),  // 箭身下
   (0pt, 20pt)    // 箭尾下
 )
-````
+```
 
 建议先在纸上画出草图，标记好坐标，再转换为代码。
 
@@ -558,7 +558,7 @@ GitHub copilot: **不一定**，`polygon` 的点顺序是按照你提供的坐�
 
 ## 点的连接规则
 
-````typst
+```typst
 // 点按提供顺序连接：0→1→2→3→...→0（自动闭合）
 
 // 你的例子分析：
@@ -566,11 +566,11 @@ GitHub copilot: **不一定**，`polygon` 的点顺序是按照你提供的坐�
 //       点0: 左上    点1: 右上      点2: 右下      点3: 左下偏右
 
 // 连接顺序：(0,0) → (30,0) → (30,25) → (15,25) → 回到(0,0)
-````
+```
 
 ## 不同顺序的效果
 
-````typst
+```typst
 // 顺时针绘制矩形
 #polygon(
   (0pt, 0pt),    // 左上
@@ -601,7 +601,7 @@ GitHub copilot: **不一定**，`polygon` 的点顺序是按照你提供的坐�
   (0pt, 30pt),   // 左下
   fill: green.lighten(80%)
 )
-````
+```
 
 ## 最佳实践
 
@@ -609,7 +609,7 @@ GitHub copilot: **不一定**，`polygon` 的点顺序是按照你提供的坐�
 2. **复杂图形**：建议按边界顺序连接，避免交叉
 3. **调试技巧**：使用点可视化函数查看连接顺序
 
-````typst
+```typst
 // 启用点可视化来调试
 #let show-points(points) = {
   for (i, point) in points.enumerate() {
@@ -623,7 +623,7 @@ GitHub copilot: **不一定**，`polygon` 的点顺序是按照你提供的坐�
 #let my-points = ((0pt, 0pt), (30pt, 0pt), (30pt, 25pt), (15pt, 25pt))
 #polygon(..my-points, fill: yellow.lighten(80%))
 #show-points(my-points)
-````
+```
 
 关键是理解 Typst 会按你提供的点的顺序依次连线，最后自动闭合到第一个点。
 
@@ -709,7 +709,7 @@ GitHub Copilot: ## Curve 和 Polygon 的异同
 
 ### **使用示例对比**
 
-````typst
+```typst
 // Polygon - 直线连接的多边形
 #polygon((0pt, 0pt), (20pt, 0pt), (10pt, 15pt))  // 三角形
 
@@ -723,7 +723,7 @@ GitHub Copilot: ## Curve 和 Polygon 的异同
   closed: true,
   ((0pt, 0pt), (20pt, 0pt), (10pt, 15pt))
 )
-````
+```
 
 ### **选择建议**
 - **使用 `polygon`**: 需要绘制有明确边角的图形（三角形、四边形、星形等）
