@@ -11,7 +11,45 @@ category: [计算机]
 
 视频：https://www.bilibili.com/video/BV12RDhYPE7M/?share_source=copy_web&vd_source=7a8cdea3693bb45fc81a5ee43e70eaa3
 
-## 准备工作
+## 步骤简化
+
+一、配置 GCC 环境
+
+在 [mingw](https://github.com/niXman/mingw-builds-binaries/releases) 网页下下载 `x86_64-15.1.0-release-win32-seh-ucrt-rt_v12-rev0.7z
+`
+
+二、下载 [Rust](https://www.rust-lang.org/zh-CN/learn/get-started)
+
+三、配置用户变量
+
+```
+变量                                值
+RUSTUP_DIST_SERVER                 https://mirrors.ustc.edu.cn/rust-static
+RUSTUP_UPDATE_ROOT                 https://mirrors.ustc.edu.cn/rust-static/rustup
+RUSTUP_HOME                        D:\Rust\rustup
+CARGO_HOME                         D:\Rust\cargo
+```
+
+四、安装
+
+点击下载的 `rustup-init.exe`，运行开启一个终端，按照步骤安装
+
+五、配置 cargo 镜像源
+
+在 `D:\Rust\cargo\config.toml` 中添加如下内容
+
+```toml
+[source.crates-io]
+replace-with = 'ustc'
+
+[source.ustc]
+registry = "sparse+https://mirrors.ustc.edu.cn/crates.io-index/"
+
+[registries.ustc]
+index = "sparse+https://mirrors.ustc.edu.cn/crates.io-index/"
+```
+
+## 详细解释
 
 ### 配置 gcc 环境
 
@@ -39,7 +77,7 @@ gcc version 15.1.0 (x86_64-win32-seh-rev0, Built by MinGW-Builds project)
 
 这里下载 [Rust](https://www.rust-lang.org/zh-CN/learn/get-started)，32 位和 64 位两种，根据实际情况选取
 
-### 配置 Rust Toolchain 镜像源
+### 配置 Rust Toolchain 镜像源（用户变量）
 
 - 中科大镜像源：https://mirrors.ustc.edu.cn/help/rust-static.html#rust-toolchain
 
@@ -48,21 +86,12 @@ $env:RUSTUP_DIST_SERVER="https://mirrors.ustc.edu.cn/rust-static"
 $env:RUSTUP_UPDATE_ROOT="https://mirrors.ustc.edu.cn/rust-static/rustup"
 ```
 
-- Rsproxy 源：https://rsproxy.cn/#getStarted
-
-```powershell
-export RUSTUP_DIST_SERVER="https://rsproxy.cn"
-export RUSTUP_UPDATE_ROOT="https://rsproxy.cn/rustup"
-```
-
-上面两个二选一
-
 配置好的用户变量：
 
 ```
 变量                                值
-RUSTUP_DIST_SERVER                 https://rsproxy.cn
-RUSTUP_UPDATE_ROOT                 https://rsproxy.cn/rustup
+RUSTUP_DIST_SERVER                 https://mirrors.ustc.edu.cn/rust-static
+RUSTUP_UPDATE_ROOT                 https://mirrors.ustc.edu.cn/rust-static/rustup
 ```
 
 ### 配置安装位置
@@ -82,7 +111,17 @@ RUSTUP_HOME                        D:\Rust\rustup
 CARGO_HOME                         D:\Rust\cargo
 ```
 
-## 安装
+### 用户变量汇总
+
+```
+变量                                值
+RUSTUP_DIST_SERVER                 https://mirrors.ustc.edu.cn/rust-static
+RUSTUP_UPDATE_ROOT                 https://mirrors.ustc.edu.cn/rust-static/rustup
+RUSTUP_HOME                        D:\Rust\rustup
+CARGO_HOME                         D:\Rust\cargo
+```
+
+### 安装
 
 点击下载的 `rustup-init.exe`，运行开启一个终端，如下
 
@@ -236,7 +275,7 @@ cargo --version
 cargo 1.85.0 (d73d2caf9 2024-12-31)
 ```
 
-## 配置 cargo 镜像源
+### 配置 cargo 镜像源
 
 这里选择中科大镜像源：https://mirrors.ustc.edu.cn/help/crates.io-index.html
 
