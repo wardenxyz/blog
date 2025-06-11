@@ -87,9 +87,9 @@
 - 2024-07-08 [git-crypt 官方文档](posts/2024/git-crypt_official_doc.md)
 - 2024-07-01 [git-crypt 官方文档中文翻译](posts/2024/git-crypt_official_doc_zh.md)
 - 2024-06-01 [git commit message 规范](posts/2024/git_commit_message_standard.md)
-- 2024-04-08 [彻底从 git 提交中移除文件](posts/2024/remove_file_from_git_history.md)
-- 2024-04-08 [git 命令手册](posts/2024/git_Cli.md)
 - 2024-04-08 [git 分支操作](posts/2024/git_branch.md)
+- 2024-04-08 [git 命令手册](posts/2024/git_Cli.md)
+- 2024-04-08 [彻底从 git 提交中移除文件](posts/2024/remove_file_from_git_history.md)
 
 ## git-crypt
 
