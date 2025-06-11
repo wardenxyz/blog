@@ -9,7 +9,7 @@ category: [计算机]
 
 起因：想编译 Zed 的 Windows 版，但不想下载 visual studio
 
-视频：https://www.bilibili.com/video/BV12RDhYPE7M/?share_source=copy_web&vd_source=7a8cdea3693bb45fc81a5ee43e70eaa3
+视频：https://www.bilibili.com/video/BV12RDhYPE7M
 
 ## 步骤简化
 
