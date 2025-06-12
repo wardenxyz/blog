@@ -15,8 +15,7 @@ category: [计算机]
 
 一、配置 GCC 环境
 
-在 [mingw](https://github.com/niXman/mingw-builds-binaries/releases) 网页下下载 `x86_64-15.1.0-release-win32-seh-ucrt-rt_v12-rev0.7z
-`
+在 [mingw](https://github.com/niXman/mingw-builds-binaries/releases) 网页下下载 `x86_64-15.1.0-release-win32-seh-ucrt-rt_v12-rev0.7z`
 
 二、下载 [Rust](https://www.rust-lang.org/zh-CN/learn/get-started)
 
