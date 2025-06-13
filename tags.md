@@ -6,6 +6,7 @@
 
 ## Android
 
+- 2025-06-13 [背景颜色](posts/2025/background-color.md)
 - 2024-08-01 [个人自用软件](posts/2024/personal_software.md)
 - 2024-04-08 [手机QQ文件存储路径](posts/2024/android_QQ_file_storage_path.md)
 
@@ -62,6 +63,7 @@
 
 ## Windows
 
+- 2025-06-13 [背景颜色](posts/2025/background-color.md)
 - 2024-08-01 [个人自用软件](posts/2024/personal_software.md)
 
 ## conda
@@ -165,6 +167,10 @@
 ## 神秘博士
 
 - 2024-04-08 [神秘博士复活时间表](posts/2024/former_doctor_who.md)
+
+## 纯色背景
+
+- 2025-06-13 [背景颜色](posts/2025/background-color.md)
 
 ## 邮箱
 

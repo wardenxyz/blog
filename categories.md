@@ -18,6 +18,7 @@
 
 ## 生活
 
+- 2025-06-13 [背景颜色](posts/2025/background-color.md)
 - 2024-04-08 [神秘博士复活时间表](posts/2024/former_doctor_who.md)
 
 ## 计算机
