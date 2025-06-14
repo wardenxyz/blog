@@ -43,6 +43,10 @@
 
 - 2024-10-06 [OpenSSL 加解密速查笔记](posts/2024/OpenSSL_encrypt_note.md)
 
+## PowerShell
+
+- 2025-06-14 [PowerShell Get-Command 命令](posts/2025/powershell-get-command.md)
+
 ## Rust
 
 - 2025-03-16 [在 Windows 上配置 Rust 环境](posts/2025/Rust_Windows_Config.md)
@@ -63,6 +67,7 @@
 
 ## Windows
 
+- 2025-06-14 [PowerShell Get-Command 命令](posts/2025/powershell-get-command.md)
 - 2025-06-13 [背景颜色](posts/2025/background-color.md)
 - 2024-08-01 [个人自用软件](posts/2024/personal_software.md)
 
