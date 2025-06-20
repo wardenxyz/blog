@@ -109,6 +109,18 @@
 
 - 2024-10-04 [lazy.nvim 学习笔记](posts/2024/lazy.nvim_note.md)
 
+## node
+
+- 2025-06-20 [修改 npm node_modules 位置](posts/2025/npm-config.md)
+
+## node_modules
+
+- 2025-06-20 [修改 npm node_modules 位置](posts/2025/npm-config.md)
+
+## npm
+
+- 2025-06-20 [修改 npm node_modules 位置](posts/2025/npm-config.md)
+
 ## obsidian
 
 - 2024-04-08 [obsidian快捷键](posts/2024/obsidian_shortcut_key.md)

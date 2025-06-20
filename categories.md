@@ -23,6 +23,7 @@
 
 ## 计算机
 
+- 2025-06-20 [修改 npm node_modules 位置](posts/2025/npm-config.md)
 - 2025-06-14 [PowerShell Get-Command 命令](posts/2025/powershell-get-command.md)
 - 2025-06-13 [自用 git hook](posts/2025/git-hook.md)
 - 2025-06-07 [Typst 语法简单介绍](posts/2025/typst-syntax-simple-introduction.md)
