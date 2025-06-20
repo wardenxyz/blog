@@ -1,0 +1,14 @@
+---
+title: 修改 npm node_modules 位置
+date: 2025-06-20
+tags: [node, npm, node_modules]
+category: [计算机]
+---
+
+# 修改 npm node_modules 位置
+
+修改 npm install 时的 node_modules 位置
+
+```bash
+npm config set prefix "D:\npm"
+```
