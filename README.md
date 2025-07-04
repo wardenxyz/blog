@@ -9,12 +9,16 @@
 <!-- BLOG-POST-LIST:START -->
 ## 2025 年
 
+### 7 月
+
+- 2025-07-04 [Passkey:Secure,Convenient Login](posts/2025/introduce-passkey.md)
+
 ### 6 月
 
 - 2025-06-20 [修改 npm node_modules 位置](posts/2025/npm-config.md)
 - 2025-06-14 [PowerShell Get-Command 命令](posts/2025/powershell-get-command.md)
-- 2025-06-13 [自用 git hook](posts/2025/git-hook.md)
 - 2025-06-13 [背景颜色](posts/2025/background-color.md)
+- 2025-06-13 [自用 git hook](posts/2025/git-hook.md)
 - 2025-06-07 [Typst 语法简单介绍](posts/2025/typst-syntax-simple-introduction.md)
 - 2025-06-03 [关闭 WPS 后台运行](posts/2025/shut-wps-background-runing.md)
 
@@ -57,8 +61,8 @@
 - 2024-10-12 [vitepress 学习笔记](posts/2024/vitepress_note.md)
 - 2024-10-09 [GitHub page 搭建学习笔记](posts/2024/deploy_gitHub_page.md)
 - 2024-10-07 [Linux 学习笔记](posts/2024/Linux_note.md)
-- 2024-10-06 [OpenSSL 加解密速查笔记](posts/2024/OpenSSL_encrypt_note.md)
 - 2024-10-06 [python 学习笔记](posts/2024/python_note.md)
+- 2024-10-06 [OpenSSL 加解密速查笔记](posts/2024/OpenSSL_encrypt_note.md)
 - 2024-10-04 [lazy.nvim 学习笔记](posts/2024/lazy.nvim_note.md)
 - 2024-10-01 [git-sizer 学习笔记](posts/2024/git-izer_note.md)
 
@@ -69,8 +73,8 @@
 ### 8 月
 
 - 2024-08-01 [用 you-get 下载B站视频](posts/2024/you-get_note.md)
-- 2024-08-01 [个人自用软件](posts/2024/personal_software.md)
 - 2024-08-01 [B站嵌入代码](posts/2024/bilibili_embedding_code.md)
+- 2024-08-01 [个人自用软件](posts/2024/personal_software.md)
 
 ### 7 月
 
@@ -90,18 +94,18 @@
 
 ### 4 月
 
-- 2024-04-08 [git 分支操作](posts/2024/git_branch.md)
-- 2024-04-08 [GPG 在通信中的简单理解](posts/2024/gpg_communication.md)
-- 2024-04-08 [第三方邮箱客户端配置QQmail & Foxmail](posts/2024/qqmail_third_party_config.md)
-- 2024-04-08 [ffmpeg 自用命令](posts/2024/ffmpeg_note.md)
 - 2024-04-08 [obsidian快捷键](posts/2024/obsidian_shortcut_key.md)
-- 2024-04-08 [LaTeX 与希腊字母对照表](posts/2024/LaTeX_note.md)
-- 2024-04-08 [神秘博士复活时间表](posts/2024/former_doctor_who.md)
 - 2024-04-08 [浏览器UA值](posts/2024/browser_UA_value.md)
-- 2024-04-08 [VSCode 高效使用指南](posts/2024/vscode_note.md)
-- 2024-04-08 [手机QQ文件存储路径](posts/2024/android_QQ_file_storage_path.md)
+- 2024-04-08 [GPG 在通信中的简单理解](posts/2024/gpg_communication.md)
 - 2024-04-08 [Vim 高效速查笔记](posts/2024/vim_note.md)
 - 2024-04-08 [现代加密学](posts/2024/modern_cryptography.md)
-- 2024-04-08 [git 命令手册](posts/2024/git_Cli.md)
+- 2024-04-08 [git 分支操作](posts/2024/git_branch.md)
 - 2024-04-08 [彻底从 git 提交中移除文件](posts/2024/remove_file_from_git_history.md)
+- 2024-04-08 [第三方邮箱客户端配置QQmail & Foxmail](posts/2024/qqmail_third_party_config.md)
+- 2024-04-08 [神秘博士复活时间表](posts/2024/former_doctor_who.md)
+- 2024-04-08 [LaTeX 与希腊字母对照表](posts/2024/LaTeX_note.md)
+- 2024-04-08 [VSCode 高效使用指南](posts/2024/vscode_note.md)
+- 2024-04-08 [git 命令手册](posts/2024/git_Cli.md)
+- 2024-04-08 [ffmpeg 自用命令](posts/2024/ffmpeg_note.md)
+- 2024-04-08 [手机QQ文件存储路径](posts/2024/android_QQ_file_storage_path.md)
 <!-- BLOG-POST-LIST:END -->
