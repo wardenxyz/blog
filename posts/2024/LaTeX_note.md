@@ -26,7 +26,7 @@ category: [数学]
 | ο        | Ο        | Omicron | `$\omicron$`                  | ο \\omicron ο                   | `$\Omicron$`    | O \\Omicron O       |
 | π        | ∏        | Pi      | `$\pi$`                       | π \\pi π                        | `$\Pi$`         | Π \\Pi Π            |
 | ρ        | Ρ        | Rho     | `$\rho$`                      | ρ \\rho ρ                       | `$\Rho$`        | P \\Rho P           |
-| σ, ς     | ∑        | Sigma   | `$\sigma$`，`$\varsigma$`      | σ \\sigma σ, ς \\varsigma ς     | `$\Sigma$`      | Σ \\Sigma Σ         |
+| σ, ς     | ∑        | Sigma   | `$\sigma$`，`$\varsigma$`     | σ \\sigma σ, ς \\varsigma ς     | `$\Sigma$`      | Σ \\Sigma Σ         |
 | τ        | Τ        | Tau     | `$\tau$`                      | τ \\tau τ                       | `$\Tau$`        | T \\Tau T           |
 | υ        | Υ        | Upsilon | `$\upsilon$`                  | υ \\upsilon υ                   | `$\Upsilon$`    | Υ \\Upsilon Υ       |
 | φ, ϕ     | Φ        | Phi     | `$\varphi$`, `$\phi$`         | φ \\varphi φ, ϕ \\phi ϕ         | `$\Phi$`        | Φ \\Phi Φ           |
