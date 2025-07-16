@@ -57,6 +57,10 @@
 - 2025-03-21 [在 zed 上配置 typstyle](posts/2025/zed_use_typstyle.md)
 - 2024-11-27 [Typst 笔记](posts/2024/Typst_note.md)
 
+## UTF-8
+
+- 2025-07-15 [跨系统避免换行符导致字节差异的方法](posts/2025/cross-platform-byte-control.md.md)
+
 ## WPS
 
 - 2025-06-03 [关闭 WPS 后台运行](posts/2025/shut-wps-background-runing.md)
@@ -174,6 +178,10 @@
 - 2024-04-08 [现代加密学](posts/2024/modern_cryptography.md)
 - 2024-04-08 [GPG 在通信中的简单理解](posts/2024/gpg_communication.md)
 
+## 字节控制
+
+- 2025-07-15 [跨系统避免换行符导致字节差异的方法](posts/2025/cross-platform-byte-control.md.md)
+
 ## 密码学
 
 - 2025-07-04 [Passkey:Secure,Convenient Login](posts/2025/introduce-passkey.md)
@@ -181,6 +189,14 @@
 ## 手机QQ
 
 - 2024-04-08 [手机QQ文件存储路径](posts/2024/android_QQ_file_storage_path.md)
+
+## 换行符
+
+- 2025-07-15 [跨系统避免换行符导致字节差异的方法](posts/2025/cross-platform-byte-control.md.md)
+
+## 文件操作
+
+- 2025-07-15 [跨系统避免换行符导致字节差异的方法](posts/2025/cross-platform-byte-control.md.md)
 
 ## 正则表达式
 
@@ -197,6 +213,10 @@
 ## 纯色背景
 
 - 2025-06-13 [背景颜色](posts/2025/background-color.md)
+
+## 跨平台
+
+- 2025-07-15 [跨系统避免换行符导致字节差异的方法](posts/2025/cross-platform-byte-control.md.md)
 
 ## 邮箱
 
