@@ -143,6 +143,7 @@
 
 ## python
 
+- 2025-07-19 [yt-dlp 使用](posts/2025/yt-dlp.md)
 - 2025-04-12 [使用 Python 生成静态网页](posts/2025/use_python_gen_site.md)
 - 2025-03-15 [conda 使用笔记](posts/2025/conda_note.md)
 - 2024-10-06 [python 学习笔记](posts/2024/python_note.md)
@@ -165,6 +166,10 @@
 
 - 2024-05-01 [vscode snippets 预置变量](posts/2024/vscode_snippets_variable.md)
 - 2024-04-08 [VSCode 高效使用指南](posts/2024/vscode_note.md)
+
+## yt-dlp
+
+- 2025-07-19 [yt-dlp 使用](posts/2025/yt-dlp.md)
 
 ## zed
 
@@ -213,6 +218,10 @@
 ## 纯色背景
 
 - 2025-06-13 [背景颜色](posts/2025/background-color.md)
+
+## 视频下载
+
+- 2025-07-19 [yt-dlp 使用](posts/2025/yt-dlp.md)
 
 ## 跨平台
 

@@ -23,6 +23,7 @@
 
 ## 计算机
 
+- 2025-07-19 [yt-dlp 使用](posts/2025/yt-dlp.md)
 - 2025-07-15 [跨系统避免换行符导致字节差异的方法](posts/2025/cross-platform-byte-control.md.md)
 - 2025-07-04 [Passkey:Secure,Convenient Login](posts/2025/introduce-passkey.md)
 - 2025-06-20 [修改 npm node_modules 位置](posts/2025/npm-config.md)
