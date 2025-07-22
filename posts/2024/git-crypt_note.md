@@ -156,6 +156,12 @@ sudo apt update
 sudo apt install gpg
 ```
 
+导入密钥
+
+```bash
+gpg --import
+```
+
 目前实测可以和 git-crypt 一起使用的 git、gpg 版本如下：
 
 - Ubuntu
