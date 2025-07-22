@@ -65,12 +65,28 @@ Test/** filter=git-crypt diff=git-crypt
 ## 5. 提交更改
 
 ```bash
-git add .gitattributes secret.txt
-git commit -m "Add git-crypt configuration"
-git push
+git add .gitattributes
 ```
 
-## 6. 解密文件
+```bash
+git commit -m "Add git-crypt configuration"
+```
+
+```bash
+git add .
+```
+
+```bash
+git commit -m "commit all"
+```
+
+## 6. 加密文件
+
+```bash
+git-crypt lock
+```
+
+## 7. 解密文件
 
 ```bash
 git-crypt unlock
@@ -116,4 +132,82 @@ graph TD
     P --> Q
     Q --> G
     Q --> M
+```
+
+# Ubuntu 下使用 git-crypt
+
+## 安装 git-crypt
+
+```bash
+sudo apt-get update
+```
+
+```bash
+sudo apt-get install git-crypt
+```
+
+## 安装 gpg
+
+```bash
+sudo apt update
+```
+
+```bash
+sudo apt install gpg
+```
+
+目前实测可以和 git-crypt 一起使用的 git、gpg 版本如下：
+
+- Ubuntu
+
+```bash
+git --version
+
+git version 2.48.1
+```
+
+```bash
+gpg --version
+
+gpg (GnuPG) 2.4.4
+libgcrypt 1.11.0
+Copyright (C) 2024 g10 Code GmbH
+License GNU GPL-3.0-or-later <https://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Home: /home/xyz/.gnupg
+支持的算法：
+公钥： RSA, ELG, DSA, ECDH, ECDSA, EDDSA
+密文： IDEA, 3DES, CAST5, BLOWFISH, AES, AES192, AES256, TWOFISH,
+    CAMELLIA128, CAMELLIA192, CAMELLIA256
+散列： SHA1, RIPEMD160, SHA256, SHA384, SHA512, SHA224
+压缩： 不压缩, ZIP, ZLIB, BZIP2
+```
+
+- Windows
+
+```bash
+git --version
+
+git version 2.49.1.windows.1
+```
+
+```bash
+gpg --version
+
+gpg (GnuPG) 2.4.8
+libgcrypt 1.11.1
+Copyright (C) 2025 g10 Code GmbH
+License GNU GPL-3.0-or-later <https://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Home: C:\Users\24109\AppData\Roaming\gnupg
+Supported algorithms:
+Pubkey: RSA, ELG, DSA, ECDH, ECDSA, EDDSA
+Cipher: IDEA, 3DES, CAST5, BLOWFISH, AES, AES192, AES256, TWOFISH,
+        CAMELLIA128, CAMELLIA192, CAMELLIA256
+Hash: SHA1, RIPEMD160, SHA256, SHA384, SHA512, SHA224
+Compression: Uncompressed, ZIP, ZLIB, BZIP2
 ```
