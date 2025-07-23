@@ -75,6 +75,10 @@
 - 2025-06-13 [背景颜色](posts/2025/background-color.md)
 - 2024-08-01 [个人自用软件](posts/2024/personal_software.md)
 
+## age
+
+- 2025-07-22 [age-note](posts/2025/age.md)
+
 ## conda
 
 - 2025-03-15 [conda 使用笔记](posts/2025/conda_note.md)
@@ -179,6 +183,7 @@
 
 ## 加密
 
+- 2025-07-22 [age-note](posts/2025/age.md)
 - 2024-10-06 [OpenSSL 加解密速查笔记](posts/2024/OpenSSL_encrypt_note.md)
 - 2024-04-08 [现代加密学](posts/2024/modern_cryptography.md)
 - 2024-04-08 [GPG 在通信中的简单理解](posts/2024/gpg_communication.md)
@@ -230,4 +235,8 @@
 ## 邮箱
 
 - 2024-04-08 [第三方邮箱客户端配置QQmail & Foxmail](posts/2024/qqmail_third_party_config.md)
+
+## 隐私
+
+- 2025-07-22 [age-note](posts/2025/age.md)
 
