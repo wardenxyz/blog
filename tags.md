@@ -77,6 +77,7 @@
 
 ## age
 
+- 2025-07-23 [SOPS:Secrets OPerationS](posts/2025/SOPS.md)
 - 2025-07-22 [age-note](posts/2025/age.md)
 
 ## conda
@@ -112,6 +113,10 @@
 - 2024-07-10 [git-crypt 学习笔记](posts/2024/git-crypt_note.md)
 - 2024-07-08 [git-crypt 官方文档](posts/2024/git-crypt_official_doc.md)
 - 2024-07-01 [git-crypt 官方文档中文翻译](posts/2024/git-crypt_official_doc_zh.md)
+
+## gpg
+
+- 2025-07-23 [SOPS:Secrets OPerationS](posts/2025/SOPS.md)
 
 ## lazy.nvim
 
@@ -157,6 +162,10 @@
 
 - 2025-04-12 [使用 Python 生成静态网页](posts/2025/use_python_gen_site.md)
 
+## sops
+
+- 2025-07-23 [SOPS:Secrets OPerationS](posts/2025/SOPS.md)
+
 ## vim
 
 - 2024-10-04 [lazy.nvim 学习笔记](posts/2024/lazy.nvim_note.md)
@@ -183,6 +192,7 @@
 
 ## 加密
 
+- 2025-07-23 [SOPS:Secrets OPerationS](posts/2025/SOPS.md)
 - 2025-07-22 [age-note](posts/2025/age.md)
 - 2024-10-06 [OpenSSL 加解密速查笔记](posts/2024/OpenSSL_encrypt_note.md)
 - 2024-04-08 [现代加密学](posts/2024/modern_cryptography.md)
