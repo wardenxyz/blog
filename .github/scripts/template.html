@@ -21,6 +21,9 @@
 		/>
 	</head>
 	<body>
+		<!-- Reading progress bar -->
+		<div id="reading-progress-bar"></div>
+		
 		<nav>
 			<div class="logo">
 				<a href="/" style="font-size: 24px">随便写写</a>
@@ -30,6 +33,12 @@
 				<a href="/categories.html">分类</a>
 				<a href="/tags.html">标签</a>
 				<a href="/search.html?focus=true" id="search-nav-link">搜索</a>
+				<!-- Dark mode toggle -->
+				<button id="dark-mode-toggle" aria-label="切换深色模式">
+					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+					</svg>
+				</button>
 			</div>
 		</nav>
 
@@ -40,6 +49,8 @@
 
 			<div class="main-content">
 				<div class="content">{{content}}</div>
+				<!-- Featured posts section will be inserted here by JavaScript -->
+				<div id="featured-posts" class="featured-posts-container"></div>
 			</div>
 		</div>
 
@@ -50,8 +61,19 @@
 		</button>
 
 		<footer>
-			<p>MIT License</p>
-			<p>Copyright © 2024-2025 wardenxyz</p>
+			<div class="footer-content">
+				<div class="footer-info">
+					<p>MIT License</p>
+					<p>Copyright © 2024-2025 wardenxyz</p>
+				</div>
+				<div class="social-links">
+					<a href="https://github.com/wardenxyz" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+						</svg>
+					</a>
+				</div>
+			</div>
 		</footer>
 
 		<script>
@@ -147,9 +169,10 @@
 			document.addEventListener("DOMContentLoaded", function() {
 				const backToTopButton = document.getElementById("back-to-top");
 				
-				// Show button when user scrolls down 300px from the top
+				// Show button when user scrolls down 20% of the page
 				window.addEventListener("scroll", function() {
-					if (window.pageYOffset > 300) {
+					const scrollPercent = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+					if (scrollPercent > 20) {
 						backToTopButton.classList.add("visible");
 					} else {
 						backToTopButton.classList.remove("visible");
@@ -171,7 +194,7 @@
 		
 		<!-- 外部链接在新标签页打开 -->
 		<script>
-			document.addEventListener("DOMContentLoaded", function() {
+			function openExternalLinksInNewTab() {
 				// 获取所有链接
 				const links = document.querySelectorAll('a');
 				
@@ -194,7 +217,13 @@
 						}
 					}
 				});
-			});
+			}
+			
+			// 在DOM加载完成后执行
+			document.addEventListener("DOMContentLoaded", openExternalLinksInNewTab);
+			
+			// 在页面加载完成后再次执行，确保所有动态生成的内容也被处理
+			window.addEventListener("load", openExternalLinksInNewTab);
 		</script>
 		<script>
 			// Add Ctrl+P shortcut for search
@@ -205,6 +234,61 @@
 					if (searchLink) {
 						searchLink.click(); // Simulate a click on the search link
 					}
+				}
+			});
+		</script>
+		
+		<!-- Reading progress bar script -->
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+				const progressBar = document.getElementById("reading-progress-bar");
+				
+				if (progressBar) {
+					window.addEventListener("scroll", function() {
+						const scrollTop = window.scrollY;
+						const docHeight = document.body.scrollHeight - window.innerHeight;
+						const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+						progressBar.style.width = scrollPercent + "%";
+					});
+				}
+			});
+		</script>
+		
+		<!-- Dark mode toggle script -->
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+				const darkModeToggle = document.getElementById("dark-mode-toggle");
+				const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+				
+				// Check for saved theme or default to user's system preference
+				const currentTheme = localStorage.getItem("theme");
+				if (currentTheme === "dark" || (!currentTheme && prefersDarkScheme.matches)) {
+					document.body.classList.add("dark-mode");
+				}
+				
+				// Toggle dark mode when button is clicked
+				if (darkModeToggle) {
+					darkModeToggle.addEventListener("click", function() {
+						document.body.classList.toggle("dark-mode");
+						
+						// Save the current theme to localStorage
+						let theme = "light";
+						if (document.body.classList.contains("dark-mode")) {
+							theme = "dark";
+						}
+						localStorage.setItem("theme", theme);
+						
+						// Update Mermaid theme if it exists
+						if (typeof mermaid !== 'undefined') {
+							mermaid.initialize({
+								startOnLoad: true,
+								theme: theme === "dark" ? "dark" : "default",
+								flowchart: { curve: "basis" },
+								securityLevel: "loose",
+							});
+							location.reload();
+						}
+					});
 				}
 			});
 		</script>
