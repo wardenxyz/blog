@@ -25,6 +25,18 @@ age 使用笔记：[age-note](/posts/2025/age.md)
 
 gpg 使用笔记：[gpg-note](/posts/2024/gen_GPG_key.md)
 
+- Windows
+
+age 的私钥存放在
+
+```bash
+C:\Users\24109\AppData\Roaming\sops\age\keys.txt
+```
+
+- Linux
+
+（待补充）
+
 ## sops 加密二进制文件
 
 ```bash
