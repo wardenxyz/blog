@@ -1,0 +1,111 @@
+:root{
+  --bg:#ffffff;
+  --text:#111111;
+  --muted:#666666;
+  --link:#0a66c2;
+  --border:#e5e5e5;
+  --surface:#f7f7f7;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0f1115;
+    --text:#e7e7e7;
+    --muted:#9aa0a6;
+    --link:#7ab7ff;
+    --border:#2a2d33;
+    --surface:#161a20;
+  }
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+  background:var(--bg);
+  color:var(--text);
+}
+.container{max-width:1600px;margin:0 auto;padding:0 20px}
+.site-header{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--border)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;height:56px}
+.brand{font-weight:700;color:var(--text);text-decoration:none;font-size:18px}
+.nav{display:flex;gap:16px}
+.nav-link{color:var(--text);text-decoration:none;padding:8px 10px;border-radius:6px;transition:background-color .2s ease,color .2s ease}
+.nav-link:hover{background:var(--surface);color:var(--text)}
+.nav-link.github{color:var(--link)}
+.layout{display:grid;gap:28px;padding:28px 0}
+.layout-3{grid-template-columns:260px 1fr 260px}
+.content{min-width:0}
+.content img{max-width:100%;height:auto}
+.content pre{background:var(--surface);padding:14px;border-radius:8px;overflow:auto;border:1px solid var(--border)}
+.content code{background:var(--surface);padding:2px 4px;border-radius:4px}
+.toc{position:sticky;top:76px;align-self:start;border-left:1px solid var(--border);padding-left:18px;max-height:calc(100vh - 100px);overflow:auto}
+.toc-title{font-weight:600;margin-bottom:8px;color:var(--muted)}
+.sidebar-col{position:sticky;top:76px;align-self:start;max-height:calc(100vh - 100px);overflow:auto;border-right:1px solid var(--border);padding-right:18px}
+.sidebar{font-size:14px}
+.sidebar-year{margin:10px 0 6px;color:var(--muted);font-weight:600}
+.sidebar-group ul{list-style:none;margin:0;padding:0}
+.sidebar a{display:block;padding:6px 8px;color:var(--text);text-decoration:none;border-radius:6px;transition:background-color .2s ease,color .2s ease}
+.sidebar a:hover{background:var(--surface)}
+.sidebar a.active{background:var(--surface);outline:1px solid var(--border)}
+.site-footer{border-top:1px solid var(--border);padding:24px 0;color:var(--muted)}
+.back-to-top{position:fixed;right:20px;bottom:24px;width:40px;height:40px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:background-color .2s ease,opacity .2s ease}
+.back-to-top:hover{background:var(--surface)}
+
+@media (max-width: 1200px){
+  .layout-3{grid-template-columns:1fr}
+  .toc{order:-1;border-left:none;border-top:1px solid var(--border);padding:12px 0;top:auto;max-height:none}
+  .sidebar-col{order:-2;border-right:none;border-bottom:1px solid var(--border);padding:12px 0;top:auto;max-height:none}
+}
+
+.content h1,.content h2,.content h3,.content h4{scroll-margin-top:80px}
+.content table{border-collapse:collapse;width:100%;overflow:auto;display:block}
+.content th,.content td{border:1px solid var(--border);padding:8px}
+.content blockquote{border-left:4px solid var(--border);margin:0;padding:8px 12px;color:var(--muted);background:var(--surface)}
+
+/* Math formula styling */
+.MathJax_Display{overflow-x:auto;overflow-y:hidden}
+.MathJax{outline:0}
+mjx-container[jax="SVG"]{direction:ltr}
+mjx-container[jax="SVG"] > svg{overflow:visible;min-height:1px;min-width:1px}
+mjx-container[jax="SVG"] > svg a{fill:blue;stroke:blue}
+mjx-container[jax="SVG"][display="true"]{display:block;text-align:center;margin:1em 0}
+mjx-container[jax="SVG"][display="true"][width="full"]{display:block;width:100%}
+mjx-container[jax="SVG"][justify="left"]{text-align:left}
+mjx-container[jax="SVG"][justify="right"]{text-align:right}
+
+/* SVG styling */
+.content svg{max-width:100%;height:auto;display:block;margin:1em auto}
+.content figure{text-align:center;margin:1em 0}
+.content figure svg{margin:0.5em auto}
+.content .svg-container{text-align:center;margin:1em 0}
+
+/* Code copy button styling */
+.code-container{position:relative}
+.copy-btn{
+  position:absolute;
+  top:8px;
+  right:8px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:4px 8px;
+  border-radius:4px;
+  font-size:12px;
+  cursor:pointer;
+  opacity:0;
+  transition:opacity .2s ease,background-color .2s ease;
+  z-index:1;
+}
+.code-container:hover .copy-btn{opacity:1}
+.copy-btn:hover{background:var(--border)}
+.copy-btn.copied{
+  background:var(--link);
+  color:white;
+  border-color:var(--link);
+}
+
+/* Dark mode adjustments for math and SVG */
+@media (prefers-color-scheme: dark){
+  mjx-container[jax="SVG"] > svg{color-scheme:dark}
+  .content svg{filter:brightness(0.9)}
+}
