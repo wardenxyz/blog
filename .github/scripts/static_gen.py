@@ -22,6 +22,7 @@ from typing import Tuple
 import frontmatter
 from markdown import Markdown
 from bs4 import BeautifulSoup
+from pymdownx.superfences import fence_div_format
 
 
 SCRIPT_DIR = Path(__file__).parent.resolve()
@@ -43,6 +44,8 @@ class Page:
     toc: str
     base: str
     date: str = ""  # 添加日期字段
+    tags: list[str] | None = None
+    categories: list[str] | None = None
 
 
 def clean_outdir():
@@ -63,13 +66,36 @@ def rel_base(path_under_out: Path) -> str:
 
 
 def load_markdown_with_toc(text: str) -> Tuple[str, str]:
-    md = Markdown(extensions=[
-        "toc",
-        "fenced_code",
-        "tables",
-        "sane_lists",
-        "attr_list",
-    ])
+    # Enable TOC, fences, tables, lists, attrs, magiclink (autolink urls), and mermaid via superfences
+    md = Markdown(
+        extensions=[
+            "toc",
+            "fenced_code",
+            "tables",
+            "sane_lists",
+            "attr_list",
+            "pymdownx.magiclink",
+            "pymdownx.superfences",
+        ],
+    extension_configs={
+            # Superfences: convert ```mermaid fenced blocks into <div class="mermaid"> ... </div>
+            "pymdownx.superfences": {
+                "custom_fences": [
+                    {
+                        "name": "mermaid",
+                        "class": "mermaid",
+            # Pass the actual function object for programmatic API
+            "format": fence_div_format,
+                    }
+                ]
+            },
+            # Magiclink: create clickable links for bare https:// URLs
+            "pymdownx.magiclink": {
+                "repo_url_shortener": False,
+                "hide_protocol": False,
+            },
+        },
+    )
     html = md.convert(text)
     toc_html = getattr(md, "toc", "") or ""
     return html, toc_html
@@ -106,7 +132,17 @@ def rewrite_md_links_to_html(html: str) -> str:
         if not href or href.startswith("#"):
             continue
         low = href.lower()
-        if low.startswith("http://") or low.startswith("https://") or low.startswith("mailto:") or low.startswith("tel:"):
+        # For external links, ensure they open in a new tab with safe rel attributes
+        if low.startswith("http://") or low.startswith("https://"):
+            # target
+            a["target"] = "_blank"
+            # merge rel values
+            existing_rel = set((a.get("rel") or [])) if isinstance(a.get("rel"), list) else set(str(a.get("rel") or "").split())
+            existing_rel.update({"noopener", "noreferrer"})
+            if existing_rel:
+                a["rel"] = " ".join(sorted(existing_rel))
+            continue
+        if low.startswith("mailto:") or low.startswith("tel:"):
             continue
         qpos = href.find("?")
         fpos = href.find("#")
@@ -137,10 +173,25 @@ def build_page(src_md: Path, out_html: Path) -> Page:
         date = date.strftime('%Y-%m-%d')
     elif date:
         date = str(date)
+    # 解析 tags 与 categories（兼容 category / categories 字段与字符串/列表）
+    raw_tags = post.get("tags") or []
+    if isinstance(raw_tags, (str, int, float)):
+        tags: list[str] = [str(raw_tags)]
+    else:
+        tags = [str(t) for t in raw_tags]
+
+    raw_cats = post.get("categories") if "categories" in post else post.get("category")
+    if raw_cats is None:
+        categories: list[str] = []
+    elif isinstance(raw_cats, (str, int, float)):
+        categories = [str(raw_cats)]
+    else:
+        categories = [str(c) for c in raw_cats]
     html, toc = load_markdown_with_toc(body_md)
+    # Post-process links: convert .md to .html and set external links to open in new tab
     html = rewrite_md_links_to_html(html)
     base = rel_base(out_html)
-    return Page(src=src_md, out=out_html, title=title, html=html, toc=toc, base=base, date=date)
+    return Page(src=src_md, out=out_html, title=title, html=html, toc=toc, base=base, date=date, tags=tags, categories=categories)
 
 
 def generate_sidebar(all_pages: list[Page], current: Page) -> str:
@@ -172,6 +223,21 @@ def generate_sidebar(all_pages: list[Page], current: Page) -> str:
 
 
 def write_page(page: Page, github_url: str, owner: str, sidebar_html: str):
+    # 构建元信息区块 HTML（仅当存在任意一项时渲染）
+    meta_parts: list[str] = []
+    if page.date:
+        meta_parts.append(f'<span class="meta-item meta-date" title="发布日期">📅 {page.date}</span>')
+    if page.categories:
+        cats = "".join(f'<span class="badge badge-cat">{c}</span>' for c in page.categories or [])
+        if cats:
+            meta_parts.append(f'<span class="meta-item" title="分类">📂 {cats}</span>')
+    if page.tags:
+        tgs = "".join(f'<span class="badge badge-tag">{t}</span>' for t in page.tags or [])
+        if tgs:
+            meta_parts.append(f'<span class="meta-item" title="标签">🏷️ {tgs}</span>')
+    meta_html = ""
+    if meta_parts:
+        meta_html = '<div class="post-meta" aria-label="文章元信息">' + "".join(meta_parts) + "</div>"
     context = {
         "title": page.title,
         "content": page.html,
@@ -181,10 +247,45 @@ def write_page(page: Page, github_url: str, owner: str, sidebar_html: str):
         "github_url": github_url,
         "base": page.base,
         "sidebar": sidebar_html,
+        "meta": meta_html,
     }
     out_html = render_template("base.html", context)
     page.out.parent.mkdir(parents=True, exist_ok=True)
     page.out.write_text(out_html, encoding="utf-8")
+
+
+def write_search_index(pages: list[Page]):
+    """Write a lightweight search index to OUT/search.json
+    Include title, output path relative to site root, tags (if available), and plain text content.
+    """
+    import json
+    from bs4 import BeautifulSoup
+
+    items = []
+    for p in pages:
+        # Skip non-md or non-content pages if needed; here we include all.
+        rel_path = p.out.relative_to(OUT).as_posix()
+        # Extract text content from HTML
+        try:
+            soup = BeautifulSoup(p.html, "html.parser")
+            text = soup.get_text(" ", strip=True)
+        except Exception:
+            text = ""
+        # Try fetch tags from frontmatter by reloading quickly
+        tags = []
+        try:
+            fm = frontmatter.load(p.src)
+            tags = fm.get("tags") or []
+        except Exception:
+            pass
+        items.append({
+            "title": p.title,
+            "path": rel_path,
+            "tags": tags,
+            "content": text[:2000]  # cap to keep file small
+        })
+
+    (OUT / "search.json").write_text(json.dumps(items, ensure_ascii=False), encoding="utf-8")
 
 
 def iter_markdown_files(root: Path) -> list[Path]:
@@ -235,6 +336,9 @@ def main():
     for p in built_pages:
         sidebar = generate_sidebar([bp for bp in built_pages if bp.src.as_posix().endswith('.md')], p)
         write_page(p, github_url, owner, sidebar)
+
+    # write search index after all pages are built
+    write_search_index(built_pages)
 
     print(f"Built pages: {len([p for p in [rp[0] for rp in root_pages] if p.exists()])}, posts: {count_posts}")
 

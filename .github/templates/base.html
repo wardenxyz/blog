@@ -30,13 +30,31 @@
   <script type="text/javascript" id="MathJax-script" async
     src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
   </script>
+  <!-- Mermaid Diagram -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js" defer></script>
+  <script>
+    // Initialize Mermaid when DOM is ready
+    document.addEventListener('DOMContentLoaded', function(){
+      if(window.mermaid && mermaid.initialize){
+        const theme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'default';
+        mermaid.initialize({ startOnLoad: true, theme });
+        if(mermaid.run){
+          try{ mermaid.run({ querySelector: '.mermaid' }); }catch(e){}
+        }
+      }
+    });
+  </script>
 </head>
-<body>
+<body data-base="{{ base }}">
   <header class="site-header">
     <div class="container header-inner">
       <a class="brand" href="{{ base }}index.html">My Blog</a>
   <button class="menu-toggle" id="menuToggle" aria-label="打开菜单" aria-controls="primaryNav" aria-expanded="false">☰</button>
-  <nav class="nav" id="primaryNav">
+      <div class="search" role="search">
+        <input type="search" id="searchInput" placeholder="搜索文章..." aria-label="搜索文章" autocomplete="off" />
+        <div class="search-results" id="searchResults" role="listbox" aria-label="搜索结果"></div>
+      </div>
+      <nav class="nav" id="primaryNav">
         <a class="nav-link" href="{{ base }}index.html">首页</a>
         <a class="nav-link" href="{{ base }}categories.html">Categories</a>
         <a class="nav-link" href="{{ base }}tags.html">Tags</a>
@@ -50,7 +68,8 @@
       {{ sidebar }}
     </aside>
     <article class="content" id="content">
-      {{ content }}
+  {{ meta }}
+  {{ content }}
     </article>
     <aside class="toc" id="toc">
       <div class="toc-title">大纲</div>
