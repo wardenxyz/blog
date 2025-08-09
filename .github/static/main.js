@@ -86,4 +86,54 @@
   } else {
     addCopyButtons();
   }
+
+  // Mobile nav toggle
+  function initMenuToggle(){
+    const toggle = document.getElementById('menuToggle');
+    const nav = document.getElementById('primaryNav');
+    if(!toggle || !nav) return;
+    const mq = window.matchMedia('(max-width: 800px)');
+
+    function closeMenu(){
+      nav.classList.remove('open');
+      toggle.setAttribute('aria-expanded','false');
+    }
+    function openMenu(){
+      nav.classList.add('open');
+      toggle.setAttribute('aria-expanded','true');
+    }
+    toggle.addEventListener('click', ()=>{
+      if(nav.classList.contains('open')) closeMenu(); else openMenu();
+    });
+    // Close on resize to desktop
+    mq.addEventListener('change', e=>{ if(!e.matches) closeMenu(); });
+    // Close when clicking a link (for single page feel)
+    nav.addEventListener('click', e=>{ if(e.target.closest('a')) closeMenu(); });
+  }
+
+  // Collapsible TOC on mobile
+  function initCollapsibleToc(){
+    const toc = document.getElementById('toc');
+    if(!toc) return;
+    const title = toc.querySelector('.toc-title');
+    if(!title) return;
+  const mq = window.matchMedia('(max-width: 959px)');
+    function ensureCollapsed(){ if(mq.matches) toc.classList.add('collapsed'); else toc.classList.remove('collapsed'); }
+    ensureCollapsed();
+    mq.addEventListener('change', ensureCollapsed);
+    title.addEventListener('click', ()=>{
+      if(!mq.matches) return;
+      toc.classList.toggle('collapsed');
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', ()=>{
+      initMenuToggle();
+      initCollapsibleToc();
+    });
+  } else {
+    initMenuToggle();
+    initCollapsibleToc();
+  }
 })();
