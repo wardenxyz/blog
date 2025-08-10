@@ -120,6 +120,9 @@ body{
 }
 
 .content h1,.content h2,.content h3,.content h4{scroll-margin-top:calc(var(--header-h, 56px) + 40px)}
+@media (max-width: 959px){
+  .content h1,.content h2,.content h3,.content h4{scroll-margin-top:calc(var(--header-h, 56px) + var(--toc-h, 0px) + 16px)}
+}
 .content table{border-collapse:collapse;display:block;width:auto;max-width:100%;margin-left:auto;margin-right:auto;overflow-x:auto}
 .content th,.content td{border:1px solid var(--border);padding:8px}
 .content blockquote{border-left:4px solid var(--border);margin:0;padding:8px 12px;color:var(--muted);background:var(--surface)}

@@ -16,14 +16,9 @@
         document.documentElement.style.setProperty('--toc-h', '0px');
         return;
       }
-      const title = toc.querySelector('.toc-title');
-      let h = 0;
-      if(toc.classList.contains('collapsed')){
-        h = (title ? title.getBoundingClientRect().height : toc.getBoundingClientRect().height) || 0;
-      }else{
-        // expanded height might be larger; measure full block height
-        h = toc.getBoundingClientRect().height || (title ? title.getBoundingClientRect().height : 0);
-      }
+  // Measure the actual TOC bar height (including paddings/border)
+  const rect = toc.getBoundingClientRect();
+  const h = rect.height || 0;
       document.documentElement.style.setProperty('--toc-h', Math.ceil(h) + 'px');
     }catch(_e){
       document.documentElement.style.setProperty('--toc-h', '0px');
@@ -36,14 +31,13 @@
       const header = document.querySelector('.site-header');
       const cssVar = getComputedStyle(document.documentElement).getPropertyValue('--header-h').trim();
       const headerH = cssVar ? parseFloat(cssVar) : (header ? header.getBoundingClientRect().height : 72);
-      let extra = 0;
+    let extra = 0;
       const isMobile = window.matchMedia('(max-width: 959px)').matches;
       if(isMobile){
         const tocEl = document.getElementById('toc');
         if(tocEl){
-          const titleEl = tocEl.querySelector('.toc-title');
-          const h = (titleEl ? titleEl.getBoundingClientRect().height : tocEl.getBoundingClientRect().height) || 0;
-          extra += h;
+      const h = tocEl.getBoundingClientRect().height || 0;
+      extra += h;
         }
       }
       const baseBuffer = isMobile ? 16 : 12; // slightly larger buffer so heading is fully visible
