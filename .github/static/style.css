@@ -68,13 +68,35 @@ body{
 .back-to-top{position:fixed;right:20px;bottom:24px;width:40px;height:40px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:background-color .2s ease,opacity .2s ease}
 .back-to-top:hover{background:var(--surface)}
 
-/* <= 959px: single column, content first, TOC and sidebar stacked after */
+/* <= 959px: single column. TOC first, then content, then sidebar */
 @media (max-width: 959px){
-  .layout{padding-left:20px;padding-right:20px}
+  /* widen mobile side gutters a bit */
+  .container{padding-left:24px;padding-right:24px}
+  /* specifically increase top bar (header) side paddings more */
+  .site-header .container{padding-left:28px;padding-right:28px}
+  .layout{padding-left:24px;padding-right:24px}
+  /* reserve vertical space for fixed TOC bar height */
+  .layout{padding-top:var(--toc-h, 0px)}
   .layout-3{grid-template-columns:1fr}
-  .content{order:0}
-  #toc{order:1;border-left:none;border-top:1px solid var(--border);padding:12px 0;top:auto;max-height:none}
-  .sidebar-col{order:2;border-right:none;border-bottom:1px solid var(--border);padding:12px 0;top:auto;max-height:none;padding-left:8px}
+  /* Reorder: TOC -> content -> sidebar */
+  #toc{order:0}
+  .content{order:1}
+  .sidebar-col{order:2}
+  /* Make TOC a fixed bar below the header; collapsible */
+  #toc{
+    position:fixed;
+    top:var(--header-h, 56px);
+    left:0; right:0;
+    z-index:95;
+    background:var(--bg);
+    border-left:none;
+    border-top:none;
+    border-bottom:1px solid var(--border);
+    padding:8px 24px 10px; /* align with container gutters */
+    max-height:none;
+  }
+  .toc-title{display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin:0}
+  #toc.collapsed > :not(.toc-title){display:none}
 }
 
 /* 960px–1399px: two columns (content + TOC), hide left sidebar */
@@ -98,7 +120,7 @@ body{
 }
 
 .content h1,.content h2,.content h3,.content h4{scroll-margin-top:calc(var(--header-h, 56px) + 40px)}
-.content table{border-collapse:collapse;width:100%;overflow:auto;display:block}
+.content table{border-collapse:collapse;display:block;width:auto;max-width:100%;margin-left:auto;margin-right:auto;overflow-x:auto}
 .content th,.content td{border:1px solid var(--border);padding:8px}
 .content blockquote{border-left:4px solid var(--border);margin:0;padding:8px 12px;color:var(--muted);background:var(--surface)}
 
@@ -109,11 +131,9 @@ body{
 .badge-cat{border-color:color-mix(in oklab, var(--link) 40%, var(--border)); background:color-mix(in oklab, var(--link) 10%, var(--surface))}
 .badge-tag{border-color:var(--border)}
 
-/* Collapsible TOC on small/medium screens */
-@media (max-width: 959px){
-  .toc-title{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:8px 0}
-  #toc.collapsed > :not(.toc-title){display:none}
-}
+/* Caret for TOC title indicating collapsed/expanded */
+.toc-title::after{content:'▾'; color:var(--muted); margin-left:8px}
+#toc.collapsed .toc-title::after{content:'▸'}
 
 /* Math formula styling */
 .MathJax_Display{overflow-x:auto;overflow-y:hidden}

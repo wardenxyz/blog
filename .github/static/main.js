@@ -7,6 +7,52 @@
     document.documentElement.style.setProperty('--header-h', h + 'px');
   }
 
+  // Maintain --toc-h for mobile to reserve space when TOC is fixed
+  function setTocHeightVar(){
+    try{
+      const toc = document.getElementById('toc');
+      const isMobile = window.matchMedia('(max-width: 959px)').matches;
+      if(!toc || !isMobile){
+        document.documentElement.style.setProperty('--toc-h', '0px');
+        return;
+      }
+      const title = toc.querySelector('.toc-title');
+      let h = 0;
+      if(toc.classList.contains('collapsed')){
+        h = (title ? title.getBoundingClientRect().height : toc.getBoundingClientRect().height) || 0;
+      }else{
+        // expanded height might be larger; measure full block height
+        h = toc.getBoundingClientRect().height || (title ? title.getBoundingClientRect().height : 0);
+      }
+      document.documentElement.style.setProperty('--toc-h', Math.ceil(h) + 'px');
+    }catch(_e){
+      document.documentElement.style.setProperty('--toc-h', '0px');
+    }
+  }
+
+  // Compute scroll offset so the heading is fully visible below sticky bars
+  function computeScrollOffset(){
+    try{
+      const header = document.querySelector('.site-header');
+      const cssVar = getComputedStyle(document.documentElement).getPropertyValue('--header-h').trim();
+      const headerH = cssVar ? parseFloat(cssVar) : (header ? header.getBoundingClientRect().height : 72);
+      let extra = 0;
+      const isMobile = window.matchMedia('(max-width: 959px)').matches;
+      if(isMobile){
+        const tocEl = document.getElementById('toc');
+        if(tocEl){
+          const titleEl = tocEl.querySelector('.toc-title');
+          const h = (titleEl ? titleEl.getBoundingClientRect().height : tocEl.getBoundingClientRect().height) || 0;
+          extra += h;
+        }
+      }
+      const baseBuffer = isMobile ? 16 : 12; // slightly larger buffer so heading is fully visible
+      return headerH + extra + baseBuffer;
+    }catch(_e){
+      return 84;
+    }
+  }
+
   // Set once early to avoid jump
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', setHeaderHeight);
@@ -15,7 +61,8 @@
   }
 
   window.addEventListener('resize', ()=>{
-    setHeaderHeight();
+  setHeaderHeight();
+  setTocHeightVar();
   });
 
   const btn = document.getElementById('backToTop');
@@ -40,7 +87,30 @@
       const target = id && document.getElementById(id);
       if(target){
         e.preventDefault();
-        target.scrollIntoView({behavior:'smooth', block:'start'});
+        const isMobile = window.matchMedia('(max-width: 959px)').matches;
+        // Collapse first on mobile so we can compute correct offset without TOC bar
+        if(isMobile){
+          toc.classList.add('collapsed');
+          const titleEl = toc.querySelector('.toc-title');
+          if(titleEl){ titleEl.setAttribute('aria-expanded','false'); }
+          setTocHeightVar();
+        }
+        // Scroll with header offset and update hash without jump
+    const doScroll = () => {
+          try{
+      const offset = computeScrollOffset();
+            const rect = target.getBoundingClientRect();
+            const top = rect.top + window.scrollY - offset;
+            window.scrollTo({ top, behavior: 'smooth' });
+            if(id){
+              try{ history.pushState(null, '', '#' + encodeURIComponent(id)); }catch(_e){ /* noop */ }
+            }
+          }catch(_e){
+            target.scrollIntoView({behavior:'smooth', block:'start'});
+          }
+        };
+        // Wait a frame to let layout update after collapsing
+  requestAnimationFrame(() => setTimeout(doScroll, 0));
       }
     });
   }
@@ -138,13 +208,32 @@
     if(!toc) return;
     const title = toc.querySelector('.toc-title');
     if(!title) return;
-  const mq = window.matchMedia('(max-width: 959px)');
-    function ensureCollapsed(){ if(mq.matches) toc.classList.add('collapsed'); else toc.classList.remove('collapsed'); }
-    ensureCollapsed();
-    mq.addEventListener('change', ensureCollapsed);
+    const mq = window.matchMedia('(max-width: 959px)');
+    // Default to collapsed on mobile; expanded on larger screens
+    function syncForViewport(){
+      if(mq.matches){ toc.classList.add('collapsed'); }
+      else{ toc.classList.remove('collapsed'); }
+      title.setAttribute('role','button');
+      title.setAttribute('tabindex','0');
+      title.setAttribute('aria-expanded', String(!toc.classList.contains('collapsed')));
+      setTocHeightVar();
+    }
+    syncForViewport();
+    mq.addEventListener('change', syncForViewport);
     title.addEventListener('click', ()=>{
       if(!mq.matches) return;
       toc.classList.toggle('collapsed');
+      title.setAttribute('aria-expanded', String(!toc.classList.contains('collapsed')));
+      setTocHeightVar();
+    });
+    title.addEventListener('keydown', (e)=>{
+      if(!mq.matches) return;
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        toc.classList.toggle('collapsed');
+        title.setAttribute('aria-expanded', String(!toc.classList.contains('collapsed')));
+        setTocHeightVar();
+      }
     });
   }
 
@@ -155,6 +244,24 @@
       initSearch();
       initContentHighlight();
       setHeaderHeight();
+  setTocHeightVar();
+      // Offset scroll for initial hash navigation (skip if highlight param is present)
+      try{
+        const params = new URLSearchParams(window.location.search);
+        if(!params.get('highlight') && window.location.hash){
+          const id = decodeURIComponent(window.location.hash.slice(1));
+          const target = id && document.getElementById(id);
+          if(target){
+            const doScroll=()=>{
+              const offset = computeScrollOffset();
+              const rect = target.getBoundingClientRect();
+              const top = rect.top + window.scrollY - offset;
+              window.scrollTo({top, behavior:'auto'});
+            };
+            requestAnimationFrame(()=> setTimeout(doScroll, 0));
+          }
+        }
+      }catch(_e){/* noop */}
     });
   } else {
     initMenuToggle();
@@ -162,6 +269,21 @@
     initSearch();
     initContentHighlight();
     setHeaderHeight();
+  setTocHeightVar();
+    // Same for immediate load state
+    try{
+      const params = new URLSearchParams(window.location.search);
+      if(!params.get('highlight') && window.location.hash){
+        const id = decodeURIComponent(window.location.hash.slice(1));
+        const target = id && document.getElementById(id);
+        if(target){
+          const offset = computeScrollOffset();
+          const rect = target.getBoundingClientRect();
+          const top = rect.top + window.scrollY - offset;
+          window.scrollTo({top, behavior:'auto'});
+        }
+      }
+    }catch(_e){/* noop */}
   }
 })();
 
@@ -314,10 +436,12 @@ function initContentHighlight(){
     if(!content) return;
     const first = highlightInElement(content, words);
     if(first){
-  const header = document.querySelector('.site-header');
-  const cssVar = getComputedStyle(document.documentElement).getPropertyValue('--header-h').trim();
-  const headerH = cssVar ? parseFloat(cssVar) : (header ? header.getBoundingClientRect().height : 72);
-  const offset = headerH + 8;
+  const offset = (typeof computeScrollOffset === 'function') ? computeScrollOffset() : (function(){
+    const header = document.querySelector('.site-header');
+    const cssVar = getComputedStyle(document.documentElement).getPropertyValue('--header-h').trim();
+    const headerH = cssVar ? parseFloat(cssVar) : (header ? header.getBoundingClientRect().height : 72);
+    return headerH + 8;
+  })();
       const go = ()=>{
         const rect = first.getBoundingClientRect();
         const top = rect.top + window.scrollY - offset;
