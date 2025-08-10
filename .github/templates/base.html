@@ -7,6 +7,17 @@
   <link rel="stylesheet" href="{{ base }}static/style.css" />
   <link rel="icon" href="{{ base }}static/favicon.svg" type="image/svg+xml" />
   <meta name="color-scheme" content="light dark" />
+  <!-- Apply saved theme early to avoid FOUC -->
+  <script>
+    (function(){
+      try{
+        var t = localStorage.getItem('theme');
+        if(t === 'light' || t === 'dark'){
+          document.documentElement.setAttribute('data-theme', t);
+        }
+      }catch(_e){/* noop */}
+    })();
+  </script>
   
   <!-- MathJax Configuration -->
   <script>
@@ -36,7 +47,9 @@
     // Initialize Mermaid when DOM is ready
     document.addEventListener('DOMContentLoaded', function(){
       if(window.mermaid && mermaid.initialize){
-        const theme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'default';
+        // Respect explicit data-theme over system preference
+        const dt = document.documentElement.getAttribute('data-theme');
+        const theme = dt === 'dark' ? 'dark' : (dt === 'light' ? 'default' : ((window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'default'));
         mermaid.initialize({ startOnLoad: true, theme });
         if(mermaid.run){
           try{ mermaid.run({ querySelector: '.mermaid' }); }catch(e){}
@@ -54,6 +67,7 @@
         <input type="search" id="searchInput" placeholder="搜索文章..." aria-label="搜索文章" autocomplete="off" />
         <div class="search-results" id="searchResults" role="listbox" aria-label="搜索结果"></div>
       </div>
+      <button class="theme-toggle" id="themeToggle" aria-label="切换主题" title="切换主题">🖥️</button>
       <nav class="nav" id="primaryNav">
         <a class="nav-link" href="{{ base }}index.html">首页</a>
         <a class="nav-link" href="{{ base }}categories.html">Categories</a>

@@ -237,6 +237,7 @@
       initCollapsibleToc();
       initSearch();
       initContentHighlight();
+  initThemeToggle();
       setHeaderHeight();
   setTocHeightVar();
       // Offset scroll for initial hash navigation (skip if highlight param is present)
@@ -262,6 +263,7 @@
     initCollapsibleToc();
     initSearch();
     initContentHighlight();
+  initThemeToggle();
     setHeaderHeight();
   setTocHeightVar();
     // Same for immediate load state
@@ -416,6 +418,68 @@ function initSearch(){
   }
 
   function escapeRegExp(s){ return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+}
+
+// --- Theme toggle ---
+function initThemeToggle(){
+  const btn = document.getElementById('themeToggle');
+  if(!btn) return;
+  const docEl = document.documentElement;
+
+  function applyIcon(theme){
+    // Use simple icons: sun for light, moon for dark, monitor for auto
+    if(theme === 'light') btn.textContent = '☀️';
+    else if(theme === 'dark') btn.textContent = '🌙';
+    else btn.textContent = '🖥️';
+  }
+
+  function getSystemDark(){
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+
+  function currentTheme(){
+    try{ const t = localStorage.getItem('theme'); if(t==='light'||t==='dark') return t; }catch(_e){}
+    return getSystemDark() ? 'dark' : 'light';
+  }
+
+  function setTheme(t){
+    if(t === 'light' || t === 'dark'){
+      try{ localStorage.setItem('theme', t); }catch(_e){}
+      docEl.setAttribute('data-theme', t);
+    }else{
+      try{ localStorage.removeItem('theme'); }catch(_e){}
+      docEl.removeAttribute('data-theme');
+    }
+    applyIcon(t);
+    // Update Mermaid diagrams theme if available
+    try{
+      if(window.mermaid && mermaid.initialize){
+        const theme = (t==='dark') ? 'dark' : (t==='light' ? 'default' : (getSystemDark() ? 'dark' : 'default'));
+        mermaid.initialize({ startOnLoad: false, theme });
+        if(mermaid.run){ mermaid.run({ querySelector: '.mermaid' }); }
+      }
+    }catch(_e){}
+  }
+
+  // Initialize
+  setTheme(currentTheme());
+
+  // Cycle: light -> dark -> auto -> light
+  btn.addEventListener('click', ()=>{
+    let t;
+    try{ t = localStorage.getItem('theme'); }catch(_e){ t = null; }
+    if(t === 'light') setTheme('dark');
+    else if(t === 'dark') setTheme(null);
+    else setTheme('light');
+  });
+
+  // React to system scheme changes when in auto mode
+  const mql = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+  if(mql && mql.addEventListener){
+    mql.addEventListener('change', ()=>{
+      try{ if(!localStorage.getItem('theme')) setTheme(null); }catch(_e){ setTheme(null); }
+    });
+  }
 }
 
 // Highlight terms on destination page based on ?highlight= query and scroll to first
