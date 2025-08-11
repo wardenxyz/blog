@@ -238,6 +238,7 @@
       initSearch();
       initContentHighlight();
   initThemeToggle();
+      initSidebarScrollMemory();
       setHeaderHeight();
   setTocHeightVar();
       // Offset scroll for initial hash navigation (skip if highlight param is present)
@@ -264,6 +265,7 @@
     initSearch();
     initContentHighlight();
   initThemeToggle();
+    initSidebarScrollMemory();
     setHeaderHeight();
   setTocHeightVar();
     // Same for immediate load state
@@ -282,6 +284,36 @@
     }catch(_e){/* noop */}
   }
 })();
+
+// --- Sidebar scroll position memory ---
+function initSidebarScrollMemory(){
+  try{
+    const el = document.getElementById('sidebar');
+    if(!el) return;
+    const key = 'sidebar-scrollTop';
+    // Restore on load (use rAF to ensure styles applied)
+    const saved = sessionStorage.getItem(key);
+    if(saved){
+      requestAnimationFrame(()=>{
+        try{ el.scrollTop = parseInt(saved, 10) || 0; }catch(_e){ el.scrollTop = 0; }
+      });
+    }
+    // Persist on scroll (throttled)
+    let ticking = false;
+    el.addEventListener('scroll', ()=>{
+      if(ticking) return;
+      ticking = true;
+      requestAnimationFrame(()=>{
+        try{ sessionStorage.setItem(key, String(el.scrollTop||0)); }catch(_e){}
+        ticking = false;
+      });
+    }, {passive:true});
+    // Also persist right before unload/navigation
+    window.addEventListener('beforeunload', ()=>{
+      try{ sessionStorage.setItem(key, String(el.scrollTop||0)); }catch(_e){}
+    });
+  }catch(_e){ /* noop */ }
+}
 
 // --- Search ---
 function initSearch(){
