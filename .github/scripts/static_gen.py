@@ -382,7 +382,8 @@ def write_search_index(pages: list[Page]):
             tags = fm.get("tags") or []
         except Exception:
             pass
-    items.append({
+        # Append each page's entry to the index (bug fix: previously appended only once outside the loop)
+        items.append({
             "title": p.title,
             "path": rel_path,
             "tags": tags,
