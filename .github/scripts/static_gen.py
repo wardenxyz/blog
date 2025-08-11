@@ -46,6 +46,9 @@ class Page:
     date: str = ""  # 添加日期字段
     tags: list[str] | None = None
     categories: list[str] | None = None
+    description: str = ""
+    url: str = ""
+    image: str = ""
 
 
 def clean_outdir():
@@ -112,6 +115,18 @@ def extract_title_from_text(text: str) -> str:
     return "Untitled"
 
 
+def extract_description_from_html(html: str, max_len: int = 180) -> str:
+    try:
+        soup = BeautifulSoup(html, "html.parser")
+        # Prefer first paragraph's text
+        p = soup.find("p")
+        text = p.get_text(" ", strip=True) if p else soup.get_text(" ", strip=True)
+        text = re.sub(r"\s+", " ", text)
+        return text[:max_len]
+    except Exception:
+        return ""
+
+
 def render_template(template_name: str, context: dict) -> str:
     tpl_path = TEMPLATES / template_name
     text = tpl_path.read_text(encoding="utf-8")
@@ -163,7 +178,7 @@ def rewrite_md_links_to_html(html: str) -> str:
         return html
 
 
-def build_page(src_md: Path, out_html: Path) -> Page:
+def build_page(src_md: Path, out_html: Path, site_url: str = "") -> Page:
     post = frontmatter.load(src_md)
     body_md = post.content or src_md.read_text(encoding="utf-8")
     title = post.get("title") or extract_title_from_text(body_md)
@@ -191,7 +206,27 @@ def build_page(src_md: Path, out_html: Path) -> Page:
     # Post-process links: convert .md to .html and set external links to open in new tab
     html = rewrite_md_links_to_html(html)
     base = rel_base(out_html)
-    return Page(src=src_md, out=out_html, title=title, html=html, toc=toc, base=base, date=date, tags=tags, categories=categories)
+    # description
+    description = extract_description_from_html(html)
+    # canonical url
+    rel_url = out_html.relative_to(OUT).as_posix()
+    page_url = f"{site_url.rstrip('/')}/{rel_url}" if site_url else rel_url
+    # optional featured image
+    image = str(post.get("image", "")) if post.get("image") else ""
+    return Page(
+        src=src_md,
+        out=out_html,
+        title=title,
+        html=html,
+        toc=toc,
+        base=base,
+        date=date,
+        tags=tags,
+        categories=categories,
+        description=description,
+        url=page_url,
+        image=image,
+    )
 
 
 def generate_sidebar(all_pages: list[Page], current: Page) -> str:
@@ -238,6 +273,74 @@ def write_page(page: Page, github_url: str, owner: str, sidebar_html: str):
     meta_html = ""
     if meta_parts:
         meta_html = '<div class="post-meta" aria-label="文章元信息">' + "".join(meta_parts) + "</div>"
+    # SEO head block (meta/og/twitter/canonical/json-ld)
+    seo_parts: list[str] = []
+    if page.description:
+        seo_parts.append(f'<meta name="description" content="{page.description}" />')
+    if page.url:
+        seo_parts.append(f'<link rel="canonical" href="{page.url}" />')
+        # Open Graph
+        seo_parts.append(f'<meta property="og:title" content="{page.title}" />')
+        seo_parts.append(f'<meta property="og:description" content="{page.description}" />')
+        seo_parts.append(f'<meta property="og:type" content="article" />')
+        seo_parts.append(f'<meta property="og:url" content="{page.url}" />')
+        if page.image:
+            img = page.image.strip()
+            # make absolute
+            if img.startswith("http://") or img.startswith("https://"):
+                abs_img = img
+            else:
+                # resolve relative to page url directory
+                base_url = page.url.rsplit('/', 1)[0]
+                sep = '' if img.startswith('/') else '/'
+                abs_img = (base_url + sep + img).replace('///', '//')
+            seo_parts.append(f'<meta property="og:image" content="{abs_img}" />')
+            seo_parts.append(f'<meta name="twitter:image" content="{abs_img}" />')
+        # Twitter
+        seo_parts.append('<meta name="twitter:card" content="summary" />')
+        seo_parts.append(f'<meta name="twitter:title" content="{page.title}" />')
+        seo_parts.append(f'<meta name="twitter:description" content="{page.description}" />')
+        # JSON-LD Article
+        pub_date_iso = ""
+        try:
+            if page.date:
+                # assume YYYY-MM-DD
+                pub_date_iso = datetime.strptime(page.date, "%Y-%m-%d").isoformat()
+        except Exception:
+            pub_date_iso = ""
+        json_ld = {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": page.title,
+            "datePublished": pub_date_iso or None,
+            "url": page.url,
+            "keywords": ",".join(page.tags or []) or None,
+            "inLanguage": "zh-CN",
+        }
+        # remove None values
+        json_ld = {k: v for k, v in json_ld.items() if v}
+        import json as _json
+        seo_parts.append('<script type="application/ld+json">' + _json.dumps(json_ld, ensure_ascii=False) + '</script>')
+
+        # Add WebSite JSON-LD on homepage for Sitelinks Search
+        try:
+            if page.out.name == "index.html":
+                website_ld = {
+                    "@context": "https://schema.org",
+                    "@type": "WebSite",
+                    "url": page.url.rsplit('/index.html', 1)[0],
+                    "potentialAction": {
+                        "@type": "SearchAction",
+                        "target": page.url.rsplit('/index.html', 1)[0] + "/index.html?q={search_term_string}",
+                        "query-input": "required name=search_term_string"
+                    }
+                }
+                seo_parts.append('<script type="application/ld+json">' + _json.dumps(website_ld, ensure_ascii=False) + '</script>')
+        except Exception:
+            pass
+
+    seo_head = "\n".join(seo_parts)
+
     context = {
         "title": page.title,
         "content": page.html,
@@ -248,6 +351,7 @@ def write_page(page: Page, github_url: str, owner: str, sidebar_html: str):
         "base": page.base,
         "sidebar": sidebar_html,
         "meta": meta_html,
+        "seo_head": seo_head,
     }
     out_html = render_template("base.html", context)
     page.out.parent.mkdir(parents=True, exist_ok=True)
@@ -278,7 +382,7 @@ def write_search_index(pages: list[Page]):
             tags = fm.get("tags") or []
         except Exception:
             pass
-        items.append({
+    items.append({
             "title": p.title,
             "path": rel_path,
             "tags": tags,
@@ -304,12 +408,116 @@ def copy_post_assets(posts_root: Path):
             shutil.copy2(p, dest)
 
 
+def write_sitemap(pages: list[Page], site_url: str):
+    """Generate sitemap.xml in OUT.
+    """
+    if not site_url:
+        return
+    import xml.etree.ElementTree as ET
+    urlset = ET.Element("urlset", attrib={"xmlns": "http://www.sitemaps.org/schemas/sitemap/0.9"})
+    for p in pages:
+        if not p.url:
+            continue
+        url = ET.SubElement(urlset, "url")
+        ET.SubElement(url, "loc").text = p.url
+        if p.date:
+            try:
+                d = datetime.strptime(p.date, "%Y-%m-%d").date()
+                ET.SubElement(url, "lastmod").text = d.isoformat()
+            except Exception:
+                pass
+    tree = ET.ElementTree(urlset)
+    (OUT / "sitemap.xml").write_text(
+        ET.tostring(urlset, encoding="unicode", method="xml"), encoding="utf-8"
+    )
+
+
+def write_robots_txt(site_url: str):
+    if not site_url:
+        return
+    txt = """User-agent: *
+Allow: /
+
+Sitemap: {site}/sitemap.xml
+""".format(site=site_url.rstrip('/'))
+    (OUT / "robots.txt").write_text(txt, encoding="utf-8")
+
+
+def write_rss_feed(pages: list[Page], site_url: str, title: str = "My Blog", description: str = ""):
+    """Generate a minimal RSS 2.0 feed: feed.xml"""
+    if not site_url:
+        return
+    import email.utils as eut
+    from xml.sax.saxutils import escape
+    site = site_url.rstrip('/')
+    items = []
+    # sort by date desc when available
+    def sort_key(p: Page):
+        return p.date or "0000-00-00"
+    for p in sorted(pages, key=sort_key, reverse=True)[:50]:
+        pub_date_http = ""
+        try:
+            if p.date:
+                dt = datetime.strptime(p.date, "%Y-%m-%d")
+                pub_date_http = eut.format_datetime(dt)
+        except Exception:
+            pub_date_http = ""
+        items.append(f"""
+    <item>
+      <title>{escape(p.title)}</title>
+      <link>{escape(p.url)}</link>
+      <guid>{escape(p.url)}</guid>
+      {f'<pubDate>{pub_date_http}</pubDate>' if pub_date_http else ''}
+      <description>{escape(p.description or '')}</description>
+    </item>
+""")
+    rss = f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>{escape(title)}</title>
+    <link>{escape(site)}</link>
+    <description>{escape(description or title)}</description>
+    {''.join(items)}
+  </channel>
+</rss>
+"""
+    (OUT / "feed.xml").write_text(rss, encoding="utf-8")
+
+
+def write_404():
+    html = """
+<!doctype html>
+<html lang=\"zh-CN\">
+<head>
+  <meta charset=\"utf-8\" />
+  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
+  <title>页面未找到 - 404</title>
+  <meta name=\"robots\" content=\"noindex\" />
+</head>
+<body>
+  <h1>404 - 页面未找到</h1>
+  <p>你访问的页面不存在。请返回 <a href=\"/index.html\">首页</a>。</p>
+</body>
+</html>
+"""
+    (OUT / "404.html").write_text(html, encoding="utf-8")
+
+
 def main():
     clean_outdir()
     copy_static()
     gh_repo = os.getenv("GITHUB_REPOSITORY", "")
     github_url = f"https://github.com/{gh_repo}" if gh_repo else "#"
     owner = os.getenv("GITHUB_REPOSITORY_OWNER") or os.getenv("USERNAME") or os.getenv("USER") or "Your Name"
+
+    # site url inference, allow override via env SITE_URL
+    site_url = os.getenv("SITE_URL", "").strip()
+    if not site_url:
+        # If deploying to wardenxyz.github.io, the site root is https://wardenxyz.github.io
+        repo_url_env = os.getenv("TARGET_PAGES_REPO", "wardenxyz/wardenxyz.github.io")
+        # prefer explicit owner from env
+        pages_owner = os.getenv("PAGES_OWNER") or (gh_repo.split("/")[0] if gh_repo else "wardenxyz")
+        site_url = f"https://{pages_owner}.github.io"
 
     root_pages = [
         (SRC / "README.md", OUT / "index.html"),
@@ -319,7 +527,7 @@ def main():
     built_pages: list[Page] = []
     for src_md, out_html in root_pages:
         if src_md.exists():
-            page = build_page(src_md, out_html)
+            page = build_page(src_md, out_html, site_url)
             built_pages.append(page)
 
     posts_dir = SRC / "posts"
@@ -328,7 +536,7 @@ def main():
         for md in iter_markdown_files(posts_dir):
             rel = md.relative_to(SRC)
             out_html = OUT / rel.with_suffix(".html")
-            page = build_page(md, out_html)
+            page = build_page(md, out_html, site_url)
             built_pages.append(page)
             count_posts += 1
         copy_post_assets(posts_dir)
@@ -339,6 +547,13 @@ def main():
 
     # write search index after all pages are built
     write_search_index(built_pages)
+
+    # SEO artifacts
+    write_sitemap(built_pages, site_url)
+    write_robots_txt(site_url)
+    # Feed title: use owner for now
+    write_rss_feed(built_pages, site_url, title=f"{owner} Blog", description="技术与笔记")
+    write_404()
 
     print(f"Built pages: {len([p for p in [rp[0] for rp in root_pages] if p.exists()])}, posts: {count_posts}")
 

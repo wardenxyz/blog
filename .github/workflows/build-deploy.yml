@@ -34,6 +34,8 @@ jobs:
         run: mkdir -p assets
 
       - name: Build static site
+        env:
+          SITE_URL: https://wardenxyz.github.io
         run: python .github/scripts/static_gen.py
 
       - name: 设置 SSH 密钥

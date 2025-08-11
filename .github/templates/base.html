@@ -4,9 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{{ title }}</title>
+  {{ seo_head }}
   <link rel="stylesheet" href="{{ base }}static/style.css" />
   <link rel="icon" href="{{ base }}static/favicon.svg" type="image/svg+xml" />
   <meta name="color-scheme" content="light dark" />
+  <link rel="alternate" type="application/rss+xml" title="My Blog" href="{{ base }}feed.xml" />
   <!-- Apply saved theme early to avoid FOUC -->
   <script>
     (function(){
