@@ -290,3 +290,13 @@ registry = "sparse+https://mirrors.ustc.edu.cn/crates.io-index/"
 [registries.ustc]
 index = "sparse+https://mirrors.ustc.edu.cn/crates.io-index/"
 ```
+
+备用清华源
+
+```toml
+[source.crates-io]
+replace-with = 'mirror'
+
+[source.mirror]
+registry = "https://mirrors.tuna.tsinghua.edu.cn/git/crates.io-index.git"
+```
