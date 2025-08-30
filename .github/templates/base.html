@@ -2,13 +2,20 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>{{ title }}</title>
   {{ seo_head }}
+  
+  <!-- Performance optimizations -->
+  <meta name="color-scheme" content="light dark" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  
+  <!-- Critical CSS -->
   <link rel="stylesheet" href="{{ base }}static/style.css" />
   <link rel="icon" href="{{ base }}static/favicon.svg" type="image/svg+xml" />
-  <meta name="color-scheme" content="light dark" />
   <link rel="alternate" type="application/rss+xml" title="My Blog" href="{{ base }}feed.xml" />
+  
   <!-- Apply saved theme early to avoid FOUC -->
   <script>
     (function(){
@@ -19,6 +26,19 @@
         }
       }catch(_e){/* noop */}
     })();
+    
+    // Register Service Worker for better caching
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('{{ base }}static/sw.js')
+          .then(function(registration) {
+            console.log('SW registered with scope: ', registration.scope);
+          })
+          .catch(function(error) {
+            console.log('SW registration failed: ', error);
+          });
+      });
+    }
   </script>
   
   <!-- MathJax Configuration -->
@@ -37,27 +57,49 @@
       },
       svg: {
         fontCache: 'global'
+      },
+      startup: {
+        ready: () => {
+          MathJax.startup.defaultReady();
+          MathJax.startup.promise.then(() => {
+            // MathJax is ready
+          });
+        }
       }
     };
   </script>
   <script type="text/javascript" id="MathJax-script" async
     src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
   </script>
+  
   <!-- Mermaid Diagram -->
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js" defer></script>
   <script>
-    // Initialize Mermaid when DOM is ready
-    document.addEventListener('DOMContentLoaded', function(){
-      if(window.mermaid && mermaid.initialize){
-        // Respect explicit data-theme over system preference
-        const dt = document.documentElement.getAttribute('data-theme');
-        const theme = dt === 'dark' ? 'dark' : (dt === 'light' ? 'default' : ((window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'default'));
-        mermaid.initialize({ startOnLoad: true, theme });
-        if(mermaid.run){
-          try{ mermaid.run({ querySelector: '.mermaid' }); }catch(e){}
-        }
+    // Optimize Mermaid loading
+    function loadMermaid() {
+      if (document.querySelector('.mermaid')) {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js';
+        script.defer = true;
+        script.onload = function() {
+          if(window.mermaid && mermaid.initialize){
+            const dt = document.documentElement.getAttribute('data-theme');
+            const theme = dt === 'dark' ? 'dark' : (dt === 'light' ? 'default' : ((window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'default'));
+            mermaid.initialize({ startOnLoad: true, theme });
+            if(mermaid.run){
+              try{ mermaid.run({ querySelector: '.mermaid' }); }catch(e){}
+            }
+          }
+        };
+        document.head.appendChild(script);
       }
-    });
+    }
+    
+    // Load Mermaid only when needed
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadMermaid);
+    } else {
+      loadMermaid();
+    }
   </script>
 </head>
 <body data-base="{{ base }}">
@@ -100,8 +142,9 @@
     </div>
   </footer>
 
-  <button id="backToTop" class="back-to-top" aria-label="回到顶部">↑</button>
+  <button id="backToTop" class="back-to-top" aria-label="回到顶部" title="回到顶部">↑</button>
 
-  <script src="{{ base }}static/main.js"></script>
+  <!-- Main JavaScript with defer for better performance -->
+  <script src="{{ base }}static/main.js" defer></script>
 </body>
 </html>

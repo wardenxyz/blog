@@ -54,23 +54,38 @@
     setHeaderHeight();
   }
 
+  // Throttled resize handler for better performance
+  let resizeTimeout;
   window.addEventListener('resize', ()=>{
-  setHeaderHeight();
-  setTocHeightVar();
-  });
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      setHeaderHeight();
+      setTocHeightVar();
+    }, 16); // ~60fps
+  }, {passive: true});
 
   const btn = document.getElementById('backToTop');
-  const onScroll = () => {
-    if(window.scrollY > 300){
-      btn.style.display = 'flex';
-      btn.style.opacity = '1';
-    }else{
-      btn.style.opacity = '0';
-      btn.style.display = 'none';
-    }
-  };
-  window.addEventListener('scroll', onScroll, {passive:true});
-  btn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+  if (btn) {
+    let scrollTimeout;
+    const onScroll = () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        if(window.scrollY > 300){
+          btn.style.display = 'flex';
+          btn.style.opacity = '1';
+        }else{
+          btn.style.opacity = '0';
+          setTimeout(() => {
+            if (window.scrollY <= 300) {
+              btn.style.display = 'none';
+            }
+          }, 200);
+        }
+      }, 16);
+    };
+    window.addEventListener('scroll', onScroll, {passive:true});
+    btn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+  }
 
   const toc = document.getElementById('toc');
   if(toc){
@@ -337,9 +352,16 @@ function initSearch(){
   }
 
   function render(items, words){
-    results.innerHTML = '';
-    if(!items.length){ results.classList.remove('open'); return; }
-    for(const it of items.slice(0, 50)){
+    // Use DocumentFragment for better performance
+    const fragment = document.createDocumentFragment();
+    if(!items.length){ 
+      results.classList.remove('open'); 
+      return; 
+    }
+    
+    // Limit results and batch DOM updates
+    const itemsToShow = items.slice(0, 30); // Reduced from 50 for better performance
+    for(const it of itemsToShow){
       const a = document.createElement('a');
       a.className = 'search-item';
       a.setAttribute('role','option');
@@ -347,11 +369,15 @@ function initSearch(){
       a.href = base + it.path + qParam;
       const titleHTML = highlightHtml(it.title, words);
       const pathHTML = highlightHtml(it.path, words);
-      const snippetText = makeSnippet(it.content||'', words, 40, 140);
+      const snippetText = makeSnippet(it.content||'', words, 30, 100); // Reduced snippet length
       const snippetHTML = snippetText ? `<div class=\"search-item-snippet\">${highlightHtml(snippetText, words)}</div>` : '';
       a.innerHTML = `<div class=\"search-item-title\">${titleHTML}</div><div class=\"search-item-path\">${pathHTML}</div>${snippetHTML}`;
-      results.appendChild(a);
+      fragment.appendChild(a);
     }
+    
+    // Single DOM update
+    results.innerHTML = '';
+    results.appendChild(fragment);
     results.classList.add('open');
     active = -1;
   }
@@ -370,17 +396,21 @@ function initSearch(){
     }).map(it => ({title: it.title, path: it.path, content: it.content||''}));
   }
 
-  let t;
+  let searchTimeout;
   input.addEventListener('input', async () =>{
-    clearTimeout(t);
+    clearTimeout(searchTimeout);
     const q = input.value;
-    if(!q.trim()){ results.classList.remove('open'); results.innerHTML=''; return; }
-    t = setTimeout(async ()=>{
+    if(!q.trim()){ 
+      results.classList.remove('open'); 
+      results.innerHTML=''; 
+      return; 
+    }
+    searchTimeout = setTimeout(async ()=>{
       await ensureIndex();
       const items = matchItems(q);
       const words = Array.from(new Set(q.trim().toLowerCase().split(/\s+/).filter(Boolean))).slice(0, 8);
       render(items, words);
-    }, 120);
+    }, 200); // Increased debounce time for better performance
   });
 
   input.addEventListener('keydown', (e)=>{
