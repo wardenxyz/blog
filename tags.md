@@ -13,8 +13,8 @@
 
 ## B站
 
-- 2024-08-01 [B站嵌入代码](posts/2024/bilibili_embedding_code.md)
 - 2024-08-01 [用 you-get 下载B站视频](posts/2024/you-get_note.md)
+- 2024-08-01 [B站嵌入代码](posts/2024/bilibili_embedding_code.md)
 
 ## DeepSeek
 
@@ -53,6 +53,10 @@
 
 - 2025-03-16 [在 Windows 上配置 Rust 环境](posts/2025/Rust_Windows_Config.md)
 
+## Terminal
+
+- 2025-09-01 [win11 右键菜单切换到 win10 右键菜单](posts/2025/win11-context-menu-to-win10-context-menu.md)
+
 ## Typst
 
 - 2025-06-07 [Typst 语法简单介绍](posts/2025/typst-syntax-simple-introduction.md)
@@ -73,6 +77,7 @@
 
 ## Windows
 
+- 2025-09-01 [win11 右键菜单切换到 win10 右键菜单](posts/2025/win11-context-menu-to-win10-context-menu.md)
 - 2025-06-14 [PowerShell Get-Command 命令](posts/2025/powershell-get-command.md)
 - 2025-06-13 [背景颜色](posts/2025/background-color.md)
 - 2024-08-01 [个人自用软件](posts/2024/personal_software.md)
@@ -107,8 +112,8 @@
 - 2024-07-01 [git-crypt 官方文档中文翻译](posts/2024/git-crypt_official_doc_zh.md)
 - 2024-06-01 [git commit message 规范](posts/2024/git_commit_message_standard.md)
 - 2024-04-08 [git 命令手册](posts/2024/git_Cli.md)
-- 2024-04-08 [git 分支操作](posts/2024/git_branch.md)
 - 2024-04-08 [从 git 提交中移除文件](posts/2024/remove_file_from_git_history.md)
+- 2024-04-08 [git 分支操作](posts/2024/git_branch.md)
 
 ## git-crypt
 
