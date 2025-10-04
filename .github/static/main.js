@@ -58,6 +58,11 @@
             if (window.scrollY <= 300) {
               btn.style.display = 'none';
             }
+      if(e.key === 'Escape'){
+        e.preventDefault();
+        closeModal({restoreFocus:true, clearInput:false});
+        return;
+      }
           }, 200);
         }
       }, 16);
@@ -67,39 +72,29 @@
   }
 
   const toc = document.getElementById('toc');
-  const tocToggleBtn = document.getElementById('tocToggle');
   if(toc){
     toc.addEventListener('click', (e)=>{
-      const a = e.target.closest('a');
-      if(!a) return;
-      const id = decodeURIComponent((a.getAttribute('href')||'').slice(1));
-      const target = id && document.getElementById(id);
-      if(target){
-        e.preventDefault();
-        const isMobile = window.matchMedia('(max-width: 959px)').matches;
-        if(isMobile){
-          toc.classList.remove('open');
-          if(tocToggleBtn){
-            tocToggleBtn.classList.remove('active');
-            tocToggleBtn.setAttribute('aria-expanded','false');
-          }
-          document.body.classList.remove('toc-drawer-open');
+      const link = e.target.closest('a[href^="#"]');
+      if(!link) return;
+      const hash = link.getAttribute('href');
+      if(!hash) return;
+      const id = hash.slice(1);
+      const decoded = decodeURIComponent(id);
+      const target = document.getElementById(decoded);
+      if(!target) return;
+      e.preventDefault();
+      const doScroll = ()=>{
+        const offset = computeScrollOffset();
+        const rect = target.getBoundingClientRect();
+        const top = rect.top + window.scrollY - offset;
+        try{
+          window.scrollTo({top, behavior:'smooth'});
+          try{ history.pushState(null, '', '#' + encodeURIComponent(decoded)); }catch(_e){ /* noop */ }
+        }catch(_e){
+          target.scrollIntoView({behavior:'smooth', block:'start'});
         }
-        const doScroll = () => {
-          try{
-            const offset = computeScrollOffset();
-            const rect = target.getBoundingClientRect();
-            const top = rect.top + window.scrollY - offset;
-            window.scrollTo({ top, behavior: 'smooth' });
-            if(id){
-              try{ history.pushState(null, '', '#' + encodeURIComponent(id)); }catch(_e){ /* noop */ }
-            }
-          }catch(_e){
-            target.scrollIntoView({behavior:'smooth', block:'start'});
-          }
-        };
-        requestAnimationFrame(() => setTimeout(doScroll, 0));
-      }
+      };
+      requestAnimationFrame(() => setTimeout(doScroll, 0));
     });
   }
 
@@ -433,13 +428,20 @@ function initSidebarScrollMemory(){
 function initSearch(){
   const input = document.getElementById('searchInput');
   const results = document.getElementById('searchResults');
+  const modal = document.getElementById('searchModal');
+  const modalPanel = modal ? modal.querySelector('.search-modal__panel') : null;
+  const toggleBtn = document.getElementById('searchToggle');
+  const closeBtn = document.getElementById('searchClose');
   const base = (document.body.getAttribute('data-base')||'');
-  if(!input || !results) return;
+  if(!input || !results || !modal || !toggleBtn) return;
 
   let index = [];
   let indexPromise = null;
   let active = -1;
   let renderCount = 0;
+  let modalOpen = false;
+  let lastFocusedElement = null;
+  const focusSelector = 'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
   async function ensureIndex(){
     if(index.length) return index;
@@ -487,6 +489,76 @@ function initSearch(){
   }
 
   closeResults();
+
+  function trapFocus(e){
+    if(!modalOpen || e.key !== 'Tab') return;
+    const focusable = modal.querySelectorAll(focusSelector);
+    if(!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if(e.shiftKey){
+      if(document.activeElement === first){
+        e.preventDefault();
+        last.focus();
+      }
+    }else if(document.activeElement === last){
+      e.preventDefault();
+      first.focus();
+    }
+  }
+
+  modal.addEventListener('keydown', trapFocus);
+
+  function openModal(){
+    if(modalOpen) return;
+    modalOpen = true;
+    lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    document.body.classList.add('search-modal-open');
+    modal.classList.add('open');
+    toggleBtn.setAttribute('aria-expanded','true');
+    closeResults();
+    warmIndex();
+    requestAnimationFrame(()=>{
+      input.focus();
+      input.select();
+    });
+  }
+
+  function closeModal({restoreFocus = true, clearInput = true} = {}){
+    if(!modalOpen) return;
+    modalOpen = false;
+    modal.classList.remove('open');
+    document.body.classList.remove('search-modal-open');
+    toggleBtn.setAttribute('aria-expanded','false');
+    closeResults();
+    if(clearInput){
+      input.value = '';
+    }
+    if(restoreFocus && lastFocusedElement && typeof lastFocusedElement.focus === 'function'){
+      lastFocusedElement.focus();
+    }
+    lastFocusedElement = null;
+  }
+
+  toggleBtn.addEventListener('click', ()=>{
+    if(modalOpen){
+      closeModal();
+    }else{
+      openModal();
+    }
+  });
+
+  if(closeBtn){
+    closeBtn.addEventListener('click', ()=> closeModal());
+  }
+
+  if(modal){
+    modal.addEventListener('click', (e)=>{
+      if(!modalOpen) return;
+      if(modalPanel && modalPanel.contains(e.target)) return;
+      closeModal();
+    });
+  }
 
   function render(items, words){
     // Use DocumentFragment for better performance
@@ -558,6 +630,11 @@ function initSearch(){
   });
 
   input.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape'){
+      e.preventDefault();
+      closeModal({restoreFocus:true, clearInput:false});
+      return;
+    }
     if(!results.classList.contains('open')) return;
     const items = Array.from(results.querySelectorAll('.search-item'));
     if(!items.length) return;
@@ -567,20 +644,21 @@ function initSearch(){
       e.preventDefault(); active = (active - 1 + items.length) % items.length; setActive(items);
     }else if(e.key === 'Enter'){
       if(active>=0){ e.preventDefault(); items[active].click(); }
-    }else if(e.key === 'Escape'){
-      // keep results, but refocus the input and select text
-      e.preventDefault();
-      input.focus();
-      input.select();
     }
   });
 
-  // Global ESC: if focus moved elsewhere, ESC returns focus to search input
+  // Global shortcuts and dismissal
   document.addEventListener('keydown', (e)=>{
-    if(e.key === 'Escape'){
-      if(document.activeElement !== input){
+    if(e.key === 'Escape' && modalOpen){
+      e.preventDefault();
+      closeModal({restoreFocus:true});
+    }else if((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)){
+      e.preventDefault();
+      if(modalOpen){
         input.focus();
         input.select();
+      }else{
+        openModal();
       }
     }
   });
@@ -588,6 +666,12 @@ function initSearch(){
   document.addEventListener('click', (e)=>{
     if(e.target === input || results.contains(e.target)) return;
     closeResults();
+  });
+
+  window.addEventListener('hashchange', ()=>{
+    if(modalOpen){
+      closeModal({restoreFocus:false});
+    }
   });
 
   function setActive(items){
