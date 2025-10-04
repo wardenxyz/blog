@@ -178,6 +178,34 @@ def rewrite_md_links_to_html(html: str) -> str:
         return html
 
 
+def enhance_media_html(html: str) -> str:
+    """Apply frontend-focused optimizations on generated HTML."""
+    try:
+        soup = BeautifulSoup(html, "html.parser")
+    except Exception:
+        return html
+
+    changed = False
+
+    for img in soup.find_all("img"):
+        if not img.get("loading"):
+            img["loading"] = "lazy"
+            changed = True
+        if not img.get("decoding"):
+            img["decoding"] = "async"
+            changed = True
+        if not img.get("referrerpolicy"):
+            img["referrerpolicy"] = "no-referrer"
+            changed = True
+
+    for iframe in soup.find_all("iframe"):
+        if not iframe.get("loading"):
+            iframe["loading"] = "lazy"
+            changed = True
+
+    return str(soup) if changed else html
+
+
 def build_page(src_md: Path, out_html: Path, site_url: str = "") -> Page:
     post = frontmatter.load(src_md)
     body_md = post.content or src_md.read_text(encoding="utf-8")
@@ -205,6 +233,7 @@ def build_page(src_md: Path, out_html: Path, site_url: str = "") -> Page:
     html, toc = load_markdown_with_toc(body_md)
     # Post-process links: convert .md to .html and set external links to open in new tab
     html = rewrite_md_links_to_html(html)
+    html = enhance_media_html(html)
     base = rel_base(out_html)
     # description
     description = extract_description_from_html(html)
@@ -369,6 +398,8 @@ def write_search_index(pages: list[Page]):
     for p in pages:
         # Skip non-md or non-content pages if needed; here we include all.
         rel_path = p.out.relative_to(OUT).as_posix()
+        if rel_path in {"index.html", "categories.html", "tags.html"}:
+            continue
         # Extract text content from HTML
         try:
             soup = BeautifulSoup(p.html, "html.parser")

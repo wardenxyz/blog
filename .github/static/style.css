@@ -56,6 +56,8 @@ body{
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeSpeed;
 }
+body.sidebar-drawer-open,
+body.toc-drawer-open{overflow:hidden}
 /* Global content links for better readability in dark mode */
 .content a{ color: var(--link); text-decoration-thickness: 1.5px; text-underline-offset: 2px; }
 .content a:hover{ text-decoration: underline; }
@@ -86,6 +88,24 @@ html, body, .sidebar-col, #toc, .search-results{ scrollbar-color: var(--scrollba
 .brand{font-weight:700;color:var(--text);text-decoration:none;font-size:18px}
 .menu-toggle{display:none;border:1px solid var(--border);background:var(--bg);color:var(--text);border-radius:6px;padding:6px 10px;cursor:pointer}
 .theme-toggle{border:1px solid var(--border);background:var(--bg);color:var(--text);border-radius:6px;padding:6px 10px;cursor:pointer;margin-left:8px}
+.drawer-toggle{
+  display:none;
+  border:1px solid var(--border);
+  background:var(--bg);
+  color:var(--text);
+  border-radius:999px;
+  padding:6px 14px;
+  cursor:pointer;
+  font-size:14px;
+  line-height:1;
+  margin-left:8px;
+  transition:background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+.drawer-toggle.active{
+  background:color-mix(in oklab, var(--link) 12%, var(--surface));
+  border-color:color-mix(in oklab, var(--link) 25%, var(--border));
+  color:var(--text);
+}
 .nav{display:flex;gap:16px}
 .nav-link{color:var(--text);text-decoration:none;padding:8px 10px;border-radius:6px;transition:background-color .2s ease,color .2s ease}
 .nav-link:hover{background:var(--surface);color:var(--text)}
@@ -141,38 +161,56 @@ html, body, .sidebar-col, #toc, .search-results{ scrollbar-color: var(--scrollba
 .back-to-top{position:fixed;right:20px;bottom:24px;width:40px;height:40px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:background-color .2s ease,opacity .2s ease}
 .back-to-top:hover{background:var(--surface)}
 
-/* <= 959px: single column. TOC first, then content, then sidebar */
+/* <= 959px: mobile layout with floating drawers */
 @media (max-width: 959px){
   /* widen mobile side gutters a bit */
   .container{padding-left:16px;padding-right:16px}
   /* specifically increase top bar (header) side paddings more */
   .site-header .container{padding-left:20px;padding-right:20px}
-  .layout{padding-left:16px;padding-right:16px}
-  /* reserve vertical space for fixed TOC bar height */
-  .layout{padding-top:var(--toc-h, 0px)}
+  .layout{padding-left:16px;padding-right:16px;padding-top:24px}
   .layout-3{grid-template-columns:1fr}
-  /* Reorder: TOC -> content -> sidebar */
-  #toc{order:0}
-  .content{order:1}
-  .sidebar-col{order:2}
-  /* Make TOC a fixed bar below the header; collapsible */
+  .drawer-toggle{display:inline-flex;align-items:center;gap:6px}
+  .sidebar-toggle{order:2;margin-left:0}
+  .toc-toggle{order:3;margin-left:auto}
+  .theme-toggle{order:4}
+  .sidebar-col{
+    position:fixed;
+    top:calc(var(--header-h, 56px) + 12px);
+    left:16px;
+    right:auto;
+    width:min(82vw, 320px);
+    max-height:calc(100vh - var(--header-h, 56px) - 32px);
+    background:var(--bg);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:16px 12px;
+    box-shadow:0 18px 40px rgba(0,0,0,.18);
+    display:none;
+    z-index:110;
+    overflow:auto;
+    border-right:none;
+  }
+  .sidebar-col.open{display:block}
   #toc{
     position:fixed;
-    top:var(--header-h, 56px);
-    left:0; right:0;
-    z-index:95;
+    top:calc(var(--header-h, 56px) + 12px);
+    right:16px;
+    left:auto;
+    width:min(80vw, 300px);
+    max-height:calc(100vh - var(--header-h, 56px) - 32px);
     background:var(--bg);
-    border-left:none;
-    border-top:none;
-    border-bottom:1px solid var(--border);
-    padding:8px 16px 10px; /* align with container gutters */
-    max-height:none;
-    /* Performance optimization */
-    will-change: transform;
-    transform: translateZ(0);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:16px;
+    box-shadow:0 18px 40px rgba(0,0,0,.18);
+    display:none;
+    z-index:110;
+    overflow:auto;
   }
-  .toc-title{display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin:0}
-  #toc.collapsed > :not(.toc-title){display:none}
+  #toc.open{display:block}
+  #toc .toc-title{display:flex;align-items:center;justify-content:space-between;margin:0 0 12px;cursor:default}
+  #toc.open .toc-title::after{content:'▾'}
+  #toc:not(.open) .toc-title::after{content:'▸'}
 }
 
 /* Ultra-small mobile devices (320px and below) */
@@ -279,7 +317,6 @@ html, body, .sidebar-col, #toc, .search-results{ scrollbar-color: var(--scrollba
 
 /* Caret for TOC title indicating collapsed/expanded */
 .toc-title::after{content:'▾'; color:var(--muted); margin-left:8px}
-#toc.collapsed .toc-title::after{content:'▸'}
 
 /* Math formula styling */
 .MathJax_Display{overflow-x:auto;overflow-y:hidden}
@@ -350,6 +387,7 @@ mjx-container[jax="SVG"][justify="right"]{text-align:right}
 #toc a:hover,
 .copy-btn:hover,
 .menu-toggle:hover,
+.drawer-toggle:hover,
 .back-to-top:hover{
   outline:2px solid var(--link);
   outline-offset:2px;
@@ -361,6 +399,7 @@ mjx-container[jax="SVG"][justify="right"]{text-align:right}
 #toc a:focus-visible,
 .copy-btn:focus-visible,
 .menu-toggle:focus-visible,
+.drawer-toggle:focus-visible,
 .back-to-top:focus-visible,
 .content pre:focus-visible,
 .content table:focus-visible,

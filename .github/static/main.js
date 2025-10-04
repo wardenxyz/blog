@@ -9,20 +9,7 @@
 
   // Maintain --toc-h for mobile to reserve space when TOC is fixed
   function setTocHeightVar(){
-    try{
-      const toc = document.getElementById('toc');
-      const isMobile = window.matchMedia('(max-width: 959px)').matches;
-      if(!toc || !isMobile){
-        document.documentElement.style.setProperty('--toc-h', '0px');
-        return;
-      }
-  // Measure the actual TOC bar height (including paddings/border)
-  const rect = toc.getBoundingClientRect();
-  const h = rect.height || 0;
-      document.documentElement.style.setProperty('--toc-h', Math.ceil(h) + 'px');
-    }catch(_e){
-      document.documentElement.style.setProperty('--toc-h', '0px');
-    }
+    document.documentElement.style.setProperty('--toc-h', '0px');
   }
 
   // Compute scroll offset so the heading is fully visible below sticky bars
@@ -31,17 +18,9 @@
       const header = document.querySelector('.site-header');
       const cssVar = getComputedStyle(document.documentElement).getPropertyValue('--header-h').trim();
       const headerH = cssVar ? parseFloat(cssVar) : (header ? header.getBoundingClientRect().height : 72);
-    let extra = 0;
       const isMobile = window.matchMedia('(max-width: 959px)').matches;
-      if(isMobile){
-        const tocEl = document.getElementById('toc');
-        if(tocEl){
-      const h = tocEl.getBoundingClientRect().height || 0;
-      extra += h;
-        }
-      }
-      const baseBuffer = isMobile ? 16 : 12; // slightly larger buffer so heading is fully visible
-      return headerH + extra + baseBuffer;
+      const baseBuffer = isMobile ? 20 : 12;
+      return headerH + baseBuffer;
     }catch(_e){
       return 84;
     }
@@ -88,6 +67,7 @@
   }
 
   const toc = document.getElementById('toc');
+  const tocToggleBtn = document.getElementById('tocToggle');
   if(toc){
     toc.addEventListener('click', (e)=>{
       const a = e.target.closest('a');
@@ -97,17 +77,17 @@
       if(target){
         e.preventDefault();
         const isMobile = window.matchMedia('(max-width: 959px)').matches;
-        // Collapse first on mobile so we can compute correct offset without TOC bar
         if(isMobile){
-          toc.classList.add('collapsed');
-          const titleEl = toc.querySelector('.toc-title');
-          if(titleEl){ titleEl.setAttribute('aria-expanded','false'); }
-          setTocHeightVar();
+          toc.classList.remove('open');
+          if(tocToggleBtn){
+            tocToggleBtn.classList.remove('active');
+            tocToggleBtn.setAttribute('aria-expanded','false');
+          }
+          document.body.classList.remove('toc-drawer-open');
         }
-        // Scroll with header offset and update hash without jump
-    const doScroll = () => {
+        const doScroll = () => {
           try{
-      const offset = computeScrollOffset();
+            const offset = computeScrollOffset();
             const rect = target.getBoundingClientRect();
             const top = rect.top + window.scrollY - offset;
             window.scrollTo({ top, behavior: 'smooth' });
@@ -118,8 +98,7 @@
             target.scrollIntoView({behavior:'smooth', block:'start'});
           }
         };
-        // Wait a frame to let layout update after collapsing
-  requestAnimationFrame(() => setTimeout(doScroll, 0));
+        requestAnimationFrame(() => setTimeout(doScroll, 0));
       }
     });
   }
@@ -211,37 +190,155 @@
     nav.addEventListener('click', e=>{ if(e.target.closest('a')) { closeMenu(); requestAnimationFrame(setHeaderHeight);} });
   }
 
-  // Collapsible TOC on mobile
-  function initCollapsibleToc(){
-    const toc = document.getElementById('toc');
-    if(!toc) return;
-    const title = toc.querySelector('.toc-title');
-    if(!title) return;
+  function initSidebarDrawer(){
+    const panel = document.querySelector('.sidebar-col');
+    const toggle = document.getElementById('sidebarToggle');
+    if(!panel || !toggle) return;
     const mq = window.matchMedia('(max-width: 959px)');
-    // Default to collapsed on mobile; expanded on larger screens
-    function syncForViewport(){
-      if(mq.matches){ toc.classList.add('collapsed'); }
-      else{ toc.classList.remove('collapsed'); }
-      title.setAttribute('role','button');
-      title.setAttribute('tabindex','0');
-      title.setAttribute('aria-expanded', String(!toc.classList.contains('collapsed')));
+    let isMobile = mq.matches;
+
+    function closePanel(){
+      panel.classList.remove('open');
+      toggle.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('sidebar-drawer-open');
+    }
+
+    function openPanel(){
+      panel.classList.add('open');
+      toggle.classList.add('active');
+      toggle.setAttribute('aria-expanded', 'true');
+      document.body.classList.add('sidebar-drawer-open');
+      const tocPanel = document.getElementById('toc');
+      const tocToggle = document.getElementById('tocToggle');
+      if(tocPanel){
+        tocPanel.classList.remove('open');
+      }
+      if(tocToggle){
+        tocToggle.classList.remove('active');
+        tocToggle.setAttribute('aria-expanded', 'false');
+      }
+      document.body.classList.remove('toc-drawer-open');
+    }
+
+    function togglePanel(){
+      if(panel.classList.contains('open')) closePanel(); else openPanel();
+    }
+
+    function sync(){
+      isMobile = mq.matches;
+      toggle.removeEventListener('click', togglePanel);
+      if(isMobile){
+        closePanel();
+        toggle.addEventListener('click', togglePanel);
+      }else{
+        panel.classList.remove('open');
+        toggle.classList.remove('active');
+        toggle.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('sidebar-drawer-open');
+      }
       setTocHeightVar();
     }
-    syncForViewport();
-    mq.addEventListener('change', syncForViewport);
-    title.addEventListener('click', ()=>{
-      if(!mq.matches) return;
-      toc.classList.toggle('collapsed');
-      title.setAttribute('aria-expanded', String(!toc.classList.contains('collapsed')));
-      setTocHeightVar();
+
+    sync();
+    mq.addEventListener('change', sync);
+
+    panel.addEventListener('click', (e)=>{
+      if(!isMobile) return;
+      if(e.target.closest('a')){
+        closePanel();
+      }
     });
-    title.addEventListener('keydown', (e)=>{
-      if(!mq.matches) return;
-      if(e.key === 'Enter' || e.key === ' '){
-        e.preventDefault();
-        toc.classList.toggle('collapsed');
-        title.setAttribute('aria-expanded', String(!toc.classList.contains('collapsed')));
-        setTocHeightVar();
+
+    document.addEventListener('click', (e)=>{
+      if(!isMobile) return;
+      if(!panel.classList.contains('open')) return;
+      if(panel.contains(e.target) || toggle.contains(e.target)) return;
+      closePanel();
+    });
+
+    document.addEventListener('keydown', (e)=>{
+      if(!isMobile) return;
+      if(e.key === 'Escape' && panel.classList.contains('open')){
+        closePanel();
+        toggle.focus();
+      }
+    });
+  }
+
+  function initTocDrawer(){
+    const toc = document.getElementById('toc');
+    if(!toc) return;
+    const toggle = document.getElementById('tocToggle');
+    const mq = window.matchMedia('(max-width: 959px)');
+    let isMobile = mq.matches;
+
+    function closePanel(){
+      toc.classList.remove('open');
+      if(toggle){
+        toggle.classList.remove('active');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+      document.body.classList.remove('toc-drawer-open');
+    }
+
+    function openPanel(){
+      toc.classList.add('open');
+      if(toggle){
+        toggle.classList.add('active');
+        toggle.setAttribute('aria-expanded', 'true');
+      }
+      document.body.classList.add('toc-drawer-open');
+      const sidebarPanel = document.querySelector('.sidebar-col');
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      if(sidebarPanel){
+        sidebarPanel.classList.remove('open');
+      }
+      if(sidebarToggle){
+        sidebarToggle.classList.remove('active');
+        sidebarToggle.setAttribute('aria-expanded', 'false');
+      }
+      document.body.classList.remove('sidebar-drawer-open');
+    }
+
+    function togglePanel(){
+      if(toc.classList.contains('open')) closePanel(); else openPanel();
+    }
+
+    function sync(){
+      isMobile = mq.matches;
+      if(toggle){
+        toggle.removeEventListener('click', togglePanel);
+        toggle.classList.remove('active');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+      if(isMobile){
+        closePanel();
+        if(toggle){
+          toggle.addEventListener('click', togglePanel);
+        }
+      }else{
+        toc.classList.remove('open');
+        document.body.classList.remove('toc-drawer-open');
+      }
+      setTocHeightVar();
+    }
+
+    sync();
+    mq.addEventListener('change', sync);
+
+    document.addEventListener('click', (e)=>{
+      if(!isMobile) return;
+      if(!toc.classList.contains('open')) return;
+      if(toc.contains(e.target) || (toggle && toggle.contains(e.target))) return;
+      closePanel();
+    });
+
+    document.addEventListener('keydown', (e)=>{
+      if(!isMobile) return;
+      if(e.key === 'Escape' && toc.classList.contains('open')){
+        closePanel();
+        if(toggle){ toggle.focus(); }
       }
     });
   }
@@ -249,7 +346,8 @@
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', ()=>{
       initMenuToggle();
-      initCollapsibleToc();
+      initSidebarDrawer();
+      initTocDrawer();
       initSearch();
       initContentHighlight();
   initThemeToggle();
@@ -276,7 +374,8 @@
     });
   } else {
     initMenuToggle();
-    initCollapsibleToc();
+    initSidebarDrawer();
+    initTocDrawer();
     initSearch();
     initContentHighlight();
   initThemeToggle();
@@ -338,33 +437,75 @@ function initSearch(){
   if(!input || !results) return;
 
   let index = [];
+  let indexPromise = null;
   let active = -1;
+  let renderCount = 0;
 
   async function ensureIndex(){
     if(index.length) return index;
-    try{
-      const res = await fetch(base + 'search.json', {cache:'no-store'});
-      index = await res.json();
-    }catch(e){
-      index = [];
-    }
-    return index;
+    if(indexPromise) return indexPromise;
+    indexPromise = (async ()=>{
+      try{
+        const res = await fetch(base + 'search.json', {cache:'no-cache'});
+        if(!res.ok){ throw new Error('SEARCH_INDEX_HTTP_' + res.status); }
+        index = await res.json();
+      }catch(e){
+        console.warn('Search index load failed', e);
+        index = [];
+      }finally{
+        indexPromise = null;
+      }
+      return index;
+    })();
+    return indexPromise;
   }
+
+  function warmIndex(){
+    if(index.length || indexPromise) return;
+    ensureIndex().catch(()=>{});
+  }
+
+  function scheduleWarmIndex(){
+    if(index.length || indexPromise) return;
+    if('requestIdleCallback' in window){
+      requestIdleCallback(()=>warmIndex(), { timeout: 1500 });
+    }else{
+      setTimeout(()=>warmIndex(), 800);
+    }
+  }
+
+  scheduleWarmIndex();
+  input.addEventListener('focus', warmIndex);
+
+  function closeResults(){
+    results.classList.remove('open');
+    results.innerHTML = '';
+    results.setAttribute('aria-expanded','false');
+    results.setAttribute('aria-busy','false');
+    results.removeAttribute('aria-activedescendant');
+    active = -1;
+  }
+
+  closeResults();
 
   function render(items, words){
     // Use DocumentFragment for better performance
     const fragment = document.createDocumentFragment();
     if(!items.length){ 
-      results.classList.remove('open'); 
+      closeResults();
       return; 
     }
     
     // Limit results and batch DOM updates
     const itemsToShow = items.slice(0, 30); // Reduced from 50 for better performance
+    renderCount += 1;
+    const prefix = 'search-item-' + renderCount + '-';
+    let idx = 0;
     for(const it of itemsToShow){
       const a = document.createElement('a');
       a.className = 'search-item';
       a.setAttribute('role','option');
+      a.id = prefix + (idx++);
       const qParam = words && words.length ? ('?highlight=' + encodeURIComponent(words.join(' '))) : '';
       a.href = base + it.path + qParam;
       const titleHTML = highlightHtml(it.title, words);
@@ -379,7 +520,10 @@ function initSearch(){
     results.innerHTML = '';
     results.appendChild(fragment);
     results.classList.add('open');
+    results.setAttribute('aria-expanded','true');
+    results.setAttribute('aria-busy','false');
     active = -1;
+    results.removeAttribute('aria-activedescendant');
   }
 
   function escapeHtml(s){
@@ -401,10 +545,10 @@ function initSearch(){
     clearTimeout(searchTimeout);
     const q = input.value;
     if(!q.trim()){ 
-      results.classList.remove('open'); 
-      results.innerHTML=''; 
+      closeResults();
       return; 
     }
+    results.setAttribute('aria-busy','true');
     searchTimeout = setTimeout(async ()=>{
       await ensureIndex();
       const items = matchItems(q);
@@ -443,14 +587,25 @@ function initSearch(){
 
   document.addEventListener('click', (e)=>{
     if(e.target === input || results.contains(e.target)) return;
-    results.classList.remove('open');
+    closeResults();
   });
 
   function setActive(items){
     items.forEach((el,i)=>{
-      if(i===active){ el.classList.add('active'); el.setAttribute('aria-selected','true'); el.scrollIntoView({block:'nearest'}); }
-      else{ el.classList.remove('active'); el.removeAttribute('aria-selected'); }
+      if(i===active){
+        el.classList.add('active');
+        el.setAttribute('aria-selected','true');
+        results.setAttribute('aria-activedescendant', el.id || '');
+        el.scrollIntoView({block:'nearest'});
+      }
+      else{
+        el.classList.remove('active');
+        el.removeAttribute('aria-selected');
+      }
     });
+    if(active < 0){
+      results.removeAttribute('aria-activedescendant');
+    }
   }
 
   function highlightHtml(text, words){
@@ -487,12 +642,22 @@ function initThemeToggle(){
   const btn = document.getElementById('themeToggle');
   if(!btn) return;
   const docEl = document.documentElement;
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  const lightColor = '#ffffff';
+  const darkColor = '#0f1115';
 
   function applyIcon(theme){
     // Use simple icons: sun for light, moon for dark, monitor for auto
     if(theme === 'light') btn.textContent = '☀️';
     else if(theme === 'dark') btn.textContent = '🌙';
     else btn.textContent = '🖥️';
+  }
+
+  function applyThemeColor(mode){
+    if(!themeMeta) return;
+    if(mode === 'dark') themeMeta.setAttribute('content', darkColor);
+    else if(mode === 'light') themeMeta.setAttribute('content', lightColor);
+    else themeMeta.setAttribute('content', getSystemDark() ? darkColor : lightColor);
   }
 
   function getSystemDark(){
@@ -513,6 +678,7 @@ function initThemeToggle(){
       docEl.removeAttribute('data-theme');
     }
     applyIcon(t);
+    applyThemeColor(t);
     // Update Mermaid diagrams theme if available
     try{
       if(window.mermaid && mermaid.initialize){

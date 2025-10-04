@@ -1,71 +1,117 @@
-// Service Worker for better caching and offline support
-const CACHE_NAME = 'blog-cache-v1';
+// Enhanced Service Worker for caching and offline support
+const CACHE_VERSION = 'v2';
+const STATIC_CACHE = 'blog-static-' + CACHE_VERSION;
+const PAGE_CACHE = 'blog-pages-' + CACHE_VERSION;
+
 const STATIC_ASSETS = [
-  'static/style.css',
-  'static/main.js',
-  'static/favicon.svg'
+  './style.css',
+  './main.js',
+  './favicon.svg',
+  '../index.html',
+  '../categories.html',
+  '../tags.html',
+  '../search.json'
 ];
 
-// Install event - cache static assets
+const STATIC_ROOT = new URL('./', self.location).pathname; // e.g. /blog/static/
+const INDEX_URL = new URL('../index.html', self.location).href;
+
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(STATIC_ASSETS);
-    })
-  );
-  self.skipWaiting();
+  event.waitUntil((async () => {
+    const cache = await caches.open(STATIC_CACHE);
+    await Promise.all(
+      STATIC_ASSETS.map(async asset => {
+        try {
+          await cache.add(asset);
+        } catch (err) {
+          console.warn('[SW] Skip asset during install:', asset, err);
+        }
+      })
+    );
+    self.skipWaiting();
+  })());
 });
 
-// Activate event - clean up old caches
 self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
-  );
-  self.clients.claim();
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(
+      keys
+        .filter(name => name !== STATIC_CACHE && name !== PAGE_CACHE)
+        .map(name => caches.delete(name))
+    );
+    self.clients.claim();
+  })());
 });
 
-// Fetch event - serve from cache with network fallback
-self.addEventListener('fetch', event => {
-  // Only handle GET requests
-  if (event.request.method !== 'GET') return;
-
-  // Skip cross-origin requests
-  if (!event.request.url.startsWith(self.location.origin)) return;
-
-  event.respondWith(
-    caches.match(event.request).then(response => {
-      // Return cached version if available
-      if (response) {
-        return response;
+function cacheFirst(request) {
+  return caches.open(STATIC_CACHE).then(cache =>
+    cache.match(request).then(cached => {
+      if (cached) {
+        return cached;
       }
-
-      // Otherwise fetch from network
-      return fetch(event.request).then(response => {
-        // Don't cache non-successful responses
-        if (!response || response.status !== 200 || response.type !== 'basic') {
-          return response;
+      return fetch(request).then(response => {
+        if (response && response.ok) {
+          cache.put(request, response.clone());
         }
-
-        // Clone the response
-        const responseToCache = response.clone();
-
-        // Add to cache for static assets
-        if (STATIC_ASSETS.some(asset => event.request.url.includes(asset))) {
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(event.request, responseToCache);
-          });
-        }
-
         return response;
       });
     })
   );
+}
+
+function networkFirst(request) {
+  return fetch(request)
+    .then(response => {
+      if (response && response.ok) {
+        const copy = response.clone();
+        caches.open(PAGE_CACHE).then(cache => cache.put(request, copy));
+      }
+      return response;
+    })
+    .catch(() => caches.match(request).then(match => match || caches.match(INDEX_URL)));
+}
+
+function staleWhileRevalidate(request) {
+  return caches.open(STATIC_CACHE).then(cache =>
+    cache.match(request).then(cached => {
+      const fetchPromise = fetch(request)
+        .then(response => {
+          if (response && response.ok) {
+            cache.put(request, response.clone());
+          }
+          return response;
+        })
+        .catch(() => cached);
+      return cached || fetchPromise;
+    })
+  );
+}
+
+self.addEventListener('fetch', event => {
+  const { request } = event;
+  if (request.method !== 'GET') return;
+
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin) return;
+
+  if (url.pathname.startsWith(STATIC_ROOT)) {
+    event.respondWith(cacheFirst(request));
+    return;
+  }
+
+  if (url.pathname.endsWith('/search.json') || url.pathname.endsWith('search.json')) {
+    event.respondWith(staleWhileRevalidate(request));
+    return;
+  }
+
+  const accept = request.headers.get('accept') || '';
+  if (request.mode === 'navigate' || accept.includes('text/html')) {
+    event.respondWith(networkFirst(request));
+    return;
+  }
+
+  if (request.destination === 'image' || request.destination === 'style' || request.destination === 'script' || request.destination === 'font') {
+    event.respondWith(staleWhileRevalidate(request));
+  }
 });

@@ -8,6 +8,7 @@
   
   <!-- Performance optimizations -->
   <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#ffffff" />
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
   
@@ -30,7 +31,13 @@
     // Register Service Worker for better caching
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
-        navigator.serviceWorker.register('{{ base }}static/sw.js')
+        var basePath = (document.body && document.body.getAttribute('data-base')) || '';
+        var scope = basePath || './';
+        if (scope.charAt(scope.length - 1) !== '/') {
+          scope += '/';
+        }
+        var swUrl = (basePath || '') + 'static/sw.js';
+        navigator.serviceWorker.register(swUrl, { scope: scope })
           .then(function(registration) {
             console.log('SW registered with scope: ', registration.scope);
           })
@@ -109,8 +116,10 @@
   <button class="menu-toggle" id="menuToggle" aria-label="打开菜单" aria-controls="primaryNav" aria-expanded="false">☰</button>
       <div class="search" role="search">
         <input type="search" id="searchInput" placeholder="搜索文章..." aria-label="搜索文章" autocomplete="off" />
-        <div class="search-results" id="searchResults" role="listbox" aria-label="搜索结果"></div>
+        <div class="search-results" id="searchResults" role="listbox" aria-label="搜索结果" aria-live="polite" aria-expanded="false"></div>
       </div>
+      <button class="drawer-toggle sidebar-toggle" id="sidebarToggle" aria-label="打开文章目录" aria-controls="sidebar" aria-expanded="false">文章目录</button>
+      <button class="drawer-toggle toc-toggle" id="tocToggle" aria-label="打开大纲" aria-controls="toc" aria-expanded="false">大纲</button>
       <button class="theme-toggle" id="themeToggle" aria-label="切换主题" title="切换主题">🖥️</button>
       <nav class="nav" id="primaryNav">
         <a class="nav-link" href="{{ base }}index.html">首页</a>
