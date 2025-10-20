@@ -1,0 +1,26 @@
+[
+	{
+		"label": "uv venv & pip download package",
+		"command": "uv venv && .venv\\Scripts\\activate && uv pip install -r requirements.txt",
+		"reveal": "never",
+		"hide": "on_success"
+	},
+	{
+		"label": "gen site",
+		"command": "uv run .github\\scripts\\static_gen.py && python -m http.server -d site",
+		"reveal": "never",
+		"hide": "on_success"
+	},
+	{
+		"label": "remove .venv",
+		"command": "rm -r -fo .venv",
+		"reveal": "never",
+		"hide": "on_success"
+	},
+	{
+		"label": "remove site",
+		"command": "rm -r -fo site",
+		"reveal": "never",
+		"hide": "on_success"
+	}
+]
