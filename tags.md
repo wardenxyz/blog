@@ -13,8 +13,8 @@
 
 ## B站
 
-- 2024-08-01 [用 you-get 下载B站视频](posts/2024/you-get_note.md)
 - 2024-08-01 [B站嵌入代码](posts/2024/bilibili_embedding_code.md)
+- 2024-08-01 [用 you-get 下载B站视频](posts/2024/you-get_note.md)
 
 ## DeepSeek
 
@@ -48,6 +48,10 @@
 ## PowerShell
 
 - 2025-06-14 [PowerShell Get-Command 命令](posts/2025/powershell-get-command.md)
+
+## REPL
+
+- 2025-10-21 [如何在 zed 中配置 REPL（python）](posts/2025/zed-REPL-guide.md)
 
 ## Rust
 
@@ -111,8 +115,8 @@
 - 2024-07-08 [git-crypt 官方文档](posts/2024/git-crypt_official_doc.md)
 - 2024-07-01 [git-crypt 官方文档中文翻译](posts/2024/git-crypt_official_doc_zh.md)
 - 2024-06-01 [git commit message 规范](posts/2024/git_commit_message_standard.md)
-- 2024-04-08 [从 git 提交中移除文件](posts/2024/remove_file_from_git_history.md)
 - 2024-04-08 [git 分支操作](posts/2024/git_branch.md)
+- 2024-04-08 [从 git 提交中移除文件](posts/2024/remove_file_from_git_history.md)
 - 2024-04-08 [git 命令手册](posts/2024/git_Cli.md)
 
 ## git-crypt
@@ -159,6 +163,7 @@
 
 ## python
 
+- 2025-10-21 [如何在 zed 中配置 REPL（python）](posts/2025/zed-REPL-guide.md)
 - 2025-07-19 [yt-dlp 使用](posts/2025/yt-dlp.md)
 - 2025-04-12 [使用 Python 生成静态网页](posts/2025/use_python_gen_site.md)
 - 2025-03-15 [conda 使用笔记](posts/2025/conda_note.md)
@@ -193,6 +198,7 @@
 
 ## zed
 
+- 2025-10-21 [如何在 zed 中配置 REPL（python）](posts/2025/zed-REPL-guide.md)
 - 2025-03-21 [在 zed 上配置 typstyle](posts/2025/zed_use_typstyle.md)
 - 2025-03-14 [在 Zed Editor 中配置 OpenAI API 兼容的模型](posts/2025/Zed_set_OpenAI_API_Compatible_model.md)
 - 2025-03-11 [zed 使用笔记](posts/2025/zed_use.md)
