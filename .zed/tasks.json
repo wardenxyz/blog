@@ -6,7 +6,7 @@
 		"hide": "on_success"
 	},
 	{
-		"label": "gen site",
+		"label": "generate site & view site",
 		"command": "uv run .github\\scripts\\static_gen.py && python -m http.server -d site",
 		"reveal": "never",
 		"hide": "on_success"
@@ -20,6 +20,12 @@
 	{
 		"label": "remove site",
 		"command": "rm -r -fo site",
+		"reveal": "never",
+		"hide": "on_success"
+	},
+	{
+		"label": "git push github main",
+		"command": "git push github main",
 		"reveal": "never",
 		"hide": "on_success"
 	}
