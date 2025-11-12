@@ -7,6 +7,39 @@ category: [计算机]
 
 # python 学习笔记
 
+## pip.ini 配置
+
+C:\Users\admin\AppData\Roaming\pip\pip.ini
+
+```txt
+[global]
+target = D:\Python\Python312\Lib\site-packages
+index-url = https://pypi.tuna.tsinghua.edu.cn/simple
+cache-dir = D:\python\pip-cache
+```
+
+## python 列出依赖库
+
+```bash
+pip freeze > requirements.txt
+```
+
+```bash
+uv pip freeze > requirements.txt
+```
+
+- 根据依赖文件卸载第三方库
+
+```bash
+pip uninstall -r requirements.txt -y
+```
+
+- 使用 uv
+
+```bash
+uv pip uninstall -r requirements.txt -y
+```
+
 ## 创建和使用虚拟环境
 
 ```bash
@@ -81,27 +114,13 @@ global.index-url='https://pypi.tuna.tsinghua.edu.cn/simple'
 pip config unset global.index-url
 ```
 
-配置文件位置：
-
-```bash
-C:\Users\admin\AppData\Roaming\pip\pip.ini
-```
-
-## 修改 pip install 位置
+## 修改 pip 安装的第三方库位置
 
 在 `C:\Users\admin\AppData\Roaming\pip\pip.ini` 中写入
 
 ```txt
 [global]
 target = D:\Python\Python312\Lib\site-packages
-```
-
-## pip.ini 配置
-
-```txt
-[global]
-target = D:\Python\Python312\Lib\site-packages
-index-url = https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 
 ## 查看第三方库的位置
@@ -147,12 +166,55 @@ pip list
 uv pip list
 ```
 
-## python 列出依赖库
+| 功能 | `uv` 命令 | `pip` 命令 | 永久修改方式 |
+| :--- | :--- | :--- | :--- |
+| **查找缓存** | `uv cache dir` | `pip cache dir` | - |
+| **清理缓存** | `uv cache clean` | `pip cache purge` | - |
+| **修改位置** | 环境变量 `UV_CACHE_DIR` | 环境变量 `PIP_CACHE_DIR` **或** 配置文件 `pip.ini` |
+
+## uv cache
+
+- 查看 uv cache 的位置
 
 ```bash
-pip freeze > requirements.txt
+uv cache dir
 ```
 
+- 删除 uv cache
+
 ```bash
-uv pip freeze > requirements.txt
+uv cache clean
 ```
+
+- 修改 uv cache dir
+
+```bash
+[System.Environment]::SetEnvironmentVariable('UV_CACHE_DIR', 'D:\uv\cache', 'User')
+```
+
+重启之后再运行 `uv cache dir` 就可以查看新的 uv cache 位置了
+
+## pip cache
+
+- 查看 pip cache 的位置
+
+```bash
+pip cache dir
+```
+
+- 删除 pip cache
+
+```bash
+pip cache purge
+```
+
+- 修改 uv cache dir
+
+在 pip.ini 中填入
+
+```ini
+[global]
+cache-dir = D:\python\pip-cache
+```
+
+重启之后再运行 `uv cache dir` 就可以查看新的 uv cache 位置了
