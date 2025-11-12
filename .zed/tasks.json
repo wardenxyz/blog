@@ -2,31 +2,25 @@
 	{
 		"label": "uv venv & pip download package",
 		"command": "uv venv && .venv\\Scripts\\activate && uv pip install -r requirements.txt",
-		"reveal": "never",
+		"reveal": "no_focus",
 		"hide": "on_success"
 	},
 	{
 		"label": "generate site & view site",
 		"command": "uv run .github\\scripts\\static_gen.py && python -m http.server -d site",
-		"reveal": "never",
+		"reveal": "no_focus",
 		"hide": "on_success"
 	},
 	{
 		"label": "remove .venv",
 		"command": "rm -r -fo .venv",
-		"reveal": "never",
+		"reveal": "no_focus",
 		"hide": "on_success"
 	},
 	{
 		"label": "remove site",
 		"command": "rm -r -fo site",
-		"reveal": "never",
-		"hide": "on_success"
-	},
-	{
-		"label": "git push github main",
-		"command": "git push github main",
-		"reveal": "never",
+		"reveal": "no_focus",
 		"hide": "on_success"
 	}
 ]
