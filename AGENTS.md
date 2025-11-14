@@ -10,4 +10,24 @@
 
 - README.md 就是 index.html
 
-- 运行 `uv run .github\scripts\static_gen.py` 来生成网页，预览命令是 `python -m http.server -d site`
+## 启动命令如下
+
+```bash
+uv venv
+```
+
+```bash
+.venv\Scripts\activate
+```
+
+```bash
+uv pip install -r requirements.txt
+```
+
+```bash
+uv run .github\scripts\static_gen.py
+```
+
+```bash
+python -m http.server -d site
+```
