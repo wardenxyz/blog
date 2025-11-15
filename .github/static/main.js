@@ -804,7 +804,63 @@ function initContentHighlight(){
     if(!words.length) return;
     const content = document.getElementById('content');
     if(!content) return;
+    
+    // Add notification about ESC key functionality
+    const notification = document.createElement('div');
+    notification.className = 'highlight-notification';
+    notification.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span>搜索结果已高亮显示，按 <kbd>ESC</kbd> 键可清除高亮</span>
+        <button id="clearHighlightsBtn" style="background: #dc3545; color: white; border: none; border-radius: 4px; padding: 4px 8px; font-size: 12px; cursor: pointer;">清除高亮</button>
+      </div>
+    `;
+    notification.style.cssText = 'background: #e8f4fd; border: 1px solid #bee5eb; border-radius: 6px; padding: 10px 14px; margin-bottom: 16px; font-size: 14px; color: #0c5460;';
+    content.insertBefore(notification, content.firstChild);
+    
     const first = highlightInElement(content, words);
+    
+    // Add ESC key listener to clear highlights
+    const clearHighlights = (e) => {
+      if(e.key === 'Escape') {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const marks = document.querySelectorAll('mark.hl');
+        if(marks.length > 0) {
+          // Remove all highlight marks
+          marks.forEach(mark => {
+            const parent = mark.parentNode;
+            if(parent) {
+              const text = document.createTextNode(mark.textContent);
+              parent.replaceChild(text, mark);
+            }
+          });
+          
+          // Remove notification
+          const notification = document.querySelector('.highlight-notification');
+          if(notification) {
+            notification.remove();
+          }
+          
+          // Remove the highlight parameter from URL without page reload
+          const url = new URL(window.location);
+          url.searchParams.delete('highlight');
+          window.history.replaceState(null, '', url.toString());
+        }
+        document.removeEventListener('keydown', clearHighlights);
+      }
+    };
+    
+    document.addEventListener('keydown', clearHighlights, { capture: true });
+    
+    // Add button click listener as backup
+    const clearButton = document.getElementById('clearHighlightsBtn');
+    if(clearButton) {
+      clearButton.addEventListener('click', () => {
+        clearHighlights({ key: 'Escape' });
+      });
+    }
+    
     if(first){
   const offset = (typeof computeScrollOffset === 'function') ? computeScrollOffset() : (function(){
     const header = document.querySelector('.site-header');
@@ -851,6 +907,7 @@ function highlightInElement(root, words){
       if(offset > lastIndex) frag.appendChild(document.createTextNode(text.slice(lastIndex, offset)));
       const mark = document.createElement('mark');
       mark.className = 'hl';
+      mark.setAttribute('data-highlight', 'true');
       mark.textContent = m;
       if(!firstMark) firstMark = mark;
       frag.appendChild(mark);
