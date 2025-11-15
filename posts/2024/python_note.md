@@ -88,7 +88,7 @@ uv pip uninstall -r requirements.txt -y
 deactivate
 ```
 
-## python 换源
+## python pip 换源
 
 清华源：
 
@@ -218,3 +218,57 @@ cache-dir = D:\python\pip-cache
 ```
 
 重启之后再运行 `uv cache dir` 就可以查看新的 uv cache 位置了
+
+## uv 换源
+
+这里只谈项目级修改，不涉及全局修改
+
+在 `pyproject.toml` 中加入
+
+```toml
+[tool.uv]
+# 如果你只用这一个源，可以不写 index-strategy
+index-strategy = "unsafe-best-match"
+
+[[tool.uv.index]]
+url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
+default = true
+```
+
+国内可用源
+
+- 清华源
+
+```bash
+https://pypi.tuna.tsinghua.edu.cn/simple/
+```
+
+- 阿里云
+
+```bash
+https://mirrors.aliyun.com/pypi/simple/
+```
+
+- 腾讯云
+
+```bash
+https://mirrors.cloud.tencent.com/pypi/simple/
+```
+
+- 火山引擎
+
+```bash
+https://mirrors.volces.com/pypi/simple/
+```
+
+- 华为云
+
+```bash
+https://mirrors.huaweicloud.com/repository/pypi/simple/
+```
+
+- 中科大源
+
+```bash
+https://pypi.mirrors.ustc.edu.cn/simple/
+```
