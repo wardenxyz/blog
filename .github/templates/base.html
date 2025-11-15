@@ -48,35 +48,54 @@
     }
   </script>
   
-  <!-- MathJax Configuration -->
+  <!-- MathJax: only load when page actually contains math -->
   <script>
-    window.MathJax = {
-      tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']],
-        displayMath: [['$$', '$$'], ['\\[', '\\]']],
-        processEscapes: true,
-        processEnvironments: true,
-        tags: 'ams'
-      },
-      options: {
-        ignoreHtmlClass: 'tex2jax_ignore',
-        processHtmlClass: 'tex2jax_process'
-      },
-      svg: {
-        fontCache: 'global'
-      },
-      startup: {
-        ready: () => {
-          MathJax.startup.defaultReady();
-          MathJax.startup.promise.then(() => {
-            // MathJax is ready
-          });
+    (function(){
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']],
+          processEscapes: true,
+          processEnvironments: true,
+          tags: 'ams'
+        },
+        options: {
+          ignoreHtmlClass: 'tex2jax_ignore',
+          processHtmlClass: 'tex2jax_process'
+        },
+        svg: {
+          fontCache: 'global'
+        }
+      };
+
+      function pageHasMath(){
+        try{
+          var content = document.getElementById('content');
+          if(!content) return false;
+          var text = content.textContent || '';
+          return /\$[^$]+\$|\\\(|\\\[|\\begin\{equation\}/.test(text);
+        }catch(_e){
+          return false;
         }
       }
-    };
-  </script>
-  <script type="text/javascript" id="MathJax-script" async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+
+      function loadMathJax(){
+        if(document.getElementById('MathJax-script')) return;
+        var s = document.createElement('script');
+        s.id = 'MathJax-script';
+        s.async = true;
+        s.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js';
+        document.head.appendChild(s);
+      }
+
+      if(document.readyState === 'loading'){
+        document.addEventListener('DOMContentLoaded', function(){
+          if(pageHasMath()) loadMathJax();
+        });
+      }else{
+        if(pageHasMath()) loadMathJax();
+      }
+    })();
   </script>
   
   <!-- Mermaid Diagram -->
@@ -168,5 +187,20 @@
 
   <!-- Main JavaScript with defer for better performance -->
   <script src="{{ base }}static/main.js" defer></script>
+  <!-- Only load performance tooling in dev / when explicitly requested -->
+  <script>
+    (function(){
+      try{
+        var isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+        var params = new URLSearchParams(location.search || '');
+        if(isLocal || params.get('debug-perf') === '1'){
+          var s = document.createElement('script');
+          s.src = '{{ base }}static/performance.js';
+          s.defer = true;
+          document.head.appendChild(s);
+        }
+      }catch(_e){/* noop */}
+    })();
+  </script>
 </body>
 </html>
