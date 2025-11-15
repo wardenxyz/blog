@@ -1,0 +1,65 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "create venv",
+			"type": "shell",
+			"command": "uv venv",
+			"presentation": {
+				"reveal": "silent",
+				"close": true
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "install dependencies",
+			"type": "shell",
+			"command": "uv pip install -r requirements.txt",
+			"presentation": {
+				"reveal": "silent",
+				"close": true
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "generate site & view site",
+			"type": "shell",
+			"command": "if (Test-Path site) { rm -r -fo site }; uv run .github/scripts/static_gen.py; python -m http.server -d site",
+			"isBackground": true,
+			"presentation": {
+				"reveal": "silent"
+			},
+			"problemMatcher": {
+				"owner": "python-http-server",
+				"pattern": {
+					"regexp": "Serving HTTP on .* port .*"
+				},
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": "^Serving HTTP on",
+					"endsPattern": "^$"
+				}
+			}
+		},
+		{
+			"label": "remove .venv",
+			"type": "shell",
+			"command": "if (Test-Path .venv) { rm -r -fo .venv }",
+			"presentation": {
+				"reveal": "silent",
+				"close": true
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "remove site",
+			"type": "shell",
+			"command": "if (Test-Path site) { rm -r -fo site }",
+			"presentation": {
+				"reveal": "silent",
+				"close": true
+			},
+			"problemMatcher": []
+		}
+	]
+}

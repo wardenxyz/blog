@@ -1,5 +1,11 @@
 [
 	{
+		"label": "uv venv",
+		"command": "uv venv",
+		"reveal": "no_focus",
+		"hide": "on_success"
+	},
+	{
 		"label": "uv venv & pip download package",
 		"command": "uv venv && .venv\\Scripts\\activate && uv pip install -r requirements.txt",
 		"reveal": "no_focus",
