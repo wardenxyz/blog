@@ -7,7 +7,7 @@
 	},
 	{
 		"label": "generate site & view site",
-		"command": "uv run .github\\scripts\\static_gen.py && python -m http.server -d site",
+		"command": "rm -r -fo site && uv run .github\\scripts\\static_gen.py && python -m http.server -d site",
 		"reveal": "no_focus",
 		"hide": "on_success"
 	},
