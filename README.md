@@ -1,4 +1,4 @@
-# 随便写写
+# Home
 
 欢迎来到我基于 GitHub 的博客！这是一个极简的博客，使用纯 Markdown 文件和 GitHub 的原生功能。
 
