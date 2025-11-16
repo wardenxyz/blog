@@ -436,6 +436,7 @@ function initSearch(){
   if(!input || !results || !modal || !toggleBtn) return;
 
   let index = [];
+  let fuse = null; // Fuse.js instance
   let indexPromise = null;
   let active = -1;
   let renderCount = 0;
@@ -444,16 +445,29 @@ function initSearch(){
   const focusSelector = 'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
   async function ensureIndex(){
-    if(index.length) return index;
+    if(fuse) return index; // Already initialized
     if(indexPromise) return indexPromise;
     indexPromise = (async ()=>{
       try{
         const res = await fetch(base + 'search.json', {cache:'no-cache'});
         if(!res.ok){ throw new Error('SEARCH_INDEX_HTTP_' + res.status); }
         index = await res.json();
+        // Fuse.js options
+        const options = {
+          keys: ['title', 'tags', 'content'],
+          includeScore: true,
+          threshold: 0.4, //Fuse.js 搜索阈值，数值越小搜索结果越严格
+          ignoreLocation: true,
+        };
+        if (window.Fuse) {
+          fuse = new Fuse(index, options);
+        } else {
+          console.warn("Fuse.js not loaded");
+        }
       }catch(e){
         console.warn('Search index load failed', e);
         index = [];
+        fuse = null;
       }finally{
         indexPromise = null;
       }
@@ -552,6 +566,16 @@ function initSearch(){
     closeBtn.addEventListener('click', ()=> closeModal());
   }
 
+  modal.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeModal();
+    }
+  });
+
+  if(closeBtn){
+    closeBtn.addEventListener('click', ()=> closeModal());
+  }
+
   if(modal){
     modal.addEventListener('click', (e)=>{
       if(!modalOpen) return;
@@ -603,13 +627,17 @@ function initSearch(){
   }
 
   function matchItems(q){
-    const qs = q.trim().toLowerCase();
-    if(!qs) return [];
-    const words = Array.from(new Set(qs.split(/\s+/).filter(Boolean))).slice(0, 8);
-    return index.filter(it =>{
-      const hay = (it.title + ' ' + (it.content||'') + ' ' + (it.tags||'').toString()).toLowerCase();
-      return words.every(w => hay.includes(w));
-    }).map(it => ({title: it.title, path: it.path, content: it.content||''}));
+    if(!fuse) {
+        const qs = q.trim().toLowerCase();
+        if(!qs) return [];
+        const words = Array.from(new Set(qs.split(/\s+/).filter(Boolean))).slice(0, 8);
+        return index.filter(it =>{
+          const hay = (it.title + ' ' + (it.content||'') + ' ' + (it.tags||'').toString()).toLowerCase();
+          return words.every(w => hay.includes(w));
+        }).map(it => ({title: it.title, path: it.path, content: it.content||''}));
+    }
+    const searchResults = fuse.search(q);
+    return searchResults.map(result => result.item);
   }
 
   let searchTimeout;
@@ -626,7 +654,7 @@ function initSearch(){
       const items = matchItems(q);
       const words = Array.from(new Set(q.trim().toLowerCase().split(/\s+/).filter(Boolean))).slice(0, 8);
       render(items, words);
-    }, 200); // Increased debounce time for better performance
+    }, 150);
   });
 
   input.addEventListener('keydown', (e)=>{
@@ -805,69 +833,74 @@ function initContentHighlight(){
     const content = document.getElementById('content');
     if(!content) return;
     
-    // Add notification about ESC key functionality
-    const notification = document.createElement('div');
-    notification.className = 'highlight-notification';
-    notification.innerHTML = `
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <span>搜索结果已高亮显示，按 <kbd>ESC</kbd> 键可清除高亮</span>
-        <button id="clearHighlightsBtn" style="background: #dc3545; color: white; border: none; border-radius: 4px; padding: 4px 8px; font-size: 12px; cursor: pointer;">清除高亮</button>
-      </div>
-    `;
-    notification.style.cssText = 'background: #e8f4fd; border: 1px solid #bee5eb; border-radius: 6px; padding: 10px 14px; margin-bottom: 16px; font-size: 14px; color: #0c5460;';
-    content.insertBefore(notification, content.firstChild);
-    
     const first = highlightInElement(content, words);
-    
-    // Add ESC key listener to clear highlights
-    const clearHighlights = (e) => {
-      if(e.key === 'Escape') {
-        e.preventDefault();
-        e.stopPropagation();
-        
+
+    if(first){
+      // Add notification about ESC key functionality only if highlighting happened
+      const notification = document.createElement('div');
+      notification.className = 'highlight-notification';
+      notification.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span>搜索结果已高亮显示，按 <kbd>ESC</kbd> 键可清除高亮</span>
+          <button id="clearHighlightsBtn" style="background: #dc3545; color: white; border: none; border-radius: 4px; padding: 4px 8px; font-size: 12px; cursor: pointer;">清除高亮</button>
+        </div>
+      `;
+      notification.style.cssText = 'background: #e8f4fd; border: 1px solid #bee5eb; border-radius: 6px; padding: 10px 14px; margin-bottom: 16px; font-size: 14px; color: #0c5460;';
+      content.insertBefore(notification, content.firstChild);
+
+      // Clear highlights logic
+      const clearHighlightsLogic = () => {
         const marks = document.querySelectorAll('mark.hl');
-        if(marks.length > 0) {
+        if (marks.length > 0) {
           // Remove all highlight marks
           marks.forEach(mark => {
             const parent = mark.parentNode;
-            if(parent) {
+            if (parent) {
               const text = document.createTextNode(mark.textContent);
               parent.replaceChild(text, mark);
             }
           });
-          
+
           // Remove notification
           const notification = document.querySelector('.highlight-notification');
-          if(notification) {
+          if (notification) {
             notification.remove();
           }
-          
+
           // Remove the highlight parameter from URL without page reload
           const url = new URL(window.location);
           url.searchParams.delete('highlight');
           window.history.replaceState(null, '', url.toString());
         }
-        document.removeEventListener('keydown', clearHighlights);
+        // Always remove the keydown listener after execution
+        document.removeEventListener('keydown', handleEsc, { capture: true });
+      };
+
+      const handleEsc = (e) => {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          e.stopPropagation();
+          clearHighlightsLogic();
+        }
+      };
+
+      document.addEventListener('keydown', handleEsc, { capture: true });
+
+      // Add button click listener as backup
+      const clearButton = document.getElementById('clearHighlightsBtn');
+      if (clearButton) {
+        clearButton.addEventListener('click', () => {
+          clearHighlightsLogic();
+        });
       }
-    };
-    
-    document.addEventListener('keydown', clearHighlights, { capture: true });
-    
-    // Add button click listener as backup
-    const clearButton = document.getElementById('clearHighlightsBtn');
-    if(clearButton) {
-      clearButton.addEventListener('click', () => {
-        clearHighlights({ key: 'Escape' });
-      });
-    }
-    
-    if(first){
-  const offset = (typeof computeScrollOffset === 'function') ? computeScrollOffset() : (function(){
-    const header = document.querySelector('.site-header');
-    const cssVar = getComputedStyle(document.documentElement).getPropertyValue('--header-h').trim();
-    const headerH = cssVar ? parseFloat(cssVar) : (header ? header.getBoundingClientRect().height : 72);
-    return headerH + 8;
-  })();
+
+      // Scroll to the first highlighted element
+      const offset = (typeof computeScrollOffset === 'function') ? computeScrollOffset() : (function(){
+        const header = document.querySelector('.site-header');
+        const cssVar = getComputedStyle(document.documentElement).getPropertyValue('--header-h').trim();
+        const headerH = cssVar ? parseFloat(cssVar) : (header ? header.getBoundingClientRect().height : 72);
+        return headerH + 8;
+      })();
       const go = ()=>{
         const rect = first.getBoundingClientRect();
         const top = rect.top + window.scrollY - offset;
