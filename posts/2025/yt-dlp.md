@@ -13,7 +13,7 @@ yt-dlp 是一个强大的视频下载工具，支持从多个网站下载视频�
 
 ## 下载
 
-[https://github.com/yt-dlp/yt-dlp/releases](https://github.com/yt-dlp/yt-dlp/releases)，下载最新版本的 yt-dlp 可执行文件，并将其放在系统的 PATH 中
+https://github.com/yt-dlp/yt-dlp/releases ，下载最新版本的 yt-dlp 可执行文件，并将其放在系统的 PATH 中
 
 ## 基本用法
 

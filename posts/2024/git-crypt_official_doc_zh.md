@@ -12,7 +12,7 @@ category: [计算机]
 git-crypt 使 Git 仓库中的文件可以实现透明的加密和解密。您可以选择需要保护的文件，在提交时进行加密，在检出时进行解密。git-crypt 可以让您自由共享包含公共和私有内容的仓库。即使开发者没有密钥，git-crypt 也能让其实现克隆和提交含有加密文件的仓库。这样，您可以将秘密资料（如密钥或密码）存储在与代码相同的仓库中，而不需要锁定整个仓库。
 
 git-crypt 是由 [Andrew Ayer](https://www.agwa.name)（ agwa@andrewayer.name ）编写的。
-更多信息，请访问 [https://www.agwa.name/projects/git-crypt](https://www.agwa.name/projects/git-crypt)。
+更多信息，请访问 https://www.agwa.name/projects/git-crypt。
 
 ## 构建 git-crypt
 
@@ -90,7 +90,7 @@ git-crypt 不会加密文件名、提交信息、符号链接目标、gitlink �
 
 git-crypt 无法隐藏文件是否发生更改、文件长度，或者两个文件完全相同这一事实（参见上方“安全性”部分）
 
-git-crypt 并不支持撤销对之前已授予访问权限的加密仓库的访问。这既适用于多用户 GPG 模式（没有 del-gpg-user 命令来补充 add-gpg-user），也适用于对称密钥模式（不支持轮换密钥）。这是因为，在历史数据的背景下，这是一个固有的复杂问题。例如，即使某个时刻密钥被轮换了，拥有之前密钥的用户仍然可以访问之前的仓库历史。这个问题在 [https://github.com/AGWA/git-crypt/issues/47](https://github.com/AGWA/git-crypt/issues/47) 中有更详细的讨论。
+git-crypt 并不支持撤销对之前已授予访问权限的加密仓库的访问。这既适用于多用户 GPG 模式（没有 del-gpg-user 命令来补充 add-gpg-user），也适用于对称密钥模式（不支持轮换密钥）。这是因为，在历史数据的背景下，这是一个固有的复杂问题。例如，即使某个时刻密钥被轮换了，拥有之前密钥的用户仍然可以访问之前的仓库历史。这个问题在 https://github.com/AGWA/git-crypt/issues/47 中有更详细的讨论。
 
 使用 git-crypt 加密的文件无法被压缩。即使对加密文件做了最微小的改动，git 也得存储改动后的整个文件，而不是仅仅存储改动部分。
 

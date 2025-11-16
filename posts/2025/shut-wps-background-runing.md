@@ -7,7 +7,7 @@ category: [计算机]
 
 # 关闭 WPS 后台运行
 
-搬运自：[https://www.zhihu.com/question/498031038](https://www.zhihu.com/question/498031038)
+搬运自：https://www.zhihu.com/question/498031038
 
 ## 第一步
 
@@ -53,7 +53,7 @@ wpsrenderer.exe
 
 # 关闭 WPS 增量备份
 
-来源：[https://www.bilibili.com/video/BV1QYEkzvEWQ](https://www.bilibili.com/video/BV1QYEkzvEWQ)
+来源：https://www.bilibili.com/video/BV1QYEkzvEWQ
 
 在 WPS 主页的右上角找到 “全局设置”，打开下面的 “设置”
 
