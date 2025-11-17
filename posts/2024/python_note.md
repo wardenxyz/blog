@@ -18,6 +18,20 @@ index-url = https://pypi.tuna.tsinghua.edu.cn/simple
 cache-dir = D:\python\pip-cache
 ```
 
+## uv
+
+- uv cache dir
+
+```bash
+[System.Environment]::SetEnvironmentVariable('UV_CACHE_DIR', 'D:\uv\cache', 'User')
+```
+
+- uv python install dir
+
+```bash
+[System.Environment]::SetEnvironmentVariable('UV_PYTHON_INSTALL_DIR', 'D:\python', 'User')
+```
+
 ## python 列出依赖库
 
 ```bash
@@ -166,10 +180,10 @@ pip list
 uv pip list
 ```
 
-| 功能 | `uv` 命令 | `pip` 命令 | 永久修改方式 |
-| :--- | :--- | :--- | :--- |
-| **查找缓存** | `uv cache dir` | `pip cache dir` | - |
-| **清理缓存** | `uv cache clean` | `pip cache purge` | - |
+| 功能         | `uv` 命令               | `pip` 命令                                         | 永久修改方式 |
+| :----------- | :---------------------- | :------------------------------------------------- | :----------- |
+| **查找缓存** | `uv cache dir`          | `pip cache dir`                                    | -            |
+| **清理缓存** | `uv cache clean`        | `pip cache purge`                                  | -            |
 | **修改位置** | 环境变量 `UV_CACHE_DIR` | 环境变量 `PIP_CACHE_DIR` **或** 配置文件 `pip.ini` |
 
 ## uv cache
@@ -193,6 +207,14 @@ uv cache clean
 ```
 
 重启之后再运行 `uv cache dir` 就可以查看新的 uv cache 位置了
+
+## uv 管理多版本 python 的命令
+
+```bash
+[System.Environment]::SetEnvironmentVariable('UV_PYTHON_INSTALL_DIR', 'D:\python', 'User')
+```
+
+重启之后再运行 `uv python dir` 就可以查看新的 uv 下载多个版本 python 位置了
 
 ## pip cache
 
