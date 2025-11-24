@@ -9,6 +9,10 @@
 <!-- BLOG-POST-LIST:START -->
 ## 2025 年
 
+### 11 月
+
+- 2025-11-24 [Docker Desktop 学习笔记](posts/2025/docker-note.md)
+
 ### 10 月
 
 - 2025-10-21 [如何在 zed 中配置 REPL（python）](posts/2025/zed-REPL-guide.md)

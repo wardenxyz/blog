@@ -23,6 +23,7 @@
 
 ## 计算机
 
+- 2025-11-24 [Docker Desktop 学习笔记](posts/2025/docker-note.md)
 - 2025-09-01 [win11 右键菜单切换到 win10 右键菜单](posts/2025/win11-context-menu-to-win10-context-menu.md)
 - 2025-08-16 [GitHub 打野指南](posts/2025/How-to-Search-for-AI-API-Keys-on-GitHub.md)
 - 2025-07-23 [SOPS:Secrets OPerationS](posts/2025/SOPS.md)

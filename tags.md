@@ -95,6 +95,10 @@
 
 - 2025-03-15 [conda 使用笔记](posts/2025/conda_note.md)
 
+## docker
+
+- 2025-11-24 [Docker Desktop 学习笔记](posts/2025/docker-note.md)
+
 ## ffmpeg
 
 - 2024-04-08 [ffmpeg 自用命令](posts/2024/ffmpeg_note.md)
