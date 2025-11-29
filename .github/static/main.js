@@ -58,11 +58,6 @@
             if (window.scrollY <= 300) {
               btn.style.display = 'none';
             }
-      if(e.key === 'Escape'){
-        e.preventDefault();
-        closeModal({restoreFocus:true, clearInput:false});
-        return;
-      }
           }, 200);
         }
       }, 16);
@@ -188,6 +183,7 @@
   function initSidebarDrawer(){
     const panel = document.querySelector('.sidebar-col');
     const toggle = document.getElementById('sidebarToggle');
+    const overlay = document.getElementById('drawerOverlay');
     if(!panel || !toggle) return;
     const mq = window.matchMedia('(max-width: 959px)');
     let isMobile = mq.matches;
@@ -197,6 +193,7 @@
       toggle.classList.remove('active');
       toggle.setAttribute('aria-expanded', 'false');
       document.body.classList.remove('sidebar-drawer-open');
+      if(overlay) overlay.classList.remove('active');
     }
 
     function openPanel(){
@@ -204,6 +201,7 @@
       toggle.classList.add('active');
       toggle.setAttribute('aria-expanded', 'true');
       document.body.classList.add('sidebar-drawer-open');
+      if(overlay) overlay.classList.add('active');
       const tocPanel = document.getElementById('toc');
       const tocToggle = document.getElementById('tocToggle');
       if(tocPanel){
@@ -231,6 +229,7 @@
         toggle.classList.remove('active');
         toggle.setAttribute('aria-expanded', 'false');
         document.body.classList.remove('sidebar-drawer-open');
+        if(overlay) overlay.classList.remove('active');
       }
       setTocHeightVar();
     }
@@ -245,12 +244,21 @@
       }
     });
 
-    document.addEventListener('click', (e)=>{
-      if(!isMobile) return;
-      if(!panel.classList.contains('open')) return;
-      if(panel.contains(e.target) || toggle.contains(e.target)) return;
-      closePanel();
-    });
+    // 点击遮罩层关闭抽屉
+    if(overlay){
+      overlay.addEventListener('click', ()=>{
+        closePanel();
+        // 同时关闭大纲抽屉
+        const tocPanel = document.getElementById('toc');
+        const tocToggle = document.getElementById('tocToggle');
+        if(tocPanel) tocPanel.classList.remove('open');
+        if(tocToggle){
+          tocToggle.classList.remove('active');
+          tocToggle.setAttribute('aria-expanded', 'false');
+        }
+        document.body.classList.remove('toc-drawer-open');
+      });
+    }
 
     document.addEventListener('keydown', (e)=>{
       if(!isMobile) return;
@@ -265,6 +273,7 @@
     const toc = document.getElementById('toc');
     if(!toc) return;
     const toggle = document.getElementById('tocToggle');
+    const overlay = document.getElementById('drawerOverlay');
     const mq = window.matchMedia('(max-width: 959px)');
     let isMobile = mq.matches;
 
@@ -275,6 +284,7 @@
         toggle.setAttribute('aria-expanded', 'false');
       }
       document.body.classList.remove('toc-drawer-open');
+      if(overlay) overlay.classList.remove('active');
     }
 
     function openPanel(){
@@ -284,6 +294,7 @@
         toggle.setAttribute('aria-expanded', 'true');
       }
       document.body.classList.add('toc-drawer-open');
+      if(overlay) overlay.classList.add('active');
       const sidebarPanel = document.querySelector('.sidebar-col');
       const sidebarToggle = document.getElementById('sidebarToggle');
       if(sidebarPanel){
@@ -315,6 +326,7 @@
       }else{
         toc.classList.remove('open');
         document.body.classList.remove('toc-drawer-open');
+        if(overlay) overlay.classList.remove('active');
       }
       setTocHeightVar();
     }
@@ -322,11 +334,12 @@
     sync();
     mq.addEventListener('change', sync);
 
-    document.addEventListener('click', (e)=>{
+    // 点击大纲中的链接后关闭抽屉
+    toc.addEventListener('click', (e)=>{
       if(!isMobile) return;
-      if(!toc.classList.contains('open')) return;
-      if(toc.contains(e.target) || (toggle && toggle.contains(e.target))) return;
-      closePanel();
+      if(e.target.closest('a')){
+        closePanel();
+      }
     });
 
     document.addEventListener('keydown', (e)=>{
@@ -424,8 +437,48 @@ function initSidebarScrollMemory(){
   }catch(_e){ /* noop */ }
 }
 
+// --- Search helper functions (shared) ---
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function escapeRegExp(s){ 
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); 
+}
+
+function highlightHtml(text, words){
+  if(!words || !words.length) return escapeHtml(text);
+  let pattern = words.map(escapeRegExp).join('|');
+  if(!pattern) return escapeHtml(text);
+  const re = new RegExp(`(${pattern})`, 'ig');
+  const parts = text.split(re);
+  return parts.map((p, i) => i % 2 === 1 ? `<mark>${escapeHtml(p)}</mark>` : escapeHtml(p)).join('');
+}
+
+function makeSnippet(text, words, ctxBefore=30, ctxLen=100){
+  if(!text) return '';
+  const lc = text.toLowerCase();
+  const ws = (words||[]).filter(Boolean);
+  let pos = -1;
+  for(const w of ws){
+    const i = lc.indexOf(w);
+    if(i !== -1){ pos = i; break; }
+  }
+  if(pos === -1){ pos = 0; }
+  const start = Math.max(0, pos - ctxBefore);
+  let snippet = text.slice(start, start + ctxLen);
+  if(start > 0) snippet = '…' + snippet;
+  if(start + ctxLen < text.length) snippet = snippet + '…';
+  return snippet;
+}
+
 // --- Search ---
 function initSearch(){
+  // 顶部内嵌搜索框
+  const headerInput = document.getElementById('headerSearchInput');
+  const headerResults = document.getElementById('headerSearchResults');
+  
+  // 原有的模态框搜索（保留兼容）
   const input = document.getElementById('searchInput');
   const results = document.getElementById('searchResults');
   const modal = document.getElementById('searchModal');
@@ -433,36 +486,32 @@ function initSearch(){
   const toggleBtn = document.getElementById('searchToggle');
   const closeBtn = document.getElementById('searchClose');
   const base = (document.body.getAttribute('data-base')||'');
-  if(!input || !results || !modal || !toggleBtn) return;
 
   let index = [];
-  let fuse = null; // Fuse.js instance
+  let fuse = null;
   let indexPromise = null;
-  let active = -1;
+  let headerActive = -1;
+  let modalActive = -1;
   let renderCount = 0;
   let modalOpen = false;
   let lastFocusedElement = null;
-  const focusSelector = 'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
   async function ensureIndex(){
-    if(fuse) return index; // Already initialized
+    if(fuse) return index;
     if(indexPromise) return indexPromise;
     indexPromise = (async ()=>{
       try{
         const res = await fetch(base + 'search.json', {cache:'no-cache'});
         if(!res.ok){ throw new Error('SEARCH_INDEX_HTTP_' + res.status); }
         index = await res.json();
-        // Fuse.js options
         const options = {
           keys: ['title', 'tags', 'content'],
           includeScore: true,
-          threshold: 0.4, //Fuse.js 搜索阈值，数值越小搜索结果越严格
+          threshold: 0.4,
           ignoreLocation: true,
         };
         if (window.Fuse) {
           fuse = new Fuse(index, options);
-        } else {
-          console.warn("Fuse.js not loaded");
         }
       }catch(e){
         console.warn('Search index load failed', e);
@@ -491,6 +540,142 @@ function initSearch(){
   }
 
   scheduleWarmIndex();
+
+  function matchItems(q){
+    if(!fuse) {
+      const qs = q.trim().toLowerCase();
+      if(!qs) return [];
+      const words = Array.from(new Set(qs.split(/\s+/).filter(Boolean))).slice(0, 8);
+      return index.filter(it =>{
+        const hay = (it.title + ' ' + (it.content||'') + ' ' + (it.tags||'').toString()).toLowerCase();
+        return words.every(w => hay.includes(w));
+      }).map(it => ({title: it.title, path: it.path, content: it.content||'', tags: it.tags}));
+    }
+    return fuse.search(q).map(result => result.item);
+  }
+
+  // ====== 顶部搜索框逻辑 ======
+  if(headerInput && headerResults){
+    headerInput.addEventListener('focus', warmIndex);
+    
+    function closeHeaderResults(){
+      headerResults.classList.remove('open');
+      headerResults.innerHTML = '';
+      headerActive = -1;
+    }
+
+    function renderHeaderResults(items, words){
+      if(!items.length){
+        headerResults.innerHTML = '<div class="search-no-result">😕 没有找到相关文章</div>';
+        headerResults.classList.add('open');
+        return;
+      }
+      const fragment = document.createDocumentFragment();
+      const itemsToShow = items.slice(0, 10);
+      renderCount++;
+      itemsToShow.forEach((it, idx) => {
+        const a = document.createElement('a');
+        a.className = 'search-item';
+        a.id = 'header-search-item-' + renderCount + '-' + idx;
+        const qParam = words && words.length ? ('?highlight=' + encodeURIComponent(words.join(' '))) : '';
+        a.href = base + it.path + qParam;
+        
+        // 生成摘要
+        const snippet = makeSnippet(it.content || '', words, 30, 80);
+        const snippetHtml = snippet ? `<div class="search-item-snippet">${highlightHtml(snippet, words)}</div>` : '';
+        
+        // 生成标签
+        const tagsHtml = it.tags && it.tags.length ? 
+          `<div class="search-item-tags">${it.tags.slice(0,3).map(t => `<span class="search-tag">${escapeHtml(String(t))}</span>`).join('')}</div>` : '';
+        
+        a.innerHTML = `
+          <div class="search-item-title">${highlightHtml(it.title, words)}</div>
+          <div class="search-item-path">${escapeHtml(it.path)}</div>
+          ${snippetHtml}
+          ${tagsHtml}
+        `;
+        fragment.appendChild(a);
+      });
+      headerResults.innerHTML = '';
+      headerResults.appendChild(fragment);
+      headerResults.classList.add('open');
+      headerActive = -1;
+    }
+    
+    let headerTimeout;
+    headerInput.addEventListener('input', async ()=>{
+      clearTimeout(headerTimeout);
+      const q = headerInput.value;
+      if(!q.trim()){
+        closeHeaderResults();
+        return;
+      }
+      headerTimeout = setTimeout(async ()=>{
+        await ensureIndex();
+        const items = matchItems(q);
+        const words = Array.from(new Set(q.trim().toLowerCase().split(/\s+/).filter(Boolean))).slice(0, 8);
+        renderHeaderResults(items, words);
+      }, 150);
+    });
+
+    headerInput.addEventListener('keydown', (e)=>{
+      const items = Array.from(headerResults.querySelectorAll('.search-item'));
+      
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        // 如果有选中的项，跳转到选中项；否则跳转到第一个结果
+        if(headerActive >= 0 && items[headerActive]){
+          items[headerActive].click();
+        }else if(items.length > 0){
+          items[0].click();
+        }
+        return;
+      }
+      
+      if(!headerResults.classList.contains('open')) return;
+      if(!items.length) return;
+      
+      if(e.key === 'ArrowDown'){
+        e.preventDefault();
+        headerActive = (headerActive + 1) % items.length;
+        items.forEach((el,i)=> el.classList.toggle('active', i === headerActive));
+        // 滚动到可视区域
+        if(items[headerActive]) items[headerActive].scrollIntoView({block:'nearest', behavior:'smooth'});
+      }else if(e.key === 'ArrowUp'){
+        e.preventDefault();
+        headerActive = (headerActive - 1 + items.length) % items.length;
+        items.forEach((el,i)=> el.classList.toggle('active', i === headerActive));
+        // 滚动到可视区域
+        if(items[headerActive]) items[headerActive].scrollIntoView({block:'nearest', behavior:'smooth'});
+      }else if(e.key === 'Escape'){
+        closeHeaderResults();
+        headerInput.blur();
+      }
+    });
+
+    // 点击外部关闭
+    document.addEventListener('click', (e)=>{
+      if(!headerInput.contains(e.target) && !headerResults.contains(e.target)){
+        closeHeaderResults();
+      }
+    });
+
+    // Ctrl+K 快捷键聚焦搜索框
+    document.addEventListener('keydown', (e)=>{
+      if((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)){
+        e.preventDefault();
+        headerInput.focus();
+        headerInput.select();
+      }
+    });
+  }
+
+  // ====== 原有模态框搜索逻辑（保留兼容移动端） ======
+  if(!input || !results || !modal) return;
+  
+  let active = -1;
+  const focusSelector = 'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
   input.addEventListener('focus', warmIndex);
 
   function closeResults(){
@@ -622,23 +807,7 @@ function initSearch(){
     results.removeAttribute('aria-activedescendant');
   }
 
-  function escapeHtml(s){
-    return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  }
-
-  function matchItems(q){
-    if(!fuse) {
-        const qs = q.trim().toLowerCase();
-        if(!qs) return [];
-        const words = Array.from(new Set(qs.split(/\s+/).filter(Boolean))).slice(0, 8);
-        return index.filter(it =>{
-          const hay = (it.title + ' ' + (it.content||'') + ' ' + (it.tags||'').toString()).toLowerCase();
-          return words.every(w => hay.includes(w));
-        }).map(it => ({title: it.title, path: it.path, content: it.content||''}));
-    }
-    const searchResults = fuse.search(q);
-    return searchResults.map(result => result.item);
-  }
+  
 
   let searchTimeout;
   input.addEventListener('input', async () =>{
@@ -719,34 +888,6 @@ function initSearch(){
       results.removeAttribute('aria-activedescendant');
     }
   }
-
-  function highlightHtml(text, words){
-    if(!words || !words.length) return escapeHtml(text);
-    let pattern = words.map(escapeRegExp).join('|');
-    if(!pattern) return escapeHtml(text);
-    const re = new RegExp(`(${pattern})`, 'ig');
-    const parts = text.split(re);
-    return parts.map((p, i) => i % 2 === 1 ? `<mark>${escapeHtml(p)}</mark>` : escapeHtml(p)).join('');
-  }
-
-  function makeSnippet(text, words, ctxBefore=30, ctxLen=120){
-    if(!text) return '';
-    const lc = text.toLowerCase();
-    const ws = (words||[]).filter(Boolean);
-    let pos = -1;
-    for(const w of ws){
-      const i = lc.indexOf(w);
-      if(i !== -1){ pos = i; break; }
-    }
-    if(pos === -1){ pos = 0; }
-    const start = Math.max(0, pos - ctxBefore);
-    let snippet = text.slice(start, start + ctxLen);
-    if(start > 0) snippet = '…' + snippet;
-    if(start + ctxLen < text.length) snippet = snippet + '…';
-    return snippet;
-  }
-
-  function escapeRegExp(s){ return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 }
 
 // --- Theme toggle ---

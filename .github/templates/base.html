@@ -14,6 +14,9 @@
   
   <!-- Critical CSS -->
   <link rel="stylesheet" href="{{ base }}static/style.css" />
+  <link rel="stylesheet" href="{{ base }}static/theme.css" />
+  <!-- Prism.js 代码高亮 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" />
   <link rel="icon" href="{{ base }}static/favicon.svg" type="image/svg+xml" />
   <link rel="alternate" type="application/rss+xml" title="My Blog" href="{{ base }}feed.xml" />
   
@@ -132,21 +135,38 @@
   <header class="site-header">
     <div class="container header-inner">
       <a class="brand" href="{{ base }}index.html">My Blog</a>
-  <button class="menu-toggle" id="menuToggle" aria-label="打开菜单" aria-controls="primaryNav" aria-expanded="false">☰</button>
-      <button class="icon-button search-toggle" id="searchToggle" aria-label="打开搜索" title="搜索" aria-haspopup="dialog" aria-expanded="false">🔍</button>
-      <button class="drawer-toggle sidebar-toggle" id="sidebarToggle" aria-label="打开文章目录" aria-controls="sidebar" aria-expanded="false">文章目录</button>
-      <button class="drawer-toggle toc-toggle" id="tocToggle" aria-label="打开大纲" aria-controls="toc" aria-expanded="false">大纲</button>
-      <button class="theme-toggle" id="themeToggle" aria-label="切换主题" title="切换主题">🖥️</button>
+      
+      <!-- 导航链接 -->
       <nav class="nav" id="primaryNav">
         <a class="nav-link" href="{{ base }}index.html">首页</a>
-        <a class="nav-link" href="{{ base }}categories.html">Categories</a>
-        <a class="nav-link" href="{{ base }}tags.html">Tags</a>
+        <a class="nav-link" href="{{ base }}categories.html">分类</a>
+        <a class="nav-link" href="{{ base }}tags.html">标签</a>
         <a class="nav-link github" href="https://github.com/wardenxyz" target="_blank" rel="noopener">GitHub</a>
       </nav>
+      
+      <!-- 内嵌搜索框（电脑端） -->
+      <div class="header-search" id="headerSearch">
+        <span class="header-search-icon">🔍</span>
+        <input type="search" id="headerSearchInput" class="header-search-input" placeholder="搜索文章..." aria-label="搜索文章" autocomplete="off" />
+        <div class="header-search-results" id="headerSearchResults"></div>
+      </div>
+      
+      <!-- 移动端搜索按钮 -->
+      <button class="icon-button search-toggle" id="searchToggle" aria-label="打开搜索" title="搜索">🔍</button>
+      
+      <!-- 主题切换 -->
+      <button class="theme-toggle" id="themeToggle" aria-label="切换主题" title="切换主题">🖥️</button>
+      
+      <!-- 移动端按钮 -->
+      <button class="menu-toggle" id="menuToggle" aria-label="打开菜单" aria-controls="primaryNav" aria-expanded="false">☰</button>
+      <button class="drawer-toggle sidebar-toggle" id="sidebarToggle" aria-label="打开文章目录" aria-controls="sidebar" aria-expanded="false">目录</button>
+      <button class="drawer-toggle toc-toggle" id="tocToggle" aria-label="打开大纲" aria-controls="toc" aria-expanded="false">大纲</button>
     </div>
   </header>
 
   <main class="container layout layout-3">
+    <!-- 手机端抽屉遮罩层 -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
     <aside class="sidebar-col" id="sidebar">
       {{ sidebar }}
     </aside>
@@ -188,6 +208,45 @@
   <!-- Main JavaScript with defer for better performance -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js" defer></script>
   <script src="{{ base }}static/main.js" defer></script>
+  
+  <!-- Prism.js 代码语法高亮 -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+  
+  <!-- 代码块语言标签 -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('pre[class*="language-"]').forEach(function(pre) {
+        var match = pre.className.match(/language-(\w+)/);
+        if (match && match[1]) {
+          var lang = match[1];
+          // 美化语言名称
+          var langMap = {
+            'js': 'JavaScript', 'javascript': 'JavaScript',
+            'ts': 'TypeScript', 'typescript': 'TypeScript',
+            'py': 'Python', 'python': 'Python',
+            'rb': 'Ruby', 'ruby': 'Ruby',
+            'sh': 'Shell', 'bash': 'Bash', 'shell': 'Shell', 'zsh': 'Zsh',
+            'ps1': 'PowerShell', 'powershell': 'PowerShell',
+            'html': 'HTML', 'css': 'CSS', 'scss': 'SCSS', 'sass': 'Sass',
+            'json': 'JSON', 'yaml': 'YAML', 'yml': 'YAML', 'toml': 'TOML',
+            'xml': 'XML', 'md': 'Markdown', 'markdown': 'Markdown',
+            'sql': 'SQL', 'graphql': 'GraphQL',
+            'c': 'C', 'cpp': 'C++', 'csharp': 'C#', 'cs': 'C#',
+            'java': 'Java', 'kotlin': 'Kotlin', 'swift': 'Swift',
+            'go': 'Go', 'rust': 'Rust', 'rs': 'Rust',
+            'php': 'PHP', 'lua': 'Lua', 'r': 'R',
+            'dockerfile': 'Dockerfile', 'docker': 'Docker',
+            'nginx': 'Nginx', 'apache': 'Apache',
+            'vim': 'Vim', 'typst': 'Typst', 'latex': 'LaTeX', 'tex': 'TeX'
+          };
+          var displayName = langMap[lang.toLowerCase()] || lang.toUpperCase();
+          pre.setAttribute('data-language', displayName);
+        }
+      });
+    });
+  </script>
+  
   <!-- Only load performance tooling in dev / when explicitly requested -->
   <script>
     (function(){

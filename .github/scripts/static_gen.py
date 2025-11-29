@@ -79,6 +79,7 @@ def load_markdown_with_toc(text: str) -> Tuple[str, str]:
             "attr_list",
             "pymdownx.magiclink",
             "pymdownx.superfences",
+            "pymdownx.highlight",
         ],
     extension_configs={
             # Superfences: convert ```mermaid fenced blocks into <div class="mermaid"> ... </div>
@@ -96,6 +97,14 @@ def load_markdown_with_toc(text: str) -> Tuple[str, str]:
             "pymdownx.magiclink": {
                 "repo_url_shortener": False,
                 "hide_protocol": False,
+            },
+            # Highlight: 为代码块添加语言类名，供 Prism.js 使用
+            "pymdownx.highlight": {
+                "use_pygments": False,  # 不使用 Pygments，让 Prism.js 处理
+                "auto_title": False,
+                "anchor_linenums": False,
+                "line_spans": "__span",
+                "pygments_lang_class": True,
             },
         },
     )
