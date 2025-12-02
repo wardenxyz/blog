@@ -474,8 +474,13 @@ body,
 	}
 	/* specifically increase top bar (header) side paddings more */
 	.site-header .container {
-		padding-left: 20px;
-		padding-right: 20px;
+		padding-left: 12px;
+		padding-right: 12px;
+	}
+	/* Prevent header buttons from wrapping to new line */
+	.header-inner {
+		flex-wrap: nowrap;
+		gap: 4px;
 	}
 	.layout {
 		padding-left: 16px;
@@ -488,11 +493,14 @@ body,
 	.search-toggle {
 		order: 1;
 		margin-left: auto;
+		padding: 6px 8px;
 	}
 	.drawer-toggle {
 		display: inline-flex;
 		align-items: center;
-		gap: 6px;
+		gap: 4px;
+		padding: 6px 8px;
+		font-size: 13px;
 	}
 	.sidebar-toggle {
 		order: 2;
@@ -500,11 +508,12 @@ body,
 	}
 	.toc-toggle {
 		order: 3;
-		margin-left: 8px;
+		margin-left: 4px;
 	}
 	.theme-toggle {
 		order: 4;
-		margin-left: 8px;
+		margin-left: 4px;
+		padding: 6px 8px;
 	}
 	.sidebar-col {
 		position: fixed;
@@ -572,22 +581,33 @@ body,
 	}
 }
 
-/* Ultra-small mobile devices (320px and below) */
+/* Ultra-small mobile devices (375px and below) */
 @media (max-width: 375px) {
 	.container {
-		padding-left: 12px;
-		padding-right: 12px;
+		padding-left: 8px;
+		padding-right: 8px;
 	}
 	.site-header .container {
-		padding-left: 16px;
-		padding-right: 16px;
+		padding-left: 8px;
+		padding-right: 8px;
 	}
 	.layout {
-		padding-left: 12px;
-		padding-right: 12px;
+		padding-left: 8px;
+		padding-right: 8px;
 	}
 	.brand {
-		font-size: 15px;
+		font-size: 14px;
+	}
+	/* Even more compact buttons on very small screens */
+	.drawer-toggle {
+		padding: 4px 6px;
+		font-size: 11px;
+	}
+	.theme-toggle,
+	.search-toggle,
+	.menu-toggle {
+		padding: 4px 5px;
+		font-size: 14px;
 	}
 }
 
@@ -639,17 +659,39 @@ body,
 	.header-inner {
 		height: auto;
 		flex-wrap: wrap;
-		gap: 8px;
+		gap: 4px;
 		padding: 8px 0;
 	}
 	.brand {
-		font-size: 16px;
+		font-size: 15px;
 		flex-shrink: 0;
+		margin-right: auto;
 	}
 	.menu-toggle {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
+		padding: 5px 7px;
+		order: 10;
+	}
+	/* Compact buttons on mobile */
+	.drawer-toggle {
+		padding: 5px 7px;
+		font-size: 12px;
+	}
+	.theme-toggle {
+		padding: 5px 7px;
+		margin-left: 2px;
+	}
+	.search-toggle {
+		padding: 5px 7px;
+		margin-left: 0;
+	}
+	.sidebar-toggle {
+		margin-left: 2px;
+	}
+	.toc-toggle {
+		margin-left: 2px;
 	}
 	.nav {
 		width: 100%;
@@ -657,6 +699,7 @@ body,
 		flex-direction: column;
 		gap: 0;
 		padding: 8px 0;
+		order: 20;
 		/* Performance optimizations */
 		will-change: transform, opacity;
 		transform: translateZ(0);
