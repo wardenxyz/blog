@@ -263,7 +263,7 @@
 }
 
 /* Footer 样式 */
-.site-footer{ font-size: 0.95rem; padding-top: 28px; padding-bottom: 28px; }
+.site-footer{ font-size: 13px; padding-top: 14px; padding-bottom: 14px; }
 
 /* 大纲样式 */
 #toc a, #toc li{ word-break: break-word; overflow-wrap: break-word; hyphens: auto; }

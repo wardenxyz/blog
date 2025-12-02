@@ -43,6 +43,68 @@
     }, 16); // ~60fps
   }, {passive: true});
 
+  // Auto-hide header on scroll
+  function initAutoHideHeader(){
+    const header = document.querySelector('.site-header');
+    if(!header) return;
+    
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+    const threshold = 10; // Minimum scroll distance to trigger hide/show
+    const topThreshold = 100; // Always show header when near top
+    
+    function updateHeader(){
+      const currentScrollY = window.scrollY;
+      const delta = currentScrollY - lastScrollY;
+      
+      // Always show header when near top of page
+      if(currentScrollY < topThreshold){
+        header.classList.remove('header-hidden');
+        lastScrollY = currentScrollY;
+        ticking = false;
+        return;
+      }
+      
+      // Check if any drawer or modal is open - don't hide header
+      const isDrawerOpen = document.body.classList.contains('sidebar-drawer-open') ||
+                          document.body.classList.contains('toc-drawer-open') ||
+                          document.body.classList.contains('search-modal-open');
+      if(isDrawerOpen){
+        header.classList.remove('header-hidden');
+        lastScrollY = currentScrollY;
+        ticking = false;
+        return;
+      }
+      
+      // Scrolling down - hide header
+      if(delta > threshold){
+        header.classList.add('header-hidden');
+        lastScrollY = currentScrollY;
+      }
+      // Scrolling up - show header
+      else if(delta < -threshold){
+        header.classList.remove('header-hidden');
+        lastScrollY = currentScrollY;
+      }
+      
+      ticking = false;
+    }
+    
+    window.addEventListener('scroll', ()=>{
+      if(!ticking){
+        requestAnimationFrame(updateHeader);
+        ticking = true;
+      }
+    }, {passive: true});
+  }
+  
+  // Initialize auto-hide header
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAutoHideHeader);
+  } else {
+    initAutoHideHeader();
+  }
+
   const btn = document.getElementById('backToTop');
   if (btn) {
     let scrollTimeout;
