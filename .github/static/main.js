@@ -1179,3 +1179,24 @@ function highlightInElement(root, words){
     initProgressBar();
   }
 })();
+
+// Image Lightbox (Medium Zoom)
+(function(){
+  function initMediumZoom() {
+    if (typeof mediumZoom === 'function') {
+      mediumZoom('.content img', {
+        margin: 24,
+        background: 'var(--bg)',
+        scrollOffset: 0,
+      });
+    }
+  }
+  
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMediumZoom);
+  } else {
+    // Wait a bit for the script to load if it's deferred
+    setTimeout(initMediumZoom, 100);
+    window.addEventListener('load', initMediumZoom);
+  }
+})();
