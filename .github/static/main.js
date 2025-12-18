@@ -1155,3 +1155,27 @@ function highlightInElement(root, words){
   }
   return firstMark;
 }
+
+// Reading Progress Bar
+(function(){
+  function initProgressBar() {
+    const progressBar = document.getElementById('progressBar');
+    if (!progressBar) return;
+    
+    function updateProgress() {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      progressBar.style.width = scrolled + '%';
+    }
+
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+  }
+  
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initProgressBar);
+  } else {
+    initProgressBar();
+  }
+})();

@@ -134,8 +134,23 @@ body,
 	/* Auto-hide transition */
 	transition: transform 0.3s ease;
 }
+.progress-container {
+	position: absolute;
+	bottom: -1px;
+	left: 0;
+	width: 100%;
+	height: 2px;
+	background: transparent;
+	z-index: 101;
+}
+.progress-bar {
+	height: 100%;
+	background: var(--link);
+	width: 0%;
+	transition: width 0.1s ease;
+}
 .site-header.header-hidden {
-	transform: translateY(-100%);
+	transform: translateY(calc(-100% + 2px));
 }
 .header-inner {
 	display: flex;
