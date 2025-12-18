@@ -393,6 +393,28 @@ body,
 .content {
 	min-width: 0;
 }
+/* Typography improvements for better readability */
+.content p {
+	margin-bottom: 1.6em;
+	line-height: 1.8;
+}
+.content li {
+	margin-bottom: 0.6em;
+	line-height: 1.7;
+}
+.content h1,
+.content h2,
+.content h3,
+.content h4,
+.content h5,
+.content h6 {
+	margin-top: 1.8em;
+	margin-bottom: 0.8em;
+	line-height: 1.35;
+}
+.content h1:first-child {
+	margin-top: 0;
+}
 .content img {
 	max-width: 100%;
 	height: auto;
@@ -878,10 +900,9 @@ body:has(.header-hidden) .sidebar-col {
 .content table {
 	border-collapse: collapse;
 	display: block;
-	width: auto;
+	width: fit-content;
 	max-width: 100%;
-	margin-left: auto;
-	margin-right: auto;
+	margin: 1.5em auto;
 	overflow-x: auto;
 }
 .content th,
