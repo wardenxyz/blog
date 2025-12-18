@@ -16,12 +16,14 @@ SCRIPT_DIR = Path(__file__).parent.resolve()
 sys.path.append(str(SCRIPT_DIR))
 
 import static_gen
+import subprocess
 
 def rebuild():
     """Rebuild the site."""
     print("\nDetected changes, rebuilding site...")
     try:
-        static_gen.main()
+        # Run static_gen.py as a subprocess to ensure we use the latest code
+        subprocess.run([sys.executable, str(SCRIPT_DIR / "static_gen.py")], check=True)
         print("Rebuild complete.")
     except Exception as e:
         print(f"Rebuild failed: {e}")

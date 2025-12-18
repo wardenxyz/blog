@@ -14,6 +14,7 @@ from __future__ import annotations
 import os
 import re
 import shutil
+import subprocess
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -44,6 +45,7 @@ class Page:
     toc: str
     base: str
     date: str = ""  # 添加日期字段
+    last_modified: str = ""  # 添加最后修改时间字段
     tags: list[str] | None = None
     categories: list[str] | None = None
     description: str = ""
@@ -215,6 +217,59 @@ def enhance_media_html(html: str) -> str:
     return str(soup) if changed else html
 
 
+def get_git_last_modified(file_path: Path) -> str:
+    """Get the last modified date of a file from git history."""
+    try:
+        # Use git log to get the last commit date
+        # %cd: committer date
+        # --date=format:...: format the date
+        cmd = [
+            "git",
+            "log",
+            "-1",
+            "--format=%cd",
+            "--date=format:%Y-%m-%d",
+            str(file_path),
+        ]
+        result = subprocess.run(
+            cmd, capture_output=True, text=True, cwd=REPO_ROOT, check=False
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            return result.stdout.strip()
+    except Exception:
+        pass
+    return ""
+
+
+def get_git_creation_date(file_path: Path) -> str:
+    """Get the creation date of a file from git history (first commit)."""
+    try:
+        # Use git log to get the first commit date
+        # --diff-filter=A: Select only added files
+        cmd = [
+            "git",
+            "log",
+            "--diff-filter=A",
+            "--format=%cd",
+            "--date=format:%Y-%m-%d",
+            str(file_path),
+        ]
+        result = subprocess.run(
+            cmd, capture_output=True, text=True, cwd=REPO_ROOT, check=False
+        )
+        # The output might contain multiple lines if the file was added multiple times (e.g. deleted and re-added)
+        # We take the last line which corresponds to the oldest commit in the log output?
+        # Wait, git log outputs in reverse chronological order (newest first).
+        # So the last line is the oldest commit.
+        if result.returncode == 0 and result.stdout.strip():
+            lines = result.stdout.strip().splitlines()
+            if lines:
+                return lines[-1]
+    except Exception:
+        pass
+    return ""
+
+
 def build_page(src_md: Path, out_html: Path, site_url: str = "") -> Page:
     post = frontmatter.load(src_md)
     body_md = post.content or src_md.read_text(encoding="utf-8")
@@ -225,6 +280,14 @@ def build_page(src_md: Path, out_html: Path, site_url: str = "") -> Page:
         date = date.strftime('%Y-%m-%d')
     elif date:
         date = str(date)
+    
+    # 如果没有日期，尝试从 git 获取创建日期
+    if not date:
+        date = get_git_creation_date(src_md)
+
+    # 获取最后修改时间
+    last_modified = get_git_last_modified(src_md)
+
     # 解析 tags 与 categories（兼容 category / categories 字段与字符串/列表）
     raw_tags = post.get("tags") or []
     if isinstance(raw_tags, (str, int, float)):
@@ -259,6 +322,7 @@ def build_page(src_md: Path, out_html: Path, site_url: str = "") -> Page:
         toc=toc,
         base=base,
         date=date,
+        last_modified=last_modified,
         tags=tags,
         categories=categories,
         description=description,
@@ -298,16 +362,27 @@ def generate_sidebar(all_pages: list[Page], current: Page) -> str:
 def write_page(page: Page, github_url: str, owner: str, sidebar_html: str):
     # 构建元信息区块 HTML（仅当存在任意一项时渲染）
     meta_parts: list[str] = []
-    if page.date:
-        meta_parts.append(f'<span class="meta-item meta-date" title="发布日期">📅 {page.date}</span>')
+    
+    # 1. 分类
     if page.categories:
         cats = "".join(f'<span class="badge badge-cat">{c}</span>' for c in page.categories or [])
         if cats:
             meta_parts.append(f'<span class="meta-item" title="分类">📂 {cats}</span>')
+            
+    # 2. 标签
     if page.tags:
         tgs = "".join(f'<span class="badge badge-tag">{t}</span>' for t in page.tags or [])
         if tgs:
             meta_parts.append(f'<span class="meta-item" title="标签">🏷️ {tgs}</span>')
+            
+    # 3. 创建时间
+    if page.date:
+        meta_parts.append(f'<span class="meta-item meta-date" title="发布日期">📅 {page.date}</span>')
+        
+    # 4. 最后修改
+    if page.last_modified:
+        meta_parts.append(f'<span class="meta-item meta-date" title="最后修改">📝 {page.last_modified}</span>')
+
     meta_html = ""
     if meta_parts:
         meta_html = '<div class="post-meta" aria-label="文章元信息">' + "".join(meta_parts) + "</div>"
