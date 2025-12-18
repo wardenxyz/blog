@@ -270,8 +270,10 @@ def get_git_creation_date(file_path: Path) -> str:
     return ""
 
 
-def build_page(src_md: Path, out_html: Path, site_url: str = "") -> Page:
+def build_page(src_md: Path, out_html: Path, site_url: str = "") -> Page | None:
     post = frontmatter.load(src_md)
+    if post.get("draft") is True:
+        return None
     body_md = post.content or src_md.read_text(encoding="utf-8")
     title = post.get("title") or extract_title_from_text(body_md)
     date = post.get("date", "")
@@ -689,7 +691,8 @@ def main():
     for src_md, out_html in root_pages:
         if src_md.exists():
             page = build_page(src_md, out_html, site_url)
-            built_pages.append(page)
+            if page:
+                built_pages.append(page)
 
     posts_dir = SRC / "posts"
     count_posts = 0
@@ -698,8 +701,9 @@ def main():
             rel = md.relative_to(SRC)
             out_html = OUT / rel.with_suffix(".html")
             page = build_page(md, out_html, site_url)
-            built_pages.append(page)
-            count_posts += 1
+            if page:
+                built_pages.append(page)
+                count_posts += 1
         copy_post_assets(posts_dir)
 
     for p in built_pages:
