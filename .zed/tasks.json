@@ -18,6 +18,12 @@
 		"hide": "on_success"
 	},
 	{
+		"label": "dev server (hot reload)",
+		"command": "uv run .github/scripts/dev.py",
+		"reveal": "no_focus",
+		"hide": "on_success"
+	},
+	{
 		"label": "remove .venv",
 		"command": "rm -r -fo .venv",
 		"reveal": "no_focus",

@@ -42,6 +42,27 @@
 			}
 		},
 		{
+			"label": "dev server (hot reload)",
+			"type": "shell",
+			"command": "uv run .github/scripts/dev.py",
+			"isBackground": true,
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated"
+			},
+			"problemMatcher": {
+				"owner": "livereload",
+				"pattern": {
+					"regexp": "^Starting development server at.*"
+				},
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": "^Starting development server at",
+					"endsPattern": "^Press Ctrl\\+C to stop\\.$"
+				}
+			}
+		},
+		{
 			"label": "remove .venv",
 			"type": "shell",
 			"command": "if (Test-Path .venv) { rm -r -fo .venv }",

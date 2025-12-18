@@ -1,3 +1,6 @@
 .venv
 test.md
 site
+__pycache__/
+*.pyc
+
