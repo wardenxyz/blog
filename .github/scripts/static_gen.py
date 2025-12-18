@@ -407,25 +407,25 @@ def write_page(page: Page, github_url: str, owner: str, sidebar_html: str):
     # 构建元信息区块 HTML（仅当存在任意一项时渲染）
     meta_parts: list[str] = []
     
-    # 1. 分类
+    # 1. 创建时间
+    if page.date:
+        meta_parts.append(f'<span class="meta-item meta-date" title="发布时间">📅发布时间: {page.date}</span>')
+        
+    # 2. 最后修改
+    if page.last_modified:
+        meta_parts.append(f'<span class="meta-item meta-date" title="最后修改">📝最后修改: {page.last_modified}</span>')
+
+    # 3. 分类
     if page.categories:
         cats = "".join(f'<span class="badge badge-cat">{c}</span>' for c in page.categories or [])
         if cats:
             meta_parts.append(f'<span class="meta-item" title="分类">📂 {cats}</span>')
             
-    # 2. 标签
+    # 4. 标签
     if page.tags:
         tgs = "".join(f'<span class="badge badge-tag">{t}</span>' for t in page.tags or [])
         if tgs:
             meta_parts.append(f'<span class="meta-item" title="标签">🏷️ {tgs}</span>')
-            
-    # 3. 创建时间
-    if page.date:
-        meta_parts.append(f'<span class="meta-item meta-date" title="发布日期">📅 {page.date}</span>')
-        
-    # 4. 最后修改
-    if page.last_modified:
-        meta_parts.append(f'<span class="meta-item meta-date" title="最后修改">📝 {page.last_modified}</span>')
 
     meta_html = ""
     if meta_parts:
