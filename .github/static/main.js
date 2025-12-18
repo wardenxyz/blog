@@ -240,6 +240,14 @@
     mq.addEventListener('change', e=>{ if(!e.matches) { closeMenu(); requestAnimationFrame(setHeaderHeight);} });
     // Close when clicking a link (for single page feel)
     nav.addEventListener('click', e=>{ if(e.target.closest('a')) { closeMenu(); requestAnimationFrame(setHeaderHeight);} });
+
+    // Close on scroll
+    window.addEventListener('scroll', () => {
+      if(nav.classList.contains('open')) {
+        closeMenu();
+        requestAnimationFrame(setHeaderHeight);
+      }
+    }, {passive: true});
   }
 
   function initSidebarDrawer(){
