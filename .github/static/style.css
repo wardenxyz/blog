@@ -514,7 +514,7 @@ body:has(.header-hidden) .sidebar-col {
 }
 @media (max-width: 767px) {
 	.site-footer {
-		padding: 12px 0;
+		padding: 6px 0;
 		font-size: 12px;
 	}
 }
