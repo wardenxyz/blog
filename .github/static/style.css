@@ -945,6 +945,41 @@ body:has(.header-hidden) .sidebar-col {
 }
 
 /* Post meta block */
+.breadcrumbs {
+	margin-bottom: 12px;
+	font-size: 14px;
+	color: var(--muted);
+}
+.breadcrumbs ol {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+.breadcrumb-item {
+	display: inline-flex;
+	align-items: center;
+}
+.breadcrumb-item:not(:last-child)::after {
+	content: "/";
+	margin-left: 8px;
+	color: var(--border);
+}
+.breadcrumb-item a {
+	color: var(--muted);
+	text-decoration: none;
+}
+.breadcrumb-item a:hover {
+	color: var(--link);
+	text-decoration: underline;
+}
+.breadcrumb-item.active {
+	color: var(--text);
+	font-weight: 500;
+}
+
 .post-meta {
 	display: flex;
 	flex-wrap: wrap;

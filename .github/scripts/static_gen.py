@@ -359,6 +359,48 @@ def generate_sidebar(all_pages: list[Page], current: Page) -> str:
     return "".join(html_parts)
 
 
+def generate_breadcrumbs(page: Page) -> str:
+    """Generate breadcrumb navigation HTML based on folder structure."""
+    if page.out.name == "index.html":
+        return ""
+
+    # Base: Home
+    crumbs = [("首页", page.base + "index.html")]
+
+    # Middle: Folders
+    try:
+        # Calculate relative path from source root
+        rel_path = page.src.relative_to(SRC)
+        # Get parent folders (excluding filename)
+        folder_parts = rel_path.parent.parts
+        
+        for part in folder_parts:
+            # Skip 'posts' folder as it's the content root
+            if part == "posts":
+                continue
+            # Add folder name as text (no link as folders don't have index pages)
+            crumbs.append((part, ""))
+    except Exception:
+        pass
+    
+    # Current page
+    crumbs.append((page.title, ""))
+
+    # Render HTML
+    html = '<nav class="breadcrumbs" aria-label="面包屑导航"><ol>'
+    for i, (name, link) in enumerate(crumbs):
+        is_last = (i == len(crumbs) - 1)
+        if is_last:
+            html += f'<li class="breadcrumb-item active" aria-current="page">{name}</li>'
+        else:
+            if link:
+                html += f'<li class="breadcrumb-item"><a href="{link}">{name}</a></li>'
+            else:
+                html += f'<li class="breadcrumb-item">{name}</li>'
+    html += '</ol></nav>'
+    return html
+
+
 def write_page(page: Page, github_url: str, owner: str, sidebar_html: str):
     # 构建元信息区块 HTML（仅当存在任意一项时渲染）
     meta_parts: list[str] = []
@@ -454,6 +496,8 @@ def write_page(page: Page, github_url: str, owner: str, sidebar_html: str):
 
     seo_head = "\n".join(seo_parts)
 
+    breadcrumbs_html = generate_breadcrumbs(page)
+
     context = {
         "title": page.title,
         "content": page.html,
@@ -465,6 +509,7 @@ def write_page(page: Page, github_url: str, owner: str, sidebar_html: str):
         "sidebar": sidebar_html,
         "meta": meta_html,
         "seo_head": seo_head,
+        "breadcrumbs": breadcrumbs_html,
     }
     out_html = render_template("base.html", context)
     page.out.parent.mkdir(parents=True, exist_ok=True)
