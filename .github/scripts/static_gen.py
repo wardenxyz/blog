@@ -363,7 +363,8 @@ def generate_sidebar(all_pages: list[Page], current: Page) -> str:
 
 def generate_breadcrumbs(page: Page) -> str:
     """Generate breadcrumb navigation HTML based on folder structure."""
-    if page.out.name == "index.html":
+    # Don't show breadcrumbs for top-level pages
+    if page.out.name in ("index.html", "tags.html", "categories.html"):
         return ""
 
     # Base: Home
