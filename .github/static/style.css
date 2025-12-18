@@ -861,6 +861,28 @@ body:has(.header-hidden) .sidebar-col {
 	}
 }
 
+/* Page transition animation */
+@keyframes fadeInPage {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Enable native View Transitions for supported browsers */
+@view-transition {
+	navigation: auto;
+}
+
+/* Fallback/Enhancement: Animate main content on load */
+.layout {
+	animation: fadeInPage 0.4s ease-out;
+}
+
 /* Reduce motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
 	*,
