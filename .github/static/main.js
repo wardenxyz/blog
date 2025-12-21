@@ -1188,23 +1188,59 @@ function highlightInElement(root, words){
   }
 })();
 
-// Image Lightbox (Medium Zoom)
+// Image Lightbox (Custom Implementation)
 (function(){
-  function initMediumZoom() {
-    if (typeof mediumZoom === 'function') {
-      mediumZoom('.content img', {
-        margin: 24,
-        background: 'var(--bg)',
-        scrollOffset: 0,
+  function initLightbox() {
+    // Create lightbox elements
+    var overlay = document.createElement('div');
+    overlay.className = 'lightbox-overlay';
+    overlay.innerHTML = '<div class="lightbox-content"><img class="lightbox-image" src="" alt="" loading="lazy"></div>';
+    document.body.appendChild(overlay);
+    
+    var lightboxImg = overlay.querySelector('.lightbox-image');
+    var isOpen = false;
+    
+    // Open lightbox on image click (use event delegation for better performance)
+    var contentEl = document.querySelector('.content');
+    if (contentEl) {
+      contentEl.addEventListener('click', function(e) {
+        var img = e.target;
+        if (img.tagName !== 'IMG' || img.classList.contains('no-zoom')) return;
+        
+        lightboxImg.src = img.src;
+        lightboxImg.alt = img.alt || '';
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        isOpen = true;
       });
+    }
+    
+    // Close lightbox on any click
+    overlay.addEventListener('click', function() {
+      closeLightbox();
+    });
+    
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && isOpen) {
+        closeLightbox();
+      }
+    });
+    
+    function closeLightbox() {
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+      isOpen = false;
+      // Clear src to free memory
+      setTimeout(function() {
+        if (!isOpen) lightboxImg.src = '';
+      }, 300);
     }
   }
   
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initMediumZoom);
+    document.addEventListener('DOMContentLoaded', initLightbox);
   } else {
-    // Wait a bit for the script to load if it's deferred
-    setTimeout(initMediumZoom, 100);
-    window.addEventListener('load', initMediumZoom);
+    initLightbox();
   }
 })();
