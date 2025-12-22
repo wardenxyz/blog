@@ -9,67 +9,13 @@ category: [计算机]
 
 视频：https://www.bilibili.com/video/BV12RDhYPE7M
 
-## 步骤简化
+前置步骤：GCC 环境 和 Rust Toolchain 镜像源
 
-一、配置 GCC 环境
+## 一、配置 GCC 环境
 
-在 [mingw](https://github.com/niXman/mingw-builds-binaries/releases) 网页下下载 `x86_64-15.1.0-release-win32-seh-ucrt-rt_v12-rev0.7z`
+在 [mingw](https://github.com/niXman/mingw-builds-binaries/releases) 网页下下载 `x86_64-15.1.0-release-win32-seh-ucrt-rt_v12-rev0.7z`，并解压添加进环境变量
 
-二、下载 [Rust](https://www.rust-lang.org/zh-CN/learn/get-started)
-
-三、配置用户变量
-
-中科大源
-
-```
-变量                                值
-RUSTUP_DIST_SERVER                 https://mirrors.ustc.edu.cn/rust-static
-RUSTUP_UPDATE_ROOT                 https://mirrors.ustc.edu.cn/rust-static/rustup
-RUSTUP_HOME                        D:\Rust\rustup
-CARGO_HOME                         D:\Rust\cargo
-```
-
-或者清华源
-
-```
-变量                                值
-RUSTUP_DIST_SERVER                 https://mirrors.tuna.tsinghua.edu.cn/rustup
-RUSTUP_UPDATE_ROOT                 https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup
-RUSTUP_HOME                        D:\Rust\rustup
-CARGO_HOME                         D:\Rust\cargo
-```
-
-四、安装
-
-点击下载的 `rustup-init.exe`，运行开启一个终端，按照步骤安装
-
-五、配置 cargo 镜像源
-
-在 `D:\Rust\cargo\config.toml` 中添加如下内容
-
-```toml
-[source.crates-io]
-replace-with = 'ustc'
-
-[source.ustc]
-registry = "sparse+https://mirrors.ustc.edu.cn/crates.io-index/"
-
-[registries.ustc]
-index = "sparse+https://mirrors.ustc.edu.cn/crates.io-index/"
-```
-
-## 详细解释
-
-### 配置 gcc 环境
-
-在 [mingw](https://github.com/niXman/mingw-builds-binaries/releases) 网页下下载 `x86_64-15.1.0-release-win32-seh-ucrt-rt_v12-rev0.7z
-`，其中 `x86_64` 是 64 位的，`seh` 是异常处理方式，`ucrt` 是 C 运行时库，`rt_v12-rev0` 是版本号，15.1.0 是 GCC 的版本号。
-
-解压后把 `bin` 路径放到环境变量中
-
-检测
-
-```ps
+```bash
 gcc -v
 
 Using built-in specs.
@@ -82,35 +28,33 @@ Supported LTO compression algorithms: zlib
 gcc version 15.1.0 (x86_64-win32-seh-rev0, Built by MinGW-Builds project)
 ```
 
-### 下载 Rust
-
-这里下载 [Rust](https://www.rust-lang.org/zh-CN/learn/get-started)
-
-### 配置 Rust Toolchain 镜像源（用户变量）
-
-- 中科大镜像源：https://mirrors.ustc.edu.cn/help/rust-static.html#rust-toolchain
-
-```
-变量                                值
-RUSTUP_DIST_SERVER                 https://mirrors.ustc.edu.cn/rust-static
-RUSTUP_UPDATE_ROOT                 https://mirrors.ustc.edu.cn/rust-static/rustup
-RUSTUP_HOME                        D:\Rust\rustup
-CARGO_HOME                         D:\Rust\cargo
-```
+## 二、配置 Rust Toolchain 镜像源（用户变量）
 
 - 或者清华源：https://mirrors.tuna.tsinghua.edu.cn/help/rustup
 
-```
-变量                                值
-RUSTUP_DIST_SERVER                 https://mirrors.tuna.tsinghua.edu.cn/rustup
-RUSTUP_UPDATE_ROOT                 https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup
-RUSTUP_HOME                        D:\Rust\rustup
-CARGO_HOME                         D:\Rust\cargo
+```powershell
+[System.Environment]::SetEnvironmentVariable("RUSTUP_DIST_SERVER", " https://mirrors.tuna.tsinghua.edu.cn/rustup", "User")
+[System.Environment]::SetEnvironmentVariable("RUSTUP_UPDATE_ROOT", "https://mirrors.tuna.tsinghua.edu.cn/rustup/rustup", "User")
+[System.Environment]::SetEnvironmentVariable("RUSTUP_HOME", "D:\Rust\rustup", "User")
+[System.Environment]::SetEnvironmentVariable("CARGO_HOME", "D:\Rust\cargo", "User")
 ```
 
-### < ★重要★ > 安装 < ★重要★ >
+- 中科大源 https://mirrors.ustc.edu.cn/help/rust-static.html#rust-toolchain
 
-点击下载的 `rustup-init.exe`，运行开启一个终端，如下
+```powershell
+[System.Environment]::SetEnvironmentVariable("RUSTUP_DIST_SERVER", "https://mirrors.ustc.edu.cn/rust-static", "User")
+[System.Environment]::SetEnvironmentVariable("RUSTUP_UPDATE_ROOT", "https://mirrors.ustc.edu.cn/rust-static/rustup", "User")
+[System.Environment]::SetEnvironmentVariable("RUSTUP_HOME", "D:\Rust\rustup", "User")
+[System.Environment]::SetEnvironmentVariable("CARGO_HOME", "D:\Rust\cargo", "User")
+```
+
+---
+
+## 三、下载并安装 Rust
+
+这里下载 [Rust](https://www.rust-lang.org/zh-CN/learn/get-started)
+
+点击下载的 `rustup-init.exe`，运行开启一个终端，按照步骤安装
 
 ```powershell
 Rust Visual C++ prerequisites
@@ -244,9 +188,37 @@ Cargo's bin directory(D:Rust\cargo\bin)
 Press the Enter key to continue.
 ```
 
-一共八步
+## 四、配置 cargo 镜像源
 
-检测
+在 `D:\Rust\cargo\config.toml` 中添加如下内容
+
+- 清华源：https://mirror.tuna.tsinghua.edu.cn/help/crates.io-index/
+
+```toml
+[source.crates-io]
+replace-with = 'mirror'
+
+[source.mirror]
+registry = "sparse+https://mirrors.tuna.tsinghua.edu.cn/crates.io-index/"
+
+[registries.mirror]
+index = "sparse+https://mirrors.tuna.tsinghua.edu.cn/crates.io-index/"
+```
+
+- 中科大镜像源：https://mirrors.ustc.edu.cn/help/crates.io-index.html
+
+```toml
+[source.crates-io]
+replace-with = 'ustc'
+
+[source.ustc]
+registry = "sparse+https://mirrors.ustc.edu.cn/crates.io-index/"
+
+[registries.ustc]
+index = "sparse+https://mirrors.ustc.edu.cn/crates.io-index/"
+```
+
+## 五、完成
 
 ```ps
 rustup --version
@@ -260,31 +232,4 @@ info: The currently active `rustc` version is `rustc 1.85.0 (4d91de4e4 2025-02-1
 cargo --version
 
 cargo 1.85.0 (d73d2caf9 2024-12-31)
-```
-
-### < ★重要★ > 配置 cargo 镜像源 < ★重要★ >
-
-这里选择中科大镜像源：https://mirrors.ustc.edu.cn/help/crates.io-index.html
-
-在 `D:\Rust\cargo\config.toml` 中添加如下内容
-
-```toml
-[source.crates-io]
-replace-with = 'ustc'
-
-[source.ustc]
-registry = "sparse+https://mirrors.ustc.edu.cn/crates.io-index/"
-
-[registries.ustc]
-index = "sparse+https://mirrors.ustc.edu.cn/crates.io-index/"
-```
-
-备用清华源
-
-```toml
-[source.crates-io]
-replace-with = 'mirror'
-
-[source.mirror]
-registry = "https://mirrors.tuna.tsinghua.edu.cn/git/crates.io-index.git"
 ```
