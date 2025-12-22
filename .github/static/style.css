@@ -447,7 +447,8 @@ body,
 }
 
 .layout-3 {
-	grid-template-columns: 260px 1fr 260px;
+	grid-template-columns: 260px 1fr 300px;
+	/* 大纲滚动条边距 */
 }
 
 .content {
@@ -512,7 +513,8 @@ body,
 	align-self: start;
 	border-left: 1px solid var(--border);
 	padding-left: 18px;
-	padding-right: 12px;
+	padding-right: 20px;
+	/* 大纲滚动条边距 */
 	padding-bottom: 20px;
 	max-height: calc(100vh - 100px);
 	overflow: auto;
@@ -550,8 +552,9 @@ body:has(.header-hidden) #toc {
 #toc .toc ul ul {
 	list-style: none;
 	margin: 0;
-	padding-left: 16px;
-	margin-left: 4px;
+	padding-left: 10px;
+	margin-left: 11px;
+	/* Align border with center of toggle button (24px width) */
 	border-left: 1px solid var(--border);
 }
 
@@ -594,6 +597,70 @@ body:has(.header-hidden) #toc {
 #toc a.active {
 	color: var(--link);
 	font-weight: 600;
+	border: 1px solid var(--link);
+	border-radius: 6px;
+	background-color: color-mix(in oklab, var(--link) 5%, transparent);
+}
+
+/* Collapsible TOC */
+.toc-toggle-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	margin-right: 2px;
+	cursor: pointer;
+	color: var(--muted);
+	user-select: none;
+	transition: transform 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+	border-radius: 4px;
+	vertical-align: middle;
+	flex-shrink: 0;
+}
+
+@media (hover: hover) {
+	.toc-toggle-btn:hover {
+		color: var(--link);
+		background-color: var(--surface);
+	}
+}
+
+/* Rotate arrow when collapsed */
+.toc-collapsed>.toc-toggle-btn {
+	transform: rotate(-90deg);
+}
+
+/* Hide nested list when collapsed */
+.toc-collapsed>ul {
+	display: none;
+}
+
+/* Adjust li styling to align button */
+#toc .toc li {
+	position: relative;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+}
+
+#toc .toc li>a {
+	flex: 1;
+	display: inline-block;
+	width: calc(100% - 28px);
+	/* Adjust for button width */
+	padding-left: 4px;
+}
+
+#toc .toc li>ul {
+	flex-basis: 100%;
+	width: 100%;
+}
+
+/* Ensure button is positioned correctly */
+.toc-toggle-btn {
+	margin-top: 4px;
+	/* Align with text */
 }
 
 .sidebar-col {
@@ -621,10 +688,55 @@ body:has(.header-hidden) .sidebar-col {
 	font-size: 14px;
 }
 
+.sidebar-group {
+	border-bottom: 1px solid var(--border);
+	padding-bottom: 12px;
+	margin-bottom: 12px;
+}
+
+.sidebar-group:last-child {
+	border-bottom: none;
+	padding-bottom: 0;
+	margin-bottom: 0;
+}
+
 .sidebar-year {
-	margin: 10px 0 6px;
+	margin: 0 0 6px;
+	/* Adjusted margin since group handles spacing */
 	color: var(--muted);
 	font-weight: 600;
+	display: flex;
+	align-items: center;
+}
+
+/* Sidebar Collapsible */
+.sidebar-toggle-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	margin-right: 4px;
+	cursor: pointer;
+	color: var(--muted);
+	transition: transform 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+	border-radius: 4px;
+	flex-shrink: 0;
+}
+
+@media (hover: hover) {
+	.sidebar-toggle-btn:hover {
+		color: var(--link);
+		background-color: var(--surface);
+	}
+}
+
+.sidebar-group.collapsed .sidebar-toggle-btn {
+	transform: rotate(-90deg);
+}
+
+.sidebar-group.collapsed ul {
+	display: none;
 }
 
 .sidebar-group ul {
@@ -665,6 +777,7 @@ body:has(.header-hidden) .sidebar-col {
 		padding: 6px 0;
 		font-size: 12px;
 	}
+
 	.content hr {
 		margin: 1.5rem 0;
 	}
@@ -722,6 +835,19 @@ body:has(.header-hidden) .sidebar-col {
 
 /* <= 959px: mobile layout with floating drawers */
 @media (max-width: 959px) {
+
+	/* Increase touch targets for collapsible buttons */
+	.toc-toggle-btn,
+	.sidebar-toggle-btn {
+		width: 32px;
+		height: 32px;
+	}
+
+	.toc-toggle-btn svg,
+	.sidebar-toggle-btn svg {
+		width: 16px;
+		height: 16px;
+	}
 
 	/* widen mobile side gutters a bit */
 	.container {
@@ -935,7 +1061,8 @@ body:has(.header-hidden) .sidebar-col {
 	}
 
 	.layout-3 {
-		grid-template-columns: 1fr 240px;
+		grid-template-columns: 1fr 280px;
+		/* 大纲滚动条边距 */
 	}
 
 	.sidebar-col {
@@ -1496,4 +1623,65 @@ mjx-container[jax="SVG"][justify="right"] {
 
 .content img:hover {
 	box-shadow: 0 0 0 1.5px var(--link);
+}
+
+/* Toast Notification */
+.toast-notification {
+	position: fixed;
+	bottom: 24px;
+	right: 24px;
+	background: var(--surface);
+	color: var(--text);
+	border: 1px solid var(--border);
+	padding: 12px 20px;
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	z-index: 2000;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 14px;
+	font-weight: 500;
+	transform: translateY(100px);
+	opacity: 0;
+	transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+	pointer-events: none;
+}
+
+.toast-notification.show {
+	transform: translateY(0);
+	opacity: 1;
+}
+
+.toast-icon {
+	color: #10b981;
+	/* Success green */
+	display: flex;
+	align-items: center;
+}
+
+/* Inline code clickable style */
+.content :not(pre)>code {
+	cursor: pointer;
+	transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+@media (hover: hover) {
+	.content :not(pre)>code:hover {
+		background-color: color-mix(in oklab, var(--link) 10%, var(--surface));
+		color: var(--link);
+	}
+}
+
+.content :not(pre)>code:active {
+	transform: scale(0.98);
+}
+
+@media (max-width: 767px) {
+	.toast-notification {
+		bottom: 20px;
+		right: 20px;
+		left: 20px;
+		justify-content: center;
+	}
 }

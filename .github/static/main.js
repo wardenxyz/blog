@@ -216,6 +216,55 @@
     addCopyButtons();
   }
 
+  // Collapsible TOC
+  function initCollapsibleToc() {
+    const toc = document.getElementById('toc');
+    if (!toc) return;
+    
+    // Find all list items that contain a nested list
+    const items = toc.querySelectorAll('.toc li');
+    
+    items.forEach(li => {
+      if (li.querySelector('ul')) {
+        // Create toggle button
+        const btn = document.createElement('span');
+        btn.className = 'toc-toggle-btn';
+        // Chevron down SVG
+        btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+        btn.setAttribute('aria-label', '折叠/展开');
+        
+        // Insert button before the link (first child)
+        if (li.firstChild) {
+          li.insertBefore(btn, li.firstChild);
+        } else {
+          li.appendChild(btn);
+        }
+        
+        // Add click handler
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation(); // Prevent triggering link click if any
+          li.classList.toggle('toc-collapsed');
+        });
+      } else {
+        // Add placeholder for alignment if needed, or just leave it
+        // For now, we only add button if there are children
+        // To keep alignment, we might want to add padding to items without children
+        // But let's see how it looks first.
+        // Adding a spacer might be better for alignment
+        const spacer = document.createElement('span');
+        spacer.className = 'toc-toggle-btn';
+        spacer.style.cursor = 'default';
+        spacer.style.opacity = '0';
+        spacer.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24"></svg>'; // Invisible spacer
+        if (li.firstChild) {
+          li.insertBefore(spacer, li.firstChild);
+        } else {
+          li.appendChild(spacer);
+        }
+      }
+    });
+  }
+
   // Mobile nav toggle
   function initMenuToggle(){
     const toggle = document.getElementById('menuToggle');
@@ -421,11 +470,47 @@
     });
   }
 
+  // Collapsible Sidebar
+  function initCollapsibleSidebar() {
+    const groups = document.querySelectorAll('.sidebar-group');
+    
+    groups.forEach(group => {
+      const yearElem = group.querySelector('.sidebar-year');
+      const list = group.querySelector('ul');
+      if (!yearElem || !list) return;
+
+      // Create toggle button
+      const btn = document.createElement('span');
+      btn.className = 'sidebar-toggle-btn';
+      // Chevron down SVG
+      btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+      btn.setAttribute('aria-label', '折叠/展开');
+      
+      // Insert button before the text
+      if (yearElem.firstChild) {
+        yearElem.insertBefore(btn, yearElem.firstChild);
+      } else {
+        yearElem.appendChild(btn);
+      }
+      
+      // Add click handler
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        group.classList.toggle('collapsed');
+      });
+
+      // Optional: Auto-expand if active link is inside
+      // Currently default is expanded, so we don't need to do anything unless we want default collapsed
+    });
+  }
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', ()=>{
       initMenuToggle();
       initSidebarDrawer();
       initTocDrawer();
+      initCollapsibleToc();
+      initCollapsibleSidebar();
       initSearch();
       initContentHighlight();
   initThemeToggle();
@@ -454,6 +539,8 @@
     initMenuToggle();
     initSidebarDrawer();
     initTocDrawer();
+    initCollapsibleToc();
+    initCollapsibleSidebar();
     initSearch();
     initContentHighlight();
   initThemeToggle();
@@ -1164,6 +1251,66 @@ function highlightInElement(root, words){
   return firstMark;
 }
 
+// Inline Code Copy
+(function(){
+  let toastTimeout;
+
+  function showToast(message) {
+    // Remove existing toast if any
+    const existing = document.querySelector('.toast-notification');
+    if (existing) existing.remove();
+
+    // Create toast
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    toast.innerHTML = `
+      <span class="toast-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </span>
+      <span>${message}</span>
+    `;
+    document.body.appendChild(toast);
+
+    // Trigger animation
+    requestAnimationFrame(() => {
+      toast.classList.add('show');
+    });
+
+    // Auto hide
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, 2000);
+  }
+
+  function initInlineCodeCopy() {
+    const content = document.querySelector('.content');
+    if (!content) return;
+
+    content.addEventListener('click', async (e) => {
+      const target = e.target;
+      // Check if clicked element is a code block but NOT inside a pre tag (which handles its own copy)
+      if (target.tagName === 'CODE' && !target.closest('pre')) {
+        const text = target.textContent;
+        try {
+          await navigator.clipboard.writeText(text);
+          showToast('已复制到剪贴板');
+        } catch (err) {
+          console.error('Failed to copy:', err);
+          showToast('复制失败');
+        }
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initInlineCodeCopy);
+  } else {
+    initInlineCodeCopy();
+  }
+})();
+
 // Reading Progress Bar
 (function(){
   function initProgressBar() {
@@ -1185,6 +1332,103 @@ function highlightInElement(root, words){
     document.addEventListener('DOMContentLoaded', initProgressBar);
   } else {
     initProgressBar();
+  }
+})();
+
+// Scroll Spy for TOC
+(function(){
+  function initScrollSpy() {
+    const toc = document.getElementById('toc');
+    if (!toc) return;
+    
+    const links = Array.from(toc.querySelectorAll('a[href^="#"]'));
+    if (!links.length) return;
+    
+    const targets = links.map(link => {
+      const id = decodeURIComponent(link.getAttribute('href').slice(1));
+      return document.getElementById(id);
+    }).filter(Boolean);
+    
+    if (!targets.length) return;
+
+    let ticking = false;
+    
+    function updateActive() {
+      const scrollY = window.scrollY;
+      // Offset for fixed header + some buffer
+      const headerOffset = (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) || 56) + 20;
+      
+      // Find the current section
+      // We look for the last section that has its top above the viewport center (or some offset)
+      // Or if we are at the bottom of the page, highlight the last one
+      
+      let activeIndex = -1;
+      
+      // Check if we're at the bottom of the page
+      // Use documentElement.scrollHeight because body.offsetHeight might be capped by height: 100%
+      if ((window.innerHeight + Math.ceil(window.scrollY)) >= document.documentElement.scrollHeight - 2) {
+        activeIndex = targets.length - 1;
+      } else {
+        for (let i = 0; i < targets.length; i++) {
+          const target = targets[i];
+          const rect = target.getBoundingClientRect();
+          // If the top of the section is above our "sight line" (e.g. 100px from top)
+          if (rect.top <= headerOffset + 20) {
+            activeIndex = i;
+          } else {
+            // Since targets are in order, once we find one below, we can stop
+            break;
+          }
+        }
+      }
+      
+      // Update classes
+      links.forEach(link => link.classList.remove('active'));
+      
+      if (activeIndex >= 0) {
+        const activeLink = links[activeIndex];
+        activeLink.classList.add('active');
+        
+        // Auto-expand parent lists if collapsed
+        let parent = activeLink.parentElement;
+        while (parent && parent !== toc) {
+          if (parent.tagName === 'LI' && parent.classList.contains('toc-collapsed')) {
+            parent.classList.remove('toc-collapsed');
+          }
+          parent = parent.parentElement;
+        }
+        
+        // Scroll TOC to keep active item in view
+        // Only if TOC is scrollable
+        if (toc.scrollHeight > toc.clientHeight) {
+          const linkRect = activeLink.getBoundingClientRect();
+          const tocRect = toc.getBoundingClientRect();
+          
+          if (linkRect.top < tocRect.top || linkRect.bottom > tocRect.bottom) {
+            activeLink.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          }
+        }
+      }
+    }
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          updateActive();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+    
+    // Initial check
+    updateActive();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initScrollSpy);
+  } else {
+    initScrollSpy();
   }
 })();
 
