@@ -349,11 +349,24 @@
 }
 
 /* 深色模式下的行内代码 */
-[data-theme="dark"] .content :not(pre)>code,
+[data-theme="dark"] .content :not(pre)>code {
+  background: #3a3a3a;
+  color: #f592b6;
+}
+
+[data-theme="dark"] .content :not(pre)>code:hover {
+  background-color: color-mix(in oklab, var(--link) 10%, var(--surface));
+  color: var(--link);
+}
+
 @media (prefers-color-scheme: dark) {
   .content :not(pre)>code {
     background: #3a3a3a;
     color: #f592b6;
+  }
+  .content :not(pre)>code:hover {
+    background-color: color-mix(in oklab, var(--link) 10%, var(--surface));
+    color: var(--link);
   }
 }
 
