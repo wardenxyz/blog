@@ -4,5 +4,5 @@ python-frontmatter==1.1.0
 PyYAML==6.0.2
 soupsieve==2.6
 typing_extensions==4.13.2
-pymdown-extensions==10.16.1
+pymdown-extensions==10.21.3
 livereload==2.7.0
