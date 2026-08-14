@@ -69,7 +69,7 @@
 
 ## UTF-8
 
-- 2025-07-15 [跨系统避免换行符导致字节差异的方法](posts/2025/cross-platform-byte-control.md.md)
+- 2025-07-15 [跨系统避免换行符导致字节差异的方法](posts/2025/cross-platform-byte-control.md)
 
 ## WPS
 
@@ -212,12 +212,12 @@
 - 2025-07-23 [SOPS:Secrets OPerationS](posts/2025/SOPS.md)
 - 2025-07-22 [age-note](posts/2025/age.md)
 - 2024-10-06 [OpenSSL 加解密速查笔记](posts/2024/OpenSSL_encrypt_note.md)
-- 2024-04-08 [GPG 在通信中的简单理解](posts/2024/gpg_communication.md)
 - 2024-04-08 [现代加密学](posts/2024/modern_cryptography.md)
+- 2024-04-08 [GPG 在通信中的简单理解](posts/2024/gpg_communication.md)
 
 ## 字节控制
 
-- 2025-07-15 [跨系统避免换行符导致字节差异的方法](posts/2025/cross-platform-byte-control.md.md)
+- 2025-07-15 [跨系统避免换行符导致字节差异的方法](posts/2025/cross-platform-byte-control.md)
 
 ## 密码学
 
@@ -229,11 +229,11 @@
 
 ## 换行符
 
-- 2025-07-15 [跨系统避免换行符导致字节差异的方法](posts/2025/cross-platform-byte-control.md.md)
+- 2025-07-15 [跨系统避免换行符导致字节差异的方法](posts/2025/cross-platform-byte-control.md)
 
 ## 文件操作
 
-- 2025-07-15 [跨系统避免换行符导致字节差异的方法](posts/2025/cross-platform-byte-control.md.md)
+- 2025-07-15 [跨系统避免换行符导致字节差异的方法](posts/2025/cross-platform-byte-control.md)
 
 ## 正则表达式
 
@@ -257,7 +257,7 @@
 
 ## 跨平台
 
-- 2025-07-15 [跨系统避免换行符导致字节差异的方法](posts/2025/cross-platform-byte-control.md.md)
+- 2025-07-15 [跨系统避免换行符导致字节差异的方法](posts/2025/cross-platform-byte-control.md)
 
 ## 邮箱
 
