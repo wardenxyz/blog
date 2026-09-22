@@ -13,8 +13,8 @@
 
 ## B站
 
-- 2024-08-01 [B站嵌入代码](posts/2024/bilibili_embedding_code.md)
 - 2024-08-01 [用 you-get 下载B站视频](posts/2024/you-get_note.md)
+- 2024-08-01 [B站嵌入代码](posts/2024/bilibili_embedding_code.md)
 
 ## DeepSeek
 
@@ -182,6 +182,10 @@
 
 - 2025-07-23 [SOPS:Secrets OPerationS](posts/2025/SOPS.md)
 
+## typst
+
+- 2026-09-22 [英雄头像](posts/2026/hero.md)
+
 ## vim
 
 - 2024-10-04 [lazy.nvim 学习笔记](posts/2024/lazy.nvim_note.md)
@@ -212,8 +216,8 @@
 - 2025-07-23 [SOPS:Secrets OPerationS](posts/2025/SOPS.md)
 - 2025-07-22 [age-note](posts/2025/age.md)
 - 2024-10-06 [OpenSSL 加解密速查笔记](posts/2024/OpenSSL_encrypt_note.md)
-- 2024-04-08 [现代加密学](posts/2024/modern_cryptography.md)
 - 2024-04-08 [GPG 在通信中的简单理解](posts/2024/gpg_communication.md)
+- 2024-04-08 [现代加密学](posts/2024/modern_cryptography.md)
 
 ## 字节控制
 
