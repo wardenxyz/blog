@@ -11,6 +11,7 @@ Assets (templates/static): alongside this file (.github/site)
 
 from __future__ import annotations
 
+import hashlib
 import os
 import re
 import shutil
@@ -34,6 +35,9 @@ OUT = REPO_ROOT / "site"
 # assets live in .github/templates and .github/static
 TEMPLATES = SCRIPT_DIR.parent / "templates"
 STATIC = SCRIPT_DIR.parent / "static"
+
+# short content hash of .github/static, injected into asset URLs to defeat stale caches
+ASSET_VER = ""
 
 
 @dataclass
@@ -62,6 +66,16 @@ def clean_outdir():
 def copy_static():
     if STATIC.exists():
         shutil.copytree(STATIC, OUT / "static")
+
+
+def static_asset_version() -> str:
+    """Content hash of .github/static so CSS/JS edits bust browser caches immediately."""
+    digest = hashlib.sha256()
+    for path in sorted(STATIC.rglob("*")):
+        if path.is_file():
+            digest.update(path.relative_to(STATIC).as_posix().encode("utf-8"))
+            digest.update(path.read_bytes())
+    return digest.hexdigest()[:10]
 
 
 def rel_base(path_under_out: Path) -> str:
@@ -513,6 +527,7 @@ def write_page(page: Page, github_url: str, owner: str, sidebar_html: str):
         "meta": meta_html,
         "seo_head": seo_head,
         "breadcrumbs": breadcrumbs_html,
+        "asset_ver": ASSET_VER,
     }
     out_html = render_template("base.html", context)
     page.out.parent.mkdir(parents=True, exist_ok=True)
@@ -670,6 +685,8 @@ def write_404():
 def main():
     clean_outdir()
     copy_static()
+    global ASSET_VER
+    ASSET_VER = static_asset_version()
     gh_repo = os.getenv("GITHUB_REPOSITORY", "")
     github_url = f"https://github.com/{gh_repo}" if gh_repo else "#"
     owner = os.getenv("GITHUB_REPOSITORY_OWNER") or os.getenv("USERNAME") or os.getenv("USER") or "Your Name"

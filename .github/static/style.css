@@ -1061,12 +1061,15 @@ body:has(.header-hidden) .sidebar-col {
 	}
 
 	.layout-3 {
-		grid-template-columns: 1fr 280px;
+		/* 两栏：正文 + 大纲；大纲用 clamp 随视口收缩，避免中等宽度下挤压正文 */
+		grid-template-columns: minmax(0, 1fr) clamp(240px, 28vw, 320px);
 		/* 大纲滚动条边距 */
 	}
 
 	.sidebar-col {
-		display: none;
+		/* !important：避免 theme.css 等后加载样式把左栏重新显示，
+		   否则 2 条轨道里塞 3 个元素，正文会被挤成窄条 */
+		display: none !important;
 	}
 
 	#toc {

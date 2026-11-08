@@ -16,8 +16,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
   
   <!-- Critical CSS -->
-  <link rel="stylesheet" href="{{ base }}static/style.css" />
-  <link rel="stylesheet" href="{{ base }}static/theme.css" />
+  <link rel="stylesheet" href="{{ base }}static/style.css?v={{ asset_ver }}" />
+  <link rel="stylesheet" href="{{ base }}static/theme.css?v={{ asset_ver }}" />
   <!-- Prism.js 代码高亮 -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" />
   <link rel="icon" href="{{ base }}static/favicon.svg" type="image/svg+xml" />
@@ -214,7 +214,7 @@
 
   <!-- Main JavaScript with defer for better performance -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js" defer></script>
-  <script src="{{ base }}static/main.js" defer></script>
+  <script src="{{ base }}static/main.js?v={{ asset_ver }}" defer></script>
   
   <!-- Prism.js 代码语法高亮 -->
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js" defer></script>
@@ -262,7 +262,7 @@
         var params = new URLSearchParams(location.search || '');
         if(isLocal || params.get('debug-perf') === '1'){
           var s = document.createElement('script');
-          s.src = '{{ base }}static/performance.js';
+          s.src = '{{ base }}static/performance.js?v={{ asset_ver }}';
           s.defer = true;
           document.head.appendChild(s);
         }
