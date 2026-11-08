@@ -56,6 +56,15 @@ html[data-theme="dark"],
 html,
 body {
 	height: 100%;
+	/* 兜底：任何内容都不应撑出横向滚动条（clip 不创建滚动容器，不影响 sticky 大纲） */
+	max-width: 100%;
+	overflow-x: clip;
+}
+
+@supports not (overflow: clip) {
+	html {
+		overflow-x: hidden;
+	}
 }
 
 body {
@@ -477,6 +486,8 @@ body,
 
 .content {
 	min-width: 0;
+	/* 长 URL / 连续字符在移动端自动换行，避免撑破版面 */
+	overflow-wrap: break-word;
 }
 
 /* Typography improvements for better readability */
@@ -510,12 +521,31 @@ body,
 	height: auto;
 }
 
+/* 嵌入元素不得超出正文宽度 */
+.content iframe,
+.content video {
+	max-width: 100%;
+}
+
+.content .mermaid {
+	max-width: 100%;
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+
+.content .mermaid svg {
+	max-width: 100%;
+	height: auto;
+}
+
 .content pre {
 	background: var(--surface);
 	padding: 14px;
 	border-radius: 8px;
 	overflow: auto;
 	border: 1px solid var(--border);
+	/* 代码块内保持不换行，由自身横向滚动，避免破坏代码排版 */
+	overflow-wrap: normal;
 }
 
 .content code {
@@ -1380,6 +1410,7 @@ body:has(.header-hidden) .sidebar-col {
 
 mjx-container[jax="SVG"] {
 	direction: ltr;
+	max-width: 100%;
 }
 
 mjx-container[jax="SVG"]>svg {
@@ -1397,6 +1428,10 @@ mjx-container[jax="SVG"][display="true"] {
 	display: block;
 	text-align: center;
 	margin: 1em 0;
+	/* 过宽的行间公式在移动端横向滚动，而不是撑破页面 */
+	max-width: 100%;
+	overflow-x: auto;
+	overflow-y: hidden;
 }
 
 mjx-container[jax="SVG"][display="true"][width="full"] {

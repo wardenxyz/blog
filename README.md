@@ -2,7 +2,7 @@
 
 <p>
   这个时代缺的不是完美的人，缺的是从自己心底里给出的，真心、正义、无畏和同情。<br>
-  <span style="margin-left: 500pt;">————《无问西东》</span>
+  <span style="display: block; text-align: right;">————《无问西东》</span>
 </p>
 
 > [分类](categories.md) - 按主题浏览文章
