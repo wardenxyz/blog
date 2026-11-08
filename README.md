@@ -1,4 +1,4 @@
-# Wardenxyz's Notes
+# Xyz's Notes
 
 <p>
   这个时代缺的不是完美的人，缺的是从自己心底里给出的，真心、正义、无畏和同情。<br>
