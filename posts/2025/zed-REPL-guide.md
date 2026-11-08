@@ -11,17 +11,17 @@ category: [计算机技术]
 
 ```json
 "lsp": {
-		"python": {
-			"initialization_options": {
-				"path": "D:\\Python\\Python313\\Lib\\site-packages" //这里是 pip install 的位置
-			}
-		}
-	},
-	"jupyter": {
-		"kernel_selections": {
-			"python": "ipykernel"
-		}
-	}
+    "python": {
+        "initialization_options": {
+            "path": "D:\\Python\\Python313\\Lib\\site-packages" //这里是 pip install 的位置
+        }
+    }
+},
+"jupyter": {
+    "kernel_selections": {
+        "python": "ipykernel"
+    }
+}
 ```
 
 然后安装运行以下命令

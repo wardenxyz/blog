@@ -254,43 +254,11 @@
   <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js" defer></script>
   <script src="{{ base }}static/main.js?v={{ asset_ver }}" defer></script>
 
-  <!-- Prism.js 代码语法高亮 -->
+  <!-- Prism.js 代码语法高亮（Typst 语法为本地补充，其余语言由 autoloader 按需加载） -->
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js" defer></script>
+  <script src="{{ base }}static/prism-typst.js?v={{ asset_ver }}" defer></script>
+  <script src="{{ base }}static/prism-setup.js?v={{ asset_ver }}" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
-
-  <!-- 代码块语言标签 -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      document.querySelectorAll('pre[class*="language-"]').forEach(function(pre) {
-        var match = pre.className.match(/language-(\w+)/);
-        if (match && match[1]) {
-          var lang = match[1];
-          // 美化语言名称
-          var langMap = {
-            'js': 'JavaScript', 'javascript': 'JavaScript',
-            'ts': 'TypeScript', 'typescript': 'TypeScript',
-            'py': 'Python', 'python': 'Python',
-            'rb': 'Ruby', 'ruby': 'Ruby',
-            'sh': 'Shell', 'bash': 'Bash', 'shell': 'Shell', 'zsh': 'Zsh',
-            'ps1': 'PowerShell', 'powershell': 'PowerShell',
-            'html': 'HTML', 'css': 'CSS', 'scss': 'SCSS', 'sass': 'Sass',
-            'json': 'JSON', 'yaml': 'YAML', 'yml': 'YAML', 'toml': 'TOML',
-            'xml': 'XML', 'md': 'Markdown', 'markdown': 'Markdown',
-            'sql': 'SQL', 'graphql': 'GraphQL',
-            'c': 'C', 'cpp': 'C++', 'csharp': 'C#', 'cs': 'C#',
-            'java': 'Java', 'kotlin': 'Kotlin', 'swift': 'Swift',
-            'go': 'Go', 'rust': 'Rust', 'rs': 'Rust',
-            'php': 'PHP', 'lua': 'Lua', 'r': 'R',
-            'dockerfile': 'Dockerfile', 'docker': 'Docker',
-            'nginx': 'Nginx', 'apache': 'Apache',
-            'vim': 'Vim', 'typst': 'Typst', 'latex': 'LaTeX', 'tex': 'TeX'
-          };
-          var displayName = langMap[lang.toLowerCase()] || lang.toUpperCase();
-          pre.setAttribute('data-language', displayName);
-        }
-      });
-    });
-  </script>
 
   <!-- Only load performance tooling in dev / when explicitly requested -->
   <script>

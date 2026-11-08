@@ -42,6 +42,8 @@ blog/
 │       ├── style.css        # Base CSS styles
 │       ├── theme.css        # Theme (dark/light mode) CSS
 │       ├── main.js          # Site JavaScript
+│       ├── prism-setup.js   # Prism 语言别名、标签与配置
+│       ├── prism-typst.js   # Prism Typst 语法定义
 │       ├── favicon.svg      # Site favicon
 │       ├── sw.js            # Service worker for caching
 │       └── performance.js   # Performance monitoring script
@@ -128,7 +130,8 @@ python -m http.server -d site
 ### Content Guidelines
 
 - 使用 Markdown 格式编写
-- 使用围栏代码块来展示代码片段
+- 使用围栏代码块来展示代码片段，语法高亮由 Prism.js 提供
+- 代码块支持 `typst`、`powershell`（`ps1`/`ps`）、`python`（`py`）、`js`、`markdown`（`md`）等语言；Typst 语法由本地 `prism-typst.js` 提供
 - 支持使用 `$...$` 和 `$$...$$` 语法书写数学表达式
 - 支持使用 mermaid 代码块绘制 Mermaid 图表
 
