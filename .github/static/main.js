@@ -18,7 +18,7 @@
       const header = document.querySelector('.site-header');
       const cssVar = getComputedStyle(document.documentElement).getPropertyValue('--header-h').trim();
       const headerH = cssVar ? parseFloat(cssVar) : (header ? header.getBoundingClientRect().height : 72);
-      const isMobile = window.matchMedia('(max-width: 959px)').matches;
+      const isMobile = window.matchMedia('(max-width: 959.98px)').matches;
       const baseBuffer = isMobile ? 20 : 12;
       return headerH + baseBuffer;
     }catch(_e){
@@ -304,7 +304,7 @@
     const toggle = document.getElementById('sidebarToggle');
     const overlay = document.getElementById('drawerOverlay');
     if(!panel || !toggle) return;
-    const mq = window.matchMedia('(max-width: 959px)');
+    const mq = window.matchMedia('(max-width: 959.98px)');
     let isMobile = mq.matches;
 
     function closePanel(){
@@ -393,7 +393,7 @@
     if(!toc) return;
     const toggle = document.getElementById('tocToggle');
     const overlay = document.getElementById('drawerOverlay');
-    const mq = window.matchMedia('(max-width: 959px)');
+    const mq = window.matchMedia('(max-width: 959.98px)');
     let isMobile = mq.matches;
 
     function closePanel(){

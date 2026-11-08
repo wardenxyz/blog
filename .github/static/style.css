@@ -834,7 +834,7 @@ body:has(.header-hidden) .sidebar-col {
 }
 
 /* <= 959px: mobile layout with floating drawers */
-@media (max-width: 959px) {
+@media (max-width: 959.98px) {
 
 	/* Increase touch targets for collapsible buttons */
 	.toc-toggle-btn,
@@ -1052,7 +1052,7 @@ body:has(.header-hidden) .sidebar-col {
 }
 
 /* 960px–1399px: two columns (content + TOC), hide left sidebar */
-@media (min-width: 960px) and (max-width: 1399px) {
+@media (min-width: 960px) and (max-width: 1399.98px) {
 
 	/* add some side gutter so content isn't stuck to edges in half-screen */
 	.layout {
@@ -1084,7 +1084,7 @@ body:has(.header-hidden) .sidebar-col {
 }
 
 /* Large tablets and small laptops (768px - 959px) */
-@media (min-width: 768px) and (max-width: 959px) {
+@media (min-width: 768px) and (max-width: 959.98px) {
 	.header-inner {
 		height: auto;
 		flex-wrap: nowrap;
@@ -1249,7 +1249,7 @@ body:has(.header-hidden) .sidebar-col {
 	scroll-margin-top: calc(var(--header-h, 56px) + 40px);
 }
 
-@media (max-width: 959px) {
+@media (max-width: 959.98px) {
 
 	.content h1,
 	.content h2,
