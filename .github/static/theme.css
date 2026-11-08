@@ -100,18 +100,17 @@
 .header-inner {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 10px;
   height: 56px;
 }
 
 .header-inner .nav {
   display: flex;
-  gap: 4px;
-  margin-right: auto;
+  gap: 2px;
 }
 
 .header-inner .nav-link {
-  padding: 6px 12px;
+  padding: 7px 11px;
   font-size: 14px;
 }
 
@@ -120,24 +119,29 @@
   position: relative;
   display: flex;
   align-items: center;
+  gap: 7px;
+  /* 靠右：与右侧图标按钮成组 */
+  margin-left: auto;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 20px;
-  padding: 4px 12px;
-  width: 220px;
-  transition: width 0.2s ease, box-shadow 0.2s ease;
+  padding: 0 12px;
+  height: 36px;
+  width: 200px;
+  transition: width 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .header-search:focus-within {
-  width: 280px;
+  width: 260px;
   border-color: var(--link);
   box-shadow: 0 0 0 3px color-mix(in oklab, var(--link) 15%, transparent);
 }
 
 .header-search-icon {
-  font-size: 14px;
-  margin-right: 6px;
-  opacity: 0.6;
+  width: 16px;
+  height: 16px;
+  flex: none;
+  color: var(--muted);
 }
 
 .header-search-input {
@@ -265,6 +269,11 @@
     display: inline-flex;
   }
 
+  /* 移动端没有内嵌搜索框，由按钮组自己把内容推向右侧 */
+  .header-actions {
+    margin-left: auto;
+  }
+
   .header-inner .nav {
     display: none;
   }
@@ -279,12 +288,19 @@
     background: var(--bg);
     border-bottom: 1px solid var(--border);
     padding: 8px 16px;
+    box-shadow: 0 12px 24px rgba(2, 6, 23, 0.08);
+  }
+
+  .header-inner .nav.open.closing {
+    animation: slideUp 0.18s ease-in forwards;
+    pointer-events: none;
   }
 
   .header-inner {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
   }
 
+  /* 768–959 与手机一致：导航收进菜单，图标按钮可用 */
   .menu-toggle,
   .sidebar-toggle,
   .toc-toggle {
@@ -294,15 +310,10 @@
 
 /* 按钮样式 */
 .theme-toggle,
-.icon-button,
 .drawer-toggle,
-.menu-toggle {
-  transition: transform 0.14s ease, box-shadow 0.14s ease;
-}
-
-.theme-toggle:hover,
-.icon-button:hover {
-  transform: translateY(-2px);
+.menu-toggle,
+.search-toggle {
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 /* 内容淡入动画 */

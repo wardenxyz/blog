@@ -176,103 +176,45 @@ body,
 	transform: translateY(calc(-100% + 2px));
 }
 
+/* ===== 顶栏 ===== */
 .header-inner {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	gap: 10px;
 	height: 56px;
 }
 
 .brand {
-	font-weight: 700;
+	font-weight: 800;
+	font-size: 18px;
+	letter-spacing: -0.01em;
 	color: var(--text);
 	text-decoration: none;
-	font-size: 18px;
+	white-space: nowrap;
+	flex-shrink: 0;
 }
 
-.menu-toggle {
-	display: none;
-	border: 1px solid var(--border);
-	background: var(--bg);
-	color: var(--text);
-	border-radius: 6px;
-	padding: 6px 10px;
-	cursor: pointer;
+.brand:hover {
+	color: var(--link);
 }
 
-.theme-toggle {
-	border: 1px solid var(--border);
-	background: var(--bg);
-	color: var(--text);
-	border-radius: 6px;
-	padding: 6px 10px;
-	cursor: pointer;
-	margin-left: 8px;
-}
-
-.icon-button {
-	border: 1px solid var(--border);
-	background: var(--bg);
-	color: var(--text);
-	border-radius: 999px;
-	padding: 6px 12px;
-	cursor: pointer;
-	font-size: 16px;
-	line-height: 1;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	transition:
-		background-color 0.2s ease,
-		color 0.2s ease,
-		border-color 0.2s ease;
-}
-
-.icon-button:hover {
-	background: var(--surface);
-}
-
-.icon-button:focus-visible {
-	outline: 3px solid var(--link);
-	outline-offset: 2px;
-}
-
-.drawer-toggle {
-	display: none;
-	border: 1px solid var(--border);
-	background: var(--bg);
-	color: var(--text);
-	border-radius: 999px;
-	padding: 6px 14px;
-	cursor: pointer;
-	font-size: 14px;
-	line-height: 1;
-	margin-left: 8px;
-	transition:
-		background-color 0.2s ease,
-		color 0.2s ease,
-		border-color 0.2s ease;
-}
-
-.drawer-toggle.active {
-	background: color-mix(in oklab, var(--link) 12%, var(--surface));
-	border-color: color-mix(in oklab, var(--link) 25%, var(--border));
-	color: var(--text);
-}
-
+/* 导航链接 */
 .nav {
 	display: flex;
-	gap: 16px;
+	gap: 2px;
+	margin-left: 4px;
 }
 
 .nav-link {
-	color: var(--text);
+	color: var(--muted);
 	text-decoration: none;
-	padding: 8px 10px;
-	border-radius: 6px;
+	font-size: 14px;
+	font-weight: 500;
+	padding: 7px 11px;
+	border-radius: 8px;
 	transition:
-		background-color 0.2s ease,
-		color 0.2s ease;
+		background-color 0.15s ease,
+		color 0.15s ease;
 }
 
 .nav-link:hover {
@@ -284,8 +226,90 @@ body,
 	color: var(--link);
 }
 
-.search-toggle {
-	margin-left: 12px;
+.nav-link.github:hover {
+	background: color-mix(in oklab, var(--link) 10%, transparent);
+	color: var(--link);
+}
+
+/* 顶栏右侧图标按钮组 */
+.header-actions {
+	display: flex;
+	align-items: center;
+	gap: 2px;
+	flex-shrink: 0;
+}
+
+.icon-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	height: 36px;
+	min-width: 36px;
+	padding: 0 8px;
+	border: 0;
+	border-radius: 10px;
+	background: transparent;
+	color: var(--muted);
+	font: inherit;
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 1;
+	cursor: pointer;
+	transition:
+		background-color 0.15s ease,
+		color 0.15s ease;
+}
+
+.icon-btn:hover {
+	background: var(--surface);
+	color: var(--text);
+}
+
+.icon-btn:focus-visible {
+	outline: 2px solid var(--link);
+	outline-offset: 2px;
+}
+
+.icon-btn.active {
+	color: var(--link);
+	background: color-mix(in oklab, var(--link) 10%, transparent);
+}
+
+.icon-btn svg {
+	width: 19px;
+	height: 19px;
+	flex: none;
+}
+
+/* 主题按钮：按 data-mode 显示对应图标 */
+.theme-toggle .ico {
+	display: none;
+}
+
+.theme-toggle .ico-auto {
+	display: block;
+}
+
+.theme-toggle[data-mode="light"] .ico-auto,
+.theme-toggle[data-mode="dark"] .ico-auto {
+	display: none;
+}
+
+.theme-toggle[data-mode="light"] .ico-light,
+.theme-toggle[data-mode="dark"] .ico-dark {
+	display: block;
+}
+
+/* 默认隐藏：桌面端用内嵌搜索框，移动端才出现这些按钮 */
+.search-toggle,
+.menu-toggle,
+.drawer-toggle {
+	display: none;
+}
+
+.btn-label {
+	display: none;
 }
 
 .search-modal {
@@ -877,34 +901,10 @@ body:has(.header-hidden) .sidebar-col {
 		grid-template-columns: 1fr;
 	}
 
+	/* 移动端：目录在左（靠 DOM 顺序），其余图标靠右 */
+	.drawer-toggle,
 	.search-toggle {
-		order: 1;
-		margin-left: auto;
-		padding: 6px 8px;
-	}
-
-	.drawer-toggle {
 		display: inline-flex;
-		align-items: center;
-		gap: 4px;
-		padding: 6px 8px;
-		font-size: 13px;
-	}
-
-	.sidebar-toggle {
-		order: 2;
-		margin-left: 0;
-	}
-
-	.toc-toggle {
-		order: 3;
-		margin-left: 4px;
-	}
-
-	.theme-toggle {
-		order: 4;
-		margin-left: 4px;
-		padding: 6px 8px;
 	}
 
 	.sidebar-col {
@@ -1034,20 +1034,19 @@ body:has(.header-hidden) .sidebar-col {
 	}
 
 	.brand {
-		font-size: 14px;
+		font-size: 15px;
 	}
 
 	/* Even more compact buttons on very small screens */
-	.drawer-toggle {
-		padding: 4px 6px;
-		font-size: 11px;
+	.icon-btn {
+		height: 32px;
+		min-width: 32px;
+		padding: 0 5px;
 	}
 
-	.theme-toggle,
-	.search-toggle,
-	.menu-toggle {
-		padding: 4px 5px;
-		font-size: 14px;
+	.icon-btn svg {
+		width: 17px;
+		height: 17px;
 	}
 }
 
@@ -1089,73 +1088,50 @@ body:has(.header-hidden) .sidebar-col {
 /* Large tablets and small laptops (768px - 959px) */
 @media (min-width: 768px) and (max-width: 959.98px) {
 	.header-inner {
-		height: auto;
+		height: 56px;
 		flex-wrap: nowrap;
-		gap: 12px;
-		padding: 8px 0;
+		gap: 10px;
+		padding: 0;
 	}
 
-	.menu-toggle {
-		display: none;
-	}
-
-	.nav {
-		display: flex;
-		flex-direction: row;
-		width: auto;
-		gap: 8px;
+	/* 空间充足时给图标按钮配文字 */
+	.btn-label {
+		display: inline;
 	}
 
 	.nav-link {
-		padding: 8px 12px;
+		padding: 7px 10px;
 	}
 }
 
 /* Mobile navigation */
 @media (max-width: 767px) {
 	.header-inner {
-		height: auto;
-		flex-wrap: wrap;
-		gap: 4px;
-		padding: 8px 0;
+		height: 56px;
+		flex-wrap: nowrap;
+		gap: 6px;
+		padding: 0;
 	}
 
 	.brand {
-		font-size: 15px;
+		font-size: 16px;
 		flex-shrink: 0;
-		margin-right: auto;
+	}
+
+	/* 图标按钮统一紧凑尺寸 */
+	.icon-btn {
+		height: 34px;
+		min-width: 34px;
+		padding: 0 6px;
+	}
+
+	.icon-btn svg {
+		width: 18px;
+		height: 18px;
 	}
 
 	.menu-toggle {
 		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		padding: 5px 7px;
-		order: 10;
-	}
-
-	/* Compact buttons on mobile */
-	.drawer-toggle {
-		padding: 5px 7px;
-		font-size: 12px;
-	}
-
-	.theme-toggle {
-		padding: 5px 7px;
-		margin-left: 2px;
-	}
-
-	.search-toggle {
-		padding: 5px 7px;
-		margin-left: 0;
-	}
-
-	.sidebar-toggle {
-		margin-left: 2px;
-	}
-
-	.toc-toggle {
-		margin-left: 2px;
 	}
 
 	.nav {
@@ -1178,6 +1154,11 @@ body:has(.header-hidden) .sidebar-col {
 		animation: slideDown 0.2s ease-out;
 	}
 
+	.nav.open.closing {
+		animation: slideUp 0.18s ease-in forwards;
+		pointer-events: none;
+	}
+
 	.nav-link {
 		padding: 12px 8px;
 		border-radius: 8px;
@@ -1194,6 +1175,18 @@ body:has(.header-hidden) .sidebar-col {
 	to {
 		opacity: 1;
 		transform: translateY(0);
+	}
+}
+
+@keyframes slideUp {
+	from {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	to {
+		opacity: 0;
+		transform: translateY(-10px);
 	}
 }
 
@@ -1233,6 +1226,10 @@ body:has(.header-hidden) .sidebar-col {
 	}
 
 	.nav.open {
+		animation: none;
+	}
+
+	.nav.open.closing {
 		animation: none;
 	}
 }
@@ -1511,10 +1508,7 @@ mjx-container[jax="SVG"][justify="right"] {
 .nav-link:hover,
 .sidebar a:hover,
 #toc a:hover,
-.drawer-toggle:hover,
-.icon-button:hover,
 .copy-btn:hover,
-.menu-toggle:hover,
 .back-to-top:hover {
 	outline: 2px solid var(--link);
 	outline-offset: 2px;
@@ -1524,11 +1518,9 @@ mjx-container[jax="SVG"][justify="right"] {
 .nav-link:focus-visible,
 .sidebar a:focus-visible,
 #toc a:focus-visible,
-.drawer-toggle:focus-visible,
-.icon-button:focus-visible,
 .copy-btn:focus-visible,
-.menu-toggle:focus-visible,
 .back-to-top:focus-visible,
+.icon-btn:focus-visible,
 .content pre:focus-visible,
 .content table:focus-visible,
 .content img:focus-visible,
@@ -1545,12 +1537,16 @@ mjx-container[jax="SVG"][justify="right"] {
 	.nav-link,
 	.sidebar a,
 	#toc a,
-	.search-item,
-	.menu-toggle,
-	.theme-toggle {
+	.search-item {
 		min-height: 44px;
 		display: flex;
 		align-items: center;
+	}
+
+	/* 顶栏图标按钮：保证可点面积 */
+	.icon-btn {
+		min-height: 44px;
+		min-width: 42px;
 	}
 
 	.copy-btn {

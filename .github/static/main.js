@@ -271,17 +271,47 @@
     const nav = document.getElementById('primaryNav');
     if(!toggle || !nav) return;
     const mq = window.matchMedia('(max-width: 800px)');
+    const mqMobile = window.matchMedia('(max-width: 959.98px)');
+    const mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let closing = false;
+    let closeTimer = 0;
+
+    function onCloseEnd(e){
+      if(e.target !== nav) return;
+      if(getComputedStyle(nav).animationName !== 'slideUp') return;
+      finishClose();
+    }
+
+    function finishClose(){
+      clearTimeout(closeTimer);
+      closing = false;
+      nav.removeEventListener('animationend', onCloseEnd);
+      nav.classList.remove('open', 'closing');
+      toggle.setAttribute('aria-expanded','false');
+      requestAnimationFrame(setHeaderHeight);
+    }
 
     function closeMenu(){
-      nav.classList.remove('open');
       toggle.setAttribute('aria-expanded','false');
+      if(!nav.classList.contains('open') || closing) return;
+      // 桌面端或用户偏好减少动态效果时立即收起
+      if(!mqMobile.matches || mqReduce.matches){
+        finishClose();
+        return;
+      }
+      closing = true;
+      nav.classList.add('closing');
+      nav.addEventListener('animationend', onCloseEnd);
+      // 兜底：动画事件未触发（例如被隐藏）时也能完成收起
+      closeTimer = setTimeout(finishClose, 300);
     }
     function openMenu(){
+      finishClose();
       nav.classList.add('open');
       toggle.setAttribute('aria-expanded','true');
     }
     toggle.addEventListener('click', ()=>{
-      if(nav.classList.contains('open')) closeMenu(); else openMenu();
+      if(nav.classList.contains('open') && !closing) closeMenu(); else openMenu();
       // header height may change when nav opens/closes on mobile
       requestAnimationFrame(setHeaderHeight);
     });
@@ -289,6 +319,14 @@
     mq.addEventListener('change', e=>{ if(!e.matches) { closeMenu(); requestAnimationFrame(setHeaderHeight);} });
     // Close when clicking a link (for single page feel)
     nav.addEventListener('click', e=>{ if(e.target.closest('a')) { closeMenu(); requestAnimationFrame(setHeaderHeight);} });
+
+    // Close when clicking outside the menu
+    document.addEventListener('click', e=>{
+      if(!nav.classList.contains('open')) return;
+      if(e.target.closest('#primaryNav') || e.target.closest('#menuToggle')) return;
+      closeMenu();
+      requestAnimationFrame(setHeaderHeight);
+    });
 
     // Close on scroll
     window.addEventListener('scroll', () => {
@@ -1057,10 +1095,12 @@ function initThemeToggle(){
   const darkColor = '#0f1115';
 
   function applyIcon(theme){
-    // Use simple icons: sun for light, moon for dark, monitor for auto
-    if(theme === 'light') btn.textContent = '☀️';
-    else if(theme === 'dark') btn.textContent = '🌙';
-    else btn.textContent = '🖥️';
+    // Icons are inline SVGs; CSS shows the one matching data-mode
+    btn.dataset.mode = theme || 'auto';
+    const labels = { light: '切换主题（当前：浅色）', dark: '切换主题（当前：深色）', auto: '切换主题（当前：跟随系统）' };
+    const label = labels[btn.dataset.mode] || labels.auto;
+    btn.setAttribute('aria-label', label);
+    btn.setAttribute('title', label);
   }
 
   function applyThemeColor(mode){

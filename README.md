@@ -1,6 +1,9 @@
-# Home
+# Wardenxyz's Notes
 
-欢迎来到我基于 GitHub 的博客！这是一个极简的博客，使用纯 Markdown 文件和 GitHub 的原生功能。
+<p>
+  这个时代缺的不是完美的人，缺的是从自己心底里给出的，真心、正义、无畏和同情。<br>
+  <span style="margin-left: 500pt;">————《无问西东》</span>
+</p>
 
 > [分类](categories.md) - 按主题浏览文章
 >

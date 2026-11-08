@@ -296,7 +296,7 @@ def build_page(src_md: Path, out_html: Path, site_url: str = "") -> Page | None:
         date = date.strftime('%Y-%m-%d')
     elif date:
         date = str(date)
-    
+
     # 如果没有日期，尝试从 git 获取创建日期
     if not date:
         date = get_git_creation_date(src_md)
@@ -360,7 +360,7 @@ def generate_sidebar(all_pages: list[Page], current: Page) -> str:
         except Exception:
             pass
         items.setdefault(year, []).append((p.title, link, p.date))
-    
+
     years = sorted(items.keys(), reverse=True)
     html_parts = ["<nav class=\"sidebar\" aria-label=\"所有文章\">"]
     for y in years:
@@ -390,7 +390,7 @@ def generate_breadcrumbs(page: Page) -> str:
         rel_path = page.src.relative_to(SRC)
         # Get parent folders (excluding filename)
         folder_parts = rel_path.parent.parts
-        
+
         for part in folder_parts:
             # Skip 'posts' folder as it's the content root
             if part == "posts":
@@ -399,7 +399,7 @@ def generate_breadcrumbs(page: Page) -> str:
             crumbs.append((part, ""))
     except Exception:
         pass
-    
+
     # Current page
     crumbs.append((page.title, ""))
 
@@ -421,26 +421,26 @@ def generate_breadcrumbs(page: Page) -> str:
 def write_page(page: Page, github_url: str, owner: str, sidebar_html: str):
     # 构建元信息区块 HTML（仅当存在任意一项时渲染）
     meta_parts: list[str] = []
-    
+
     # 1. 创建时间
     if page.date:
-        meta_parts.append(f'<span class="meta-item meta-date" title="发布时间">📅发布时间: {page.date}</span>')
-        
+        meta_parts.append(f'<span class="meta-item meta-date" title="发布时间">发布时间: {page.date}</span>')
+
     # 2. 最后修改
     if page.last_modified:
-        meta_parts.append(f'<span class="meta-item meta-date" title="最后修改">📝最后修改: {page.last_modified}</span>')
+        meta_parts.append(f'<span class="meta-item meta-date" title="最后修改">最后修改: {page.last_modified}</span>')
 
     # 3. 分类
     if page.categories:
         cats = "".join(f'<span class="badge badge-cat">{c}</span>' for c in page.categories or [])
         if cats:
-            meta_parts.append(f'<span class="meta-item" title="分类">📂 {cats}</span>')
-            
+            meta_parts.append(f'<span class="meta-item" title="分类">categories: {cats}</span>')
+
     # 4. 标签
     if page.tags:
         tgs = "".join(f'<span class="badge badge-tag">{t}</span>' for t in page.tags or [])
         if tgs:
-            meta_parts.append(f'<span class="meta-item" title="标签">🏷️ {tgs}</span>')
+            meta_parts.append(f'<span class="meta-item" title="标签">tags: {tgs}</span>')
 
     meta_html = ""
     if meta_parts:
