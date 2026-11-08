@@ -342,7 +342,7 @@
     const toggle = document.getElementById('sidebarToggle');
     const overlay = document.getElementById('drawerOverlay');
     if(!panel || !toggle) return;
-    const mq = window.matchMedia('(max-width: 959.98px)');
+    const mq = window.matchMedia('(max-width: 1399.98px)');
     let isMobile = mq.matches;
 
     function closePanel(){
@@ -431,7 +431,7 @@
     if(!toc) return;
     const toggle = document.getElementById('tocToggle');
     const overlay = document.getElementById('drawerOverlay');
-    const mq = window.matchMedia('(max-width: 959.98px)');
+    const mq = window.matchMedia('(max-width: 1399.98px)');
     let isMobile = mq.matches;
 
     function closePanel(){

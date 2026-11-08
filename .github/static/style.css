@@ -1080,41 +1080,6 @@ body:has(.header-hidden) .sidebar-col {
 	}
 }
 
-/* 960px–1399px: two columns (content + TOC), hide left sidebar */
-@media (min-width: 960px) and (max-width: 1399.98px) {
-
-	/* add some side gutter so content isn't stuck to edges in half-screen */
-	.layout {
-		padding-left: 24px;
-		padding-right: 24px;
-	}
-
-	.layout-3 {
-		/* 两栏：正文 + 大纲；大纲用 clamp 随视口收缩，避免中等宽度下挤压正文 */
-		grid-template-columns: minmax(0, 1fr) clamp(240px, 28vw, 320px);
-		/* 大纲滚动条边距 */
-	}
-
-	.sidebar-col {
-		/* !important：避免 theme.css 等后加载样式把左栏重新显示，
-		   否则 2 条轨道里塞 3 个元素，正文会被挤成窄条 */
-		display: none !important;
-	}
-
-	#toc {
-		border-left: 1px solid var(--border);
-		padding-left: 16px;
-		top: calc(var(--header-h, 56px) + 20px);
-		max-height: calc(100vh - 100px);
-	}
-
-	/* When header is hidden, move TOC up */
-	.header-hidden~main #toc,
-	body:has(.header-hidden) #toc {
-		top: 20px;
-	}
-}
-
 /* Large tablets and small laptops (768px - 959px) */
 @media (min-width: 768px) and (max-width: 959.98px) {
 	.header-inner {

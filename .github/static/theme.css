@@ -13,14 +13,17 @@
   grid-template-columns: 250px minmax(0, 1fr) 340px;
 }
 
-/* 中等屏幕（960-1399px）：两栏 */
+/* 中等屏幕（960-1399px）：单栏正文；目录与大纲都收进抽屉，二者一起出现/一起隐藏 */
 @media (min-width: 960px) and (max-width: 1399.98px) {
   .container {
     max-width: 1180px;
   }
 
-  .layout-3 {
-    grid-template-columns: minmax(0, 1fr) clamp(240px, 28vw, 320px);
+  /* 单栏时限制正文宽度，避免一行过长影响阅读 */
+  .content {
+    width: 100%;
+    max-width: 900px;
+    justify-self: center;
   }
 }
 
@@ -57,8 +60,8 @@
   }
 }
 
-/* 手机端：单栏布局，侧边栏和大纲变为浮动抽屉 */
-@media (max-width: 959.98px) {
+/* 平板/手机（<1400px）：单栏布局，侧边栏和大纲变为浮动抽屉 */
+@media (max-width: 1399.98px) {
   .layout-3 {
     grid-template-columns: 1fr;
     /* 单栏 */
@@ -308,6 +311,19 @@
   }
 }
 
+/* 960–1399px：保留桌面导航与内嵌搜索框，目录/大纲按钮与抽屉一起出现 */
+@media (min-width: 960px) and (max-width: 1399.98px) {
+  .sidebar-toggle,
+  .toc-toggle {
+    display: inline-flex;
+  }
+
+  .menu-toggle,
+  .search-toggle {
+    display: none;
+  }
+}
+
 /* 按钮样式 */
 .theme-toggle,
 .drawer-toggle,
@@ -457,8 +473,8 @@
   border-radius: 3px;
 }
 
-/* ====== 手机端抽屉从两侧滑出 ====== */
-@media (max-width: 959.98px) {
+/* ====== 平板/手机抽屉从两侧滑出 ====== */
+@media (max-width: 1399.98px) {
 
   /* 遮罩层 */
   .drawer-overlay {
@@ -536,14 +552,13 @@
   }
 }
 
-/* ====== 电脑端：确保正常显示 ====== */
-@media (min-width: 960px) {
+/* ====== 宽屏（>=1400px）：目录与大纲常驻三栏 ====== */
+@media (min-width: 1400px) {
   .drawer-overlay {
     display: none !important;
   }
 
   .sidebar-col {
-    /* 不要覆盖 display：960–1399px 需要由 style.css 隐藏左栏 */
     transform: none !important;
     position: sticky !important;
   }
